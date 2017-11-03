@@ -18,6 +18,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
             val destDbConfig = hashMapOf("url" to "jdbc:h2:mem:movies_dest", "user" to "", "password" to "")
             val destTable = MoviesTable(destDbConfig)
+            assertEquals(0,destTable.findAll().size)
 
 
             Whitelist(sourceDbConfig,destDbConfig)
@@ -28,6 +29,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                     }.execute()
 
             val records = destTable.findAll()
+            assertEquals(2,records.size)
 
             assertEquals(1, records[0]["MOVIE_ID"])
             assertEquals("MY VALUE", records[0]["TITLE"])

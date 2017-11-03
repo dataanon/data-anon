@@ -25,6 +25,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                     }.execute()
 
             val records = moviesTable.findAll()
+            assertEquals(1,records.size)
 
             assertEquals(1, records[0]["MOVIE_ID"])
             assertEquals("MY VALUE", records[0]["TITLE"])
@@ -50,6 +51,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                     }.execute()
 
             val records = moviesTable.findAll()
+            assertEquals(2,records.size)
 
             assertEquals(1, records[0]["MOVIE_ID"])
             assertEquals("MY VALUE", records[0]["TITLE"])

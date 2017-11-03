@@ -24,6 +24,7 @@ class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
                     }.execute()
 
             val records = ratingsTable.findAll()
+            assertEquals(2,records.size)
 
             assertEquals(1, records[0]["MOVIE_ID"])
             assertEquals(1, records[0]["USER_ID"])
