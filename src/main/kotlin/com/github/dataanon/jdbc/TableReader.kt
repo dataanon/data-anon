@@ -7,8 +7,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 
-class TableReader(dbConfig: Map<String, String>, tableName: String, private val columns: Columns, private val whitelist: Array<String>) : Iterator<Record> {
-    private var conn: Connection = DriverManager.getConnection(dbConfig["url"], dbConfig["user"], dbConfig["password"])
+class TableReader(dbConfig: Map<String, Any>, tableName: String, private val columns: Columns, private val whitelist: Array<String>) : Iterator<Record> {
+    private var conn: Connection = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
     private var rs: ResultSet
     private var index = 0
 
@@ -16,7 +16,8 @@ class TableReader(dbConfig: Map<String, String>, tableName: String, private val 
         val stmt = conn.createStatement()
         val sql = "SELECT " +
                 whitelist.joinToString(",") + "," + columns.names().joinToString(",") +
-                " FROM " + tableName
+                " FROM " + tableName +
+                (if(dbConfig.containsKey("limit")) " LIMIT ${dbConfig["limit"]} " else "")
         println(sql)
         rs = stmt.executeQuery(sql)
     }

@@ -9,8 +9,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
 
-class BlacklistTableWriter(dbConfig: Map<String, String>, tableName: String, private val columns: Columns, private val primaryKey: Array<String>) : BaseSubscriber<Record>() {
-    private val conn: Connection = DriverManager.getConnection(dbConfig["url"], dbConfig["user"], dbConfig["password"])
+class BlacklistTableWriter(dbConfig: Map<String, Any>, tableName: String, private val columns: Columns, private val primaryKey: Array<String>) : BaseSubscriber<Record>() {
+    private var conn: Connection = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
     private val stmt: PreparedStatement
 
     init {
