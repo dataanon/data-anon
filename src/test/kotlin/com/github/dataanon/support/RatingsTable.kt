@@ -4,7 +4,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.Timestamp
 
-class CreateRatingsTable(dbConfig: HashMap<String, String>) {
+class RatingsTable(dbConfig: HashMap<String, String>) {
     private var conn: Connection = DriverManager.getConnection(dbConfig["url"], dbConfig["user"], dbConfig["password"])
 
     init {
@@ -18,7 +18,7 @@ class CreateRatingsTable(dbConfig: HashMap<String, String>) {
         conn.createStatement().executeUpdate(createMovieTable)
     }
 
-    fun insert(movieId: Int, userId: Int, rating: Int, createdAt: Timestamp) : CreateRatingsTable {
+    fun insert(movieId: Int, userId: Int, rating: Int, createdAt: Timestamp) : RatingsTable {
         val stmt = conn.prepareStatement("INSERT INTO RATINGS(MOVIE_ID,USER_ID,RATING,CREATED_AT) VALUES(?,?,?,?)")
         stmt.setInt(1,movieId)
         stmt.setInt(2,userId)

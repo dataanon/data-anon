@@ -7,14 +7,17 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 
-class BlacklistTableReader(dbConfig: Map<String, String>, name: String, private val columns: Columns, private val primaryKey: Array<String>) : Iterator<Record> {
+class TableReader(dbConfig: Map<String, String>, tableName: String, private val columns: Columns, private val whitelist: Array<String>) : Iterator<Record> {
     private var conn: Connection = DriverManager.getConnection(dbConfig["url"], dbConfig["user"], dbConfig["password"])
     private var rs: ResultSet
     private var index = 0
 
     init {
         val stmt = conn.createStatement()
-        val sql = "SELECT " + primaryKey.joinToString(",") + ", " + columns.names().joinToString(",") + " FROM " + name
+        val sql = "SELECT " +
+                whitelist.joinToString(",") + "," + columns.names().joinToString(",") +
+                " FROM " + tableName
+        println(sql)
         rs = stmt.executeQuery(sql)
     }
 
@@ -34,11 +37,10 @@ class BlacklistTableReader(dbConfig: Map<String, String>, name: String, private 
         columns.forEach { c ->
             fields.add(fieldFromResultSet(c.name))
         }
-        val primaryKeyFields = mutableListOf<Field>()
-        primaryKey.forEach { c ->
-            primaryKeyFields.add(fieldFromResultSet(c))
+        whitelist.forEach { c ->
+            fields.add(fieldFromResultSet(c))
         }
-        return Record(fields, primaryKeyFields, index)
+        return Record(fields, index)
     }
 
     private fun fieldFromResultSet(columnName: String): Field {

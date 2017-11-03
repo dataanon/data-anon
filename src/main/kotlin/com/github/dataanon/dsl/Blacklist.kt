@@ -1,12 +1,16 @@
 package com.github.dataanon.dsl
 
-import com.github.dataanon.Anonymizer
+import com.github.dataanon.jdbc.BlacklistTableWriter
+import com.github.dataanon.jdbc.TableReader
+import reactor.core.publisher.Flux
 
-class Blacklist(private val dbConfig: Map<String, String>) {
+class Blacklist(private val dbConfig: Map<String, String>): Strategy() {
 
-    fun table(name: String, init: Anonymizer.() -> Unit): Anonymizer {
-        val anonymizer = Anonymizer(dbConfig, name)
-        anonymizer.init()
-        return anonymizer
+    override fun execute() {
+        Flux.fromIterable(Iterable { TableReader(dbConfig, tableName, anonymizer.columns, anonymizer.primaryKey) })
+                .map(this::anonymize)
+                .subscribe(BlacklistTableWriter(dbConfig, tableName, anonymizer.columns, anonymizer.primaryKey))
     }
+
+
 }

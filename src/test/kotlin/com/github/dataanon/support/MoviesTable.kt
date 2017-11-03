@@ -4,21 +4,21 @@ import java.sql.Connection
 import java.sql.Date
 import java.sql.DriverManager
 
-class CreateMoviesTable(dbConfig: HashMap<String, String>) {
+class MoviesTable(dbConfig: HashMap<String, String>) {
     private var conn: Connection = DriverManager.getConnection(dbConfig["url"], dbConfig["user"], dbConfig["password"])
 
     init {
-        conn.createStatement().executeUpdate("DROP TABLE IF EXISTS MOVIES")
-        val createMovieTable = "CREATE TABLE MOVIES( " +
-                "MOVIE_ID INT, " +
-                "TITLE VARCHAR2(255), " +
-                "GENRE VARCHAR2(255), " +
-                "RELEASE_DATE DATE, " +
-                "PRIMARY KEY(MOVIE_ID) )"
-        conn.createStatement().executeUpdate(createMovieTable)
+            conn.createStatement().executeUpdate("DROP TABLE IF EXISTS MOVIES")
+            val createMovieTable = "CREATE TABLE MOVIES( " +
+                    "MOVIE_ID INT, " +
+                    "TITLE VARCHAR2(255), " +
+                    "GENRE VARCHAR2(255), " +
+                    "RELEASE_DATE DATE, " +
+                    "PRIMARY KEY(MOVIE_ID) )"
+            conn.createStatement().executeUpdate(createMovieTable)
     }
 
-    fun insert(movieId: Int, title: String, genre: String, releaseDate: Date) : CreateMoviesTable {
+    fun insert(movieId: Int, title: String, genre: String, releaseDate: Date) : MoviesTable {
         val stmt = conn.prepareStatement("INSERT INTO MOVIES(MOVIE_ID,TITLE,GENRE,RELEASE_DATE) VALUES(?,?,?,?)")
         stmt.setInt(1,movieId)
         stmt.setString(2,title)

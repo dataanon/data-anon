@@ -2,7 +2,7 @@ package com.github.dataanon.blacklist
 
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.strategies.DefaultStringStrategy
-import com.github.dataanon.support.CreateMoviesTable
+import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.StringSpec
 import java.sql.Date
 import kotlin.test.assertEquals
@@ -13,7 +13,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
     init {
         "should do blacklist anonmyzation for single record with simple primaryKey"{
             val dbConfig = hashMapOf("url" to "jdbc:h2:mem:movies", "user" to "", "password" to "")
-            val moviesTable = CreateMoviesTable(dbConfig)
+            val moviesTable = MoviesTable(dbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
 
 
@@ -37,7 +37,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
         "should do blacklist anonmyzation for multiple records with simple primaryKey"{
             val dbConfig = hashMapOf("url" to "jdbc:h2:mem:movies", "user" to "", "password" to "")
-            val moviesTable = CreateMoviesTable(dbConfig)
+            val moviesTable = MoviesTable(dbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
                     .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
 

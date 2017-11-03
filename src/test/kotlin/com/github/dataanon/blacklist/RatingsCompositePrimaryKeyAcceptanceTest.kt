@@ -2,7 +2,7 @@ package com.github.dataanon.blacklist
 
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.strategies.DefaultIntStrategy
-import com.github.dataanon.support.CreateRatingsTable
+import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.StringSpec
 import java.sql.Timestamp
 import kotlin.test.assertEquals
@@ -12,7 +12,7 @@ class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
     init {
         "should do blacklist anonmyzation for multiple record with composite primaryKey"{
             val dbConfig = hashMapOf("url" to "jdbc:h2:mem:movies", "user" to "", "password" to "")
-            val ratingsTable = CreateRatingsTable(dbConfig)
+            val ratingsTable = RatingsTable(dbConfig)
                     .insert(1, 1, 4, Timestamp(1509701304))
                     .insert(1, 2, 5, Timestamp(1509701310))
 
