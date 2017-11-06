@@ -12,7 +12,17 @@ abstract class Table(val name: String) {
         return column
     }
 
-    abstract fun generateWriteStatement(): String
+    fun generateSelectQuery(recordsLimit: Long?): String {
+
+        fun selectClause() = "SELECT "
+        fun columnSelectionClause() = allColumns().joinToString(",")
+        fun fromClause() = " FROM $name "
+        fun limitClause() = if(recordsLimit != null) " LIMIT $recordsLimit " else ""
+
+        return selectClause() + columnSelectionClause() + fromClause() + limitClause()
+    }
+
+    abstract fun generateWriteQuery(): String
 
     abstract fun allColumns(): List<String>
 
@@ -21,8 +31,4 @@ abstract class Table(val name: String) {
             columnsToBeAnonymized[name] = strategy
         }
     }
-
 }
-
-
-

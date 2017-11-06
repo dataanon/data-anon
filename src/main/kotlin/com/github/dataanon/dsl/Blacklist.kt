@@ -19,6 +19,4 @@ class Blacklist(private val dbConfig: Map<String, String>): Strategy() {
                 .map(this::anonymize)
                 .subscribe(TableWriter(dbConfig, table, reader.totalNoOfRecords()))
     }
-
-
 }

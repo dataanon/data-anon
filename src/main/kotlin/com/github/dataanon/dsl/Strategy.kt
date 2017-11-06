@@ -6,8 +6,6 @@ import com.github.dataanon.Table
 abstract class Strategy {
     protected lateinit var table: Table
 
-    abstract fun execute()
-
     protected fun anonymize(record: Record): Record {
         table.columnsToBeAnonymized.forEach { k, v ->
             val field = record.find(k)
@@ -16,4 +14,5 @@ abstract class Strategy {
         return record
     }
 
+    abstract fun execute()
 }

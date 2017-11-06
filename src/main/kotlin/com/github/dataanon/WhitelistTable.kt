@@ -1,13 +1,13 @@
 package com.github.dataanon
 
 class WhitelistTable(name: String) : Table(name) {
-    val whitelist: ArrayList<String> = arrayListOf()
+    private val whitelist: ArrayList<String> = arrayListOf()
 
     fun whitelist(vararg columns: String) {
         whitelist.addAll(columns)
     }
 
-    override fun generateWriteStatement(): String =
+    override fun generateWriteQuery(): String =
             StringBuilder("INSERT INTO $name(").apply {
                 append(whitelist.joinToString(", ")).append(", ")
                 append(columnsToBeAnonymized.keys.joinToString(", "))
@@ -22,6 +22,4 @@ class WhitelistTable(name: String) : Table(name) {
         fields.addAll(columnsToBeAnonymized.keys)
         return fields
     }
-
-
 }

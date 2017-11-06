@@ -19,5 +19,4 @@ class Whitelist(private val sourceDbConfig: Map<String, Any>, private val destDb
                 .map(this::anonymize)
                 .subscribe(TableWriter(destDbConfig, table, reader.totalNoOfRecords()))
     }
-
 }

@@ -24,7 +24,7 @@ class TableWriter(dbConfig: Map<String, Any>, val table: Table, totalNoOfRecords
 
     override fun hookOnSubscribe(subscription: Subscription?) {
         pb.start()
-        val sql = table.generateWriteStatement()
+        val sql = table.generateWriteQuery()
         println(sql)
         this.stmt = conn.prepareStatement(sql)
         this.fields = table.allColumns()
@@ -56,5 +56,4 @@ class TableWriter(dbConfig: Map<String, Any>, val table: Table, totalNoOfRecords
         stmt.close()
         conn.close()
     }
-
 }

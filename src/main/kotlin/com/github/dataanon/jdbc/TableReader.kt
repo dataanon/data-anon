@@ -7,19 +7,17 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 
-class TableReader(protected val dbConfig: Map<String, Any>, val table: Table) : Iterator<Record> {
+class TableReader(private val dbConfig: Map<String, Any>, private val table: Table) : Iterator<Record> {
     private var conn: Connection = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
     private var rs: ResultSet
     private var index = 0
 
     init {
         val stmt = conn.createStatement()
-        val sql = "SELECT " +
-                table.allColumns().joinToString(",") +
-                " FROM " + table.name +
-                (if(dbConfig.containsKey("limit")) " LIMIT ${dbConfig["limit"]} " else "")
+        val sql  = table.generateSelectQuery(dbConfig["limit"] as? Long)
+
         println(sql)
-        rs = stmt.executeQuery(sql)
+        rs       = stmt.executeQuery(sql)
     }
 
     fun totalNoOfRecords(): Long {
@@ -44,11 +42,7 @@ class TableReader(protected val dbConfig: Map<String, Any>, val table: Table) : 
 
     override fun next(): Record {
         index++
-        val fields = mutableListOf<Field>()
-        table.allColumns().forEach { c ->
-            fields.add(fieldFromResultSet(c))
-        }
-        return Record(fields, index)
+        return Record(table.allColumns().map { fieldFromResultSet(it) }, index)
     }
 
     private fun fieldFromResultSet(columnName: String): Field {

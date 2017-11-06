@@ -2,7 +2,7 @@ package com.github.dataanon
 
 class BlacklistTable(name: String, val primaryKey: List<String>) : Table(name) {
 
-    override fun generateWriteStatement(): String =
+    override fun generateWriteQuery(): String =
             StringBuilder("UPDATE $name SET ").apply {
                 append(columnsToBeAnonymized.keys.joinToString(", ") { c -> " $c = ? " })
                 append(" WHERE ")
@@ -15,6 +15,4 @@ class BlacklistTable(name: String, val primaryKey: List<String>) : Table(name) {
         fields.addAll(primaryKey)
         return fields
     }
-
-
 }
