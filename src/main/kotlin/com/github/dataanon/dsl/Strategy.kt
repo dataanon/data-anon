@@ -1,16 +1,10 @@
 package com.github.dataanon.dsl
 
-import com.github.dataanon.Table
 import com.github.dataanon.Record
+import com.github.dataanon.Table
 
 abstract class Strategy {
     protected lateinit var table: Table
-
-    fun table(tableName: String, init: Table.() -> Unit): Strategy {
-        table = Table(tableName)
-        table.init()
-        return this
-    }
 
     abstract fun execute()
 

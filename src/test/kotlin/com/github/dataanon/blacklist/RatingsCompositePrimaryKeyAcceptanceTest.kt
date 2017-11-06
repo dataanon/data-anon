@@ -18,8 +18,7 @@ class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
 
 
             Blacklist(dbConfig)
-                    .table("RATINGS") {
-                        primaryKey("MOVIE_ID", "USER_ID")
+                    .table("RATINGS",listOf("MOVIE_ID", "USER_ID")) {
                         anonymize("RATING").using(DefaultIntStrategy(3))
                     }.execute()
 

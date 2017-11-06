@@ -18,8 +18,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
 
             Blacklist(dbConfig)
-                    .table("MOVIES") {
-                        primaryKey("MOVIE_ID")
+                    .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(DefaultStringStrategy("MY VALUE"))
                         anonymize("GENRE")
                     }.execute()
@@ -44,8 +43,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
 
             Blacklist(dbConfig)
-                    .table("MOVIES") {
-                        primaryKey("MOVIE_ID")
+                    .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(DefaultStringStrategy("MY VALUE"))
                         anonymize("GENRE")
                     }.execute()

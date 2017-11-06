@@ -7,13 +7,12 @@ import me.tongfei.progressbar.ProgressBarStyle
 import org.reactivestreams.Subscription
 import reactor.core.publisher.BaseSubscriber
 import reactor.core.publisher.SignalType
-import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
 
 
-abstract class TableWriter(dbConfig: Map<String, Any>, protected val table: Table, totalNoOfRecords: Long) : BaseSubscriber<Record>() {
-    private var conn: Connection = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
+class TableWriter(dbConfig: Map<String, Any>, val table: Table, totalNoOfRecords: Long) : BaseSubscriber<Record>() {
+    private var conn = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
     private lateinit var stmt: PreparedStatement
     private lateinit var fields: List<String>
     val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
@@ -23,14 +22,12 @@ abstract class TableWriter(dbConfig: Map<String, Any>, protected val table: Tabl
         conn.autoCommit = false
     }
 
-    abstract fun buildPreparedStatement(): String
-
     override fun hookOnSubscribe(subscription: Subscription?) {
         pb.start()
-        val sql = buildPreparedStatement()
+        val sql = table.generateWriteStatement()
         println(sql)
         this.stmt = conn.prepareStatement(sql)
-        this.fields = orderedFieldsInStmt()
+        this.fields = table.allColumns()
         request(1)
     }
 
@@ -60,5 +57,4 @@ abstract class TableWriter(dbConfig: Map<String, Any>, protected val table: Tabl
         conn.close()
     }
 
-    abstract fun orderedFieldsInStmt(): List<String>
 }

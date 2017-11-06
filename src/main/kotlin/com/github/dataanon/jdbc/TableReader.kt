@@ -15,7 +15,7 @@ class TableReader(protected val dbConfig: Map<String, Any>, val table: Table) : 
     init {
         val stmt = conn.createStatement()
         val sql = "SELECT " +
-                table.whitelist.joinToString(",") + table.primaryKey.joinToString(",") + "," + table.columnsToBeAnonymized.names().joinToString(",") +
+                table.allColumns().joinToString(",") +
                 " FROM " + table.name +
                 (if(dbConfig.containsKey("limit")) " LIMIT ${dbConfig["limit"]} " else "")
         println(sql)
@@ -45,13 +45,7 @@ class TableReader(protected val dbConfig: Map<String, Any>, val table: Table) : 
     override fun next(): Record {
         index++
         val fields = mutableListOf<Field>()
-        table.columnsToBeAnonymized.forEach { c ->
-            fields.add(fieldFromResultSet(c.name))
-        }
-        table.whitelist.forEach { c ->
-            fields.add(fieldFromResultSet(c))
-        }
-        table.primaryKey.forEach { c ->
+        table.allColumns().forEach { c ->
             fields.add(fieldFromResultSet(c))
         }
         return Record(fields, index)
