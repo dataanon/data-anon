@@ -1,22 +1,21 @@
 package com.github.dataanon.jdbc
 
-import com.github.dataanon.Columns
+import com.github.dataanon.Table
 
-class BlacklistTableWriter(dbConfig: Map<String, Any>, tableName: String, totalNoOfRecords: Long,
-                           private val columns: Columns, private val primaryKey: Array<String>) :
-        TableWriter(dbConfig, tableName, totalNoOfRecords) {
+class BlacklistTableWriter(dbConfig: Map<String, Any>, table: Table, totalNoOfRecords: Long) :
+        TableWriter(dbConfig, table, totalNoOfRecords) {
 
     override fun buildPreparedStatement(): String {
-        val sql = StringBuffer("UPDATE $tableName SET ")
-        sql.append(columns.joinToString(", ") { c -> " ${c.name} = ? " })
+        val sql = StringBuffer("UPDATE ${table.name} SET ")
+        sql.append(table.columnsToBeAnonymized.joinToString(", ") { c -> " ${c.name} = ? " })
         sql.append(" WHERE ")
-        sql.append(primaryKey.joinToString(" AND ") { k -> " $k = ? " })
+        sql.append(table.primaryKey.joinToString(" AND ") { k -> " $k = ? " })
         return sql.toString()
     }
 
     override fun orderedFieldsInStmt(): List<String> {
-        val fields = columns.map { c -> c.name }.toMutableList()
-        primaryKey.forEach { p -> fields.add(p) }
+        val fields = table.columnsToBeAnonymized.map { c -> c.name }.toMutableList()
+        table.primaryKey.forEach { p -> fields.add(p) }
         return fields
     }
 

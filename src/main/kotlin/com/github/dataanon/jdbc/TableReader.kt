@@ -1,13 +1,13 @@
 package com.github.dataanon.jdbc
 
-import com.github.dataanon.Columns
 import com.github.dataanon.Field
 import com.github.dataanon.Record
+import com.github.dataanon.Table
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 
-class TableReader(protected val dbConfig: Map<String, Any>, protected val tableName: String, private val columns: Columns, private val whitelist: Array<String>) : Iterator<Record> {
+class TableReader(protected val dbConfig: Map<String, Any>, val table: Table) : Iterator<Record> {
     private var conn: Connection = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
     private var rs: ResultSet
     private var index = 0
@@ -15,8 +15,8 @@ class TableReader(protected val dbConfig: Map<String, Any>, protected val tableN
     init {
         val stmt = conn.createStatement()
         val sql = "SELECT " +
-                whitelist.joinToString(",") + "," + columns.names().joinToString(",") +
-                " FROM " + tableName +
+                table.whitelist.joinToString(",") + table.primaryKey.joinToString(",") + "," + table.columnsToBeAnonymized.names().joinToString(",") +
+                " FROM " + table.name +
                 (if(dbConfig.containsKey("limit")) " LIMIT ${dbConfig["limit"]} " else "")
         println(sql)
         rs = stmt.executeQuery(sql)
@@ -25,7 +25,7 @@ class TableReader(protected val dbConfig: Map<String, Any>, protected val tableN
     fun totalNoOfRecords(): Long {
         if (dbConfig.containsKey("limit")) return dbConfig["limit"] as Long
 
-        val rs = conn.createStatement().executeQuery("SELECT COUNT(*) FROM $tableName")
+        val rs = conn.createStatement().executeQuery("SELECT COUNT(*) FROM ${table.name}")
         rs.next()
         val count = rs.getLong(1)
         rs.close()
@@ -45,10 +45,13 @@ class TableReader(protected val dbConfig: Map<String, Any>, protected val tableN
     override fun next(): Record {
         index++
         val fields = mutableListOf<Field>()
-        columns.forEach { c ->
+        table.columnsToBeAnonymized.forEach { c ->
             fields.add(fieldFromResultSet(c.name))
         }
-        whitelist.forEach { c ->
+        table.whitelist.forEach { c ->
+            fields.add(fieldFromResultSet(c))
+        }
+        table.primaryKey.forEach { c ->
             fields.add(fieldFromResultSet(c))
         }
         return Record(fields, index)

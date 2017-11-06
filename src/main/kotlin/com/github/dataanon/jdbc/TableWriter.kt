@@ -1,6 +1,7 @@
 package com.github.dataanon.jdbc
 
 import com.github.dataanon.Record
+import com.github.dataanon.Table
 import me.tongfei.progressbar.ProgressBar
 import me.tongfei.progressbar.ProgressBarStyle
 import org.reactivestreams.Subscription
@@ -11,11 +12,11 @@ import java.sql.DriverManager
 import java.sql.PreparedStatement
 
 
-abstract class TableWriter(dbConfig: Map<String, Any>, protected val tableName: String, totalNoOfRecords: Long) : BaseSubscriber<Record>() {
+abstract class TableWriter(dbConfig: Map<String, Any>, protected val table: Table, totalNoOfRecords: Long) : BaseSubscriber<Record>() {
     private var conn: Connection = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
     private lateinit var stmt: PreparedStatement
     private lateinit var fields: List<String>
-    val pb = ProgressBar(tableName, totalNoOfRecords, ProgressBarStyle.ASCII)
+    val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
     var batchIndex = 0
 
     init {

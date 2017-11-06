@@ -1,7 +1,7 @@
 package com.github.dataanon
 
-class Anonymizer {
-    var columns = Columns()
+class Table(val name: String) {
+    var columnsToBeAnonymized = Columns()
     var primaryKey: Array<String> = arrayOf()
     var whitelist: Array<String> = arrayOf()
 
@@ -15,7 +15,7 @@ class Anonymizer {
 
     fun anonymize(columnName: String): Column {
         val column = Column(columnName)
-        columns.add(column)
+        columnsToBeAnonymized.add(column)
         return column
     }
 
