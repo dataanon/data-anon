@@ -15,8 +15,9 @@ class TableWriter(dbConfig: Map<String, Any>, val table: Table, totalNoOfRecords
     private var conn = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
     private lateinit var stmt: PreparedStatement
     private lateinit var fields: List<String>
-    val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
-    var batchIndex = 0
+    private val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
+    private var batchIndex = 0
+    private val BATCH_COUNT = 1000
 
     init {
         conn.autoCommit = false
@@ -38,7 +39,8 @@ class TableWriter(dbConfig: Map<String, Any>, val table: Table, totalNoOfRecords
             stmt.setObject(i + 1, field.newValue)
         }
         stmt.addBatch()
-        if (batchIndex % 1000 == 0) {
+
+        if (batchIndex % BATCH_COUNT == 0) {
             stmt.executeBatch()
             conn.commit()
             stmt.clearBatch()
