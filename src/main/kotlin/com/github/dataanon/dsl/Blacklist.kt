@@ -7,9 +7,10 @@ import reactor.core.publisher.Flux
 class Blacklist(private val dbConfig: Map<String, String>): Strategy() {
 
     override fun execute() {
-        Flux.fromIterable(Iterable { TableReader(dbConfig, tableName, anonymizer.columns, anonymizer.primaryKey) })
+        val reader = TableReader(dbConfig, tableName, anonymizer.columns, anonymizer.primaryKey)
+        Flux.fromIterable(Iterable { reader })
                 .map(this::anonymize)
-                .subscribe(BlacklistTableWriter(dbConfig, tableName, anonymizer.columns, anonymizer.primaryKey))
+                .subscribe(BlacklistTableWriter(dbConfig, tableName, reader.totalNoOfRecords(), anonymizer.columns, anonymizer.primaryKey))
     }
 
 

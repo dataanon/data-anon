@@ -2,9 +2,9 @@ package com.github.dataanon.jdbc
 
 import com.github.dataanon.Columns
 
-class WhitelistTableWriter(dbConfig: Map<String, Any>, tableName: String,
+class WhitelistTableWriter(dbConfig: Map<String, Any>, tableName: String, totalNoOfRecords: Long,
                            private val columns: Columns, private val whitelist: Array<String>) :
-        TableWriter(dbConfig,tableName) {
+        TableWriter(dbConfig, tableName, totalNoOfRecords) {
 
     override fun buildPreparedStatement(): String {
         val sql = StringBuffer("INSERT INTO $tableName(")

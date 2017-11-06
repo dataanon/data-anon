@@ -8,7 +8,7 @@ import com.github.dataanon.strategies.DefaultDoubleStrategy
  */
 fun main(args: Array<String>) {
     val source = hashMapOf("url" to "jdbc:postgresql://localhost:5432/movies", "user" to "sunitparekh", "password" to ""
-            , "limit" to 100000
+            , "limit" to 1000000L
     )
     val dest = hashMapOf("url" to "jdbc:postgresql://localhost:5432/moviesdest", "user" to "sunitparekh", "password" to "")
 
