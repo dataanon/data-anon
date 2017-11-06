@@ -1,11 +1,14 @@
 package com.github.dataanon
 
+import com.github.dataanon.strategies.AnonymizationStrategy
+import com.github.dataanon.strategies.DefaultStringStrategy
+
 abstract class Table(val name: String) {
-    var columnsToBeAnonymized = mutableListOf<Column>()
+    var columnsToBeAnonymized = mutableMapOf<String,AnonymizationStrategy>()
 
     fun anonymize(columnName: String): Column {
         val column = Column(columnName)
-        columnsToBeAnonymized.add(column)
+        columnsToBeAnonymized[columnName] = DefaultStringStrategy()
         return column
     }
 
@@ -13,4 +16,13 @@ abstract class Table(val name: String) {
 
     abstract fun allColumns(): List<String>
 
+    inner class Column(private val name: String) {
+        fun using(strategy: AnonymizationStrategy) {
+            columnsToBeAnonymized[name] = strategy
+        }
+    }
+
 }
+
+
+

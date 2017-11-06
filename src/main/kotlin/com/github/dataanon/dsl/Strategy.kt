@@ -9,9 +9,9 @@ abstract class Strategy {
     abstract fun execute()
 
     protected fun anonymize(record: Record): Record {
-        table.columnsToBeAnonymized.forEach { c ->
-            val field = record.find(c.name)
-            field.newValue = c.strategy.anonymize(field, record)
+        table.columnsToBeAnonymized.forEach { k, v ->
+            val field = record.find(k)
+            field.newValue = v.anonymize(field, record)
         }
         return record
     }
