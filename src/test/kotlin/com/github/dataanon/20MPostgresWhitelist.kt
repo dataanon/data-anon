@@ -1,7 +1,7 @@
 package com.github.dataanon
 
 import com.github.dataanon.dsl.Whitelist
-import com.github.dataanon.strategy.DefaultDoubleStrategy
+import com.github.dataanon.strategy.number.FixedDouble
 
 /**
  * CREATE TABLE RATINGS_A(USERID INTEGER, MOVIEID INTEGER,RATING NUMERIC,TIMESTAMP BIGINT, PRIMARY KEY(USERID, MOVIEID))
@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     Whitelist(source,dest)
             .table("RATINGS_A") {
                 whitelist("MOVIEID","USERID","TIMESTAMP")
-                anonymize("RATING").using(DefaultDoubleStrategy(4.3))
+                anonymize("RATING").using(FixedDouble(4.3))
             }
             .execute(limit = 1_00_000)
 }

@@ -2,7 +2,7 @@ package com.github.dataanon.whitelist
 
 import com.github.dataanon.DbConfig
 import com.github.dataanon.dsl.Whitelist
-import com.github.dataanon.strategy.DefaultStringStrategy
+import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.StringSpec
 import java.sql.Date
@@ -25,7 +25,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
             Whitelist(sourceDbConfig,destDbConfig)
                     .table("MOVIES") {
                         whitelist("MOVIE_ID","RELEASE_DATE")
-                        anonymize("TITLE").using(DefaultStringStrategy("MY VALUE"))
+                        anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
                     }.execute(progressBar = false)
 

@@ -2,7 +2,7 @@ package com.github.dataanon.blacklist
 
 import com.github.dataanon.DbConfig
 import com.github.dataanon.dsl.Blacklist
-import com.github.dataanon.strategy.DefaultStringStrategy
+import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.StringSpec
 import java.sql.Date
@@ -21,7 +21,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
-                        anonymize("TITLE").using(DefaultStringStrategy("MY VALUE"))
+                        anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
                     }.execute(progressBar = false)
 
@@ -46,7 +46,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
-                        anonymize("TITLE").using(DefaultStringStrategy("MY VALUE"))
+                        anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
                     }.execute(progressBar = false)
 

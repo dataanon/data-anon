@@ -2,7 +2,7 @@ package com.github.dataanon.blacklist
 
 import com.github.dataanon.DbConfig
 import com.github.dataanon.dsl.Blacklist
-import com.github.dataanon.strategy.DefaultIntStrategy
+import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.StringSpec
 import java.sql.Timestamp
@@ -17,10 +17,9 @@ class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
                     .insert(1, 1, 4, Timestamp(1509701304))
                     .insert(1, 2, 5, Timestamp(1509701310))
 
-
             Blacklist(dbConfig)
                     .table("RATINGS",listOf("MOVIE_ID", "USER_ID")) {
-                        anonymize("RATING").using(DefaultIntStrategy(3))
+                        anonymize("RATING").using(FixedInt(3))
                     }.execute(progressBar = false)
 
             val records = ratingsTable.findAll()
@@ -38,10 +37,5 @@ class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
 
             ratingsTable.close()
         }
-
-
-
-
     }
-
 }
