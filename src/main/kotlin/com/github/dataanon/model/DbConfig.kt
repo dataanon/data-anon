@@ -1,9 +1,9 @@
 package com.github.dataanon.model
 
 import java.sql.Connection
-import java.sql.DriverManager
+import java.sql.DriverManager.getConnection
 
 class DbConfig(private val url: String, private val username: String, private val password: String) {
 
-    fun connection(): java.sql.Connection =  java.sql.DriverManager.getConnection(url, username, password)
+    fun connection(): Connection =  getConnection(url, username, password)
 }
