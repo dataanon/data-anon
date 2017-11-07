@@ -15,5 +15,5 @@ fun main(args: Array<String>) {
                 whitelist("MOVIEID","USERID","TIMESTAMP")
                 anonymize("RATING").using(DefaultDoubleStrategy(4.3))
             }
-            .execute(limit = 100000)
+            .execute(limit = 1_00_000)
 }

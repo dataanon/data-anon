@@ -12,12 +12,12 @@ abstract class Table(val name: String) {
         return column
     }
 
-    fun generateSelectQuery(limit: Long?): String {
+    fun generateSelectQuery(limit: Long): String {
 
         fun selectClause() = "SELECT "
         fun columnSelectionClause() = allColumns().joinToString(",")
         fun fromClause() = " FROM $name "
-        fun limitClause() = if(limit != null) " LIMIT $limit " else ""
+        fun limitClause() = if(limit > 0) " LIMIT $limit " else ""
 
         return selectClause() + columnSelectionClause() + fromClause() + limitClause()
     }
