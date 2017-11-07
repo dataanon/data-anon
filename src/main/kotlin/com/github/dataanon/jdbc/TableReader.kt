@@ -6,7 +6,7 @@ import com.github.dataanon.Record
 import com.github.dataanon.Table
 import java.sql.ResultSet
 
-class TableReader(private val dbConfig: DbConfig, private val table: Table, private val limit: Long) : Iterator<Record> {
+class TableReader(dbConfig: DbConfig, private val table: Table, private val limit: Long) : Iterator<Record> {
     private var conn = dbConfig.conn()
     private var rs: ResultSet
     private var index = 0
@@ -22,7 +22,7 @@ class TableReader(private val dbConfig: DbConfig, private val table: Table, priv
     fun totalNoOfRecords(): Long {
         if (limit > 1) return limit
 
-        val rs = conn.createStatement().executeQuery("SELECT COUNT(*) FROM ${table.name}")
+        val rs = conn.createStatement().executeQuery("SELECT COUNT(1) FROM ${table.name}")
         rs.next()
         val count = rs.getLong(1)
         rs.close()
@@ -41,10 +41,6 @@ class TableReader(private val dbConfig: DbConfig, private val table: Table, priv
 
     override fun next(): Record {
         index++
-        return Record(table.allColumns().map {
-            val value = rs.getObject(it)
-            Field(it, value, value)
-        }, index)
+        return Record(table.allColumns().map { Field(it, rs.getObject(it)) }, index)
     }
-
 }
