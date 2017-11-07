@@ -1,7 +1,7 @@
 package com.github.dataanon.blacklist
 
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.dsl.Blacklist
+import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.StringSpec
@@ -23,7 +23,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
-                    }.execute(progressBar = false)
+                    }.execute(progressBar = true)
 
             val records = moviesTable.findAll()
             assertEquals(1,records.size)

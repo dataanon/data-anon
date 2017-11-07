@@ -5,7 +5,12 @@ import me.tongfei.progressbar.ProgressBarStyle
 
 class ProgressBarGenerator(private val progressBar: Boolean = true, taskName: String, initialMaxFn: () -> Long) {
 
-    private val pb: ProgressBar = ProgressBar(taskName, initialMaxFn(), ProgressBarStyle.ASCII)
+    private lateinit var pb: ProgressBar
+
+    init {
+        if (progressBar)
+            pb = ProgressBar(taskName, initialMaxFn(), ProgressBarStyle.ASCII)
+    }
 
     fun start() {
         if ( isProgressBarEnabled() ) pb.start()
