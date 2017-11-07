@@ -1,7 +1,7 @@
 package com.github.dataanon.dsl
 
-import com.github.dataanon.DbConfig
-import com.github.dataanon.WhitelistTable
+import com.github.dataanon.model.DbConfig
+import com.github.dataanon.model.WhitelistTable
 import com.github.dataanon.jdbc.TableReader
 import com.github.dataanon.jdbc.TableWriter
 import reactor.core.publisher.Flux

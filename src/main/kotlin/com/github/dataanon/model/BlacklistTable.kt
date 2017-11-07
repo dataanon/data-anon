@@ -1,4 +1,4 @@
-package com.github.dataanon
+package com.github.dataanon.model
 
 class BlacklistTable(name: String, val primaryKey: List<String>) : Table(name) {
 

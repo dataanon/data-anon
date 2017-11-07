@@ -1,7 +1,7 @@
 package com.github.dataanon.dsl
 
-import com.github.dataanon.Record
-import com.github.dataanon.Table
+import com.github.dataanon.model.Record
+import com.github.dataanon.model.Table
 import com.github.dataanon.strategy.AnonymizationStrategy
 
 abstract class Strategy {

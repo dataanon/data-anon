@@ -1,9 +1,9 @@
 package com.github.dataanon.jdbc
 
-import com.github.dataanon.DbConfig
-import com.github.dataanon.Field
-import com.github.dataanon.Record
-import com.github.dataanon.Table
+import com.github.dataanon.model.DbConfig
+import com.github.dataanon.model.Field
+import com.github.dataanon.model.Record
+import com.github.dataanon.model.Table
 import java.sql.ResultSet
 
 class TableReader(dbConfig: DbConfig, private val table: Table, private val limit: Long) : Iterator<Record> {

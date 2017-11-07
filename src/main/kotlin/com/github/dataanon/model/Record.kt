@@ -1,4 +1,4 @@
-package com.github.dataanon
+package com.github.dataanon.model
 
 class Record(private val fields: List<Field<Any>>, val rowNum: Int) {
 

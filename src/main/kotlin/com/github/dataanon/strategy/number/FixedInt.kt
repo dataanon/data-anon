@@ -1,7 +1,7 @@
 package com.github.dataanon.strategy.number
 
-import com.github.dataanon.Field
-import com.github.dataanon.Record
+import com.github.dataanon.model.Field
+import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.AnonymizationStrategy
 
 class FixedInt(val value: Int = 100) : AnonymizationStrategy<Int> {

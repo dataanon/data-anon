@@ -1,8 +1,8 @@
 package com.github.dataanon.jdbc
 
-import com.github.dataanon.DbConfig
-import com.github.dataanon.Record
-import com.github.dataanon.Table
+import com.github.dataanon.model.DbConfig
+import com.github.dataanon.model.Record
+import com.github.dataanon.model.Table
 import me.tongfei.progressbar.ProgressBar
 import me.tongfei.progressbar.ProgressBarStyle
 import org.reactivestreams.Subscription

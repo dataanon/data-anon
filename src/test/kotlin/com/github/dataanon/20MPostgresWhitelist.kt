@@ -1,6 +1,7 @@
 package com.github.dataanon
 
 import com.github.dataanon.dsl.Whitelist
+import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedDouble
 
 /**

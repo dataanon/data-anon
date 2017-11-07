@@ -1,4 +1,4 @@
-package com.github.dataanon
+package com.github.dataanon.model
 
 class WhitelistTable(name: String) : Table(name) {
     private val whitelist: ArrayList<String> = arrayListOf()

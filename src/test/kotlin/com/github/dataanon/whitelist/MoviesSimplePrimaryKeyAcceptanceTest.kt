@@ -1,6 +1,6 @@
 package com.github.dataanon.whitelist
 
-import com.github.dataanon.DbConfig
+import com.github.dataanon.model.DbConfig
 import com.github.dataanon.dsl.Whitelist
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable

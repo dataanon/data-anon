@@ -1,6 +1,6 @@
 package com.github.dataanon.blacklist
 
-import com.github.dataanon.DbConfig
+import com.github.dataanon.model.DbConfig
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.support.RatingsTable

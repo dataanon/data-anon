@@ -1,6 +1,6 @@
 package com.github.dataanon.support
 
-import com.github.dataanon.DbConfig
+import com.github.dataanon.model.DbConfig
 import java.sql.Connection
 import java.sql.Timestamp
 
