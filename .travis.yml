@@ -1,0 +1,6 @@
+language: java
+script: mvn test
+jdk:
+  - oraclejdk8
+after_success:
+  - mvn clean test jacoco:report
