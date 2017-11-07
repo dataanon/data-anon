@@ -1,5 +1,6 @@
 package com.github.dataanon.jdbc
 
+import com.github.dataanon.DbConfig
 import com.github.dataanon.Record
 import com.github.dataanon.Table
 import me.tongfei.progressbar.ProgressBar
@@ -7,12 +8,11 @@ import me.tongfei.progressbar.ProgressBarStyle
 import org.reactivestreams.Subscription
 import reactor.core.publisher.BaseSubscriber
 import reactor.core.publisher.SignalType
-import java.sql.DriverManager
 import java.sql.PreparedStatement
 
 
-class TableWriter(dbConfig: Map<String, Any>, val table: Table, totalNoOfRecords: Long) : BaseSubscriber<Record>() {
-    private var conn = DriverManager.getConnection(dbConfig["url"] as String, dbConfig["user"] as String, dbConfig["password"] as String)
+class TableWriter(dbConfig: DbConfig, val table: Table, totalNoOfRecords: Long, val progressBar: Boolean) : BaseSubscriber<Record>() {
+    private var conn = dbConfig.conn()
     private lateinit var stmt: PreparedStatement
     private lateinit var fields: List<String>
     private val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
@@ -24,7 +24,7 @@ class TableWriter(dbConfig: Map<String, Any>, val table: Table, totalNoOfRecords
     }
 
     override fun hookOnSubscribe(subscription: Subscription?) {
-        pb.start()
+        if (progressBar) pb.start()
         val sql = table.generateWriteQuery()
         println(sql)
         this.stmt = conn.prepareStatement(sql)
@@ -46,12 +46,12 @@ class TableWriter(dbConfig: Map<String, Any>, val table: Table, totalNoOfRecords
             stmt.clearBatch()
             batchIndex = 0
         }
-        pb.step()
+        if (progressBar) pb.step()
         request(1)
     }
 
     override fun hookFinally(type: SignalType?) {
-        pb.stop()
+        if (progressBar) pb.stop()
         stmt.executeBatch()
         conn.commit()
         stmt.clearBatch()

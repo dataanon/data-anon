@@ -1,11 +1,12 @@
 package com.github.dataanon.support
 
+import com.github.dataanon.DbConfig
 import java.sql.Connection
 import java.sql.Date
 import java.sql.DriverManager
 
-class MoviesTable(dbConfig: HashMap<String, String>) {
-    private var conn: Connection = DriverManager.getConnection(dbConfig["url"], dbConfig["user"], dbConfig["password"])
+class MoviesTable(dbConfig: DbConfig) {
+    private var conn: Connection = dbConfig.conn()
 
     init {
             conn.createStatement().executeUpdate("DROP TABLE IF EXISTS MOVIES")

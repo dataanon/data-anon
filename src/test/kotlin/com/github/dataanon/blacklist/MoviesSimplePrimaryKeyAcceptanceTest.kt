@@ -1,5 +1,6 @@
 package com.github.dataanon.blacklist
 
+import com.github.dataanon.DbConfig
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.strategies.DefaultStringStrategy
 import com.github.dataanon.support.MoviesTable
@@ -12,7 +13,8 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
     init {
         "should do blacklist anonmyzation for single record with simple primaryKey"{
-            val dbConfig = hashMapOf("url" to "jdbc:h2:mem:movies", "user" to "", "password" to "")
+
+            val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val moviesTable = MoviesTable(dbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
 
@@ -21,7 +23,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(DefaultStringStrategy("MY VALUE"))
                         anonymize("GENRE")
-                    }.execute()
+                    }.execute(progressBar = false)
 
             val records = moviesTable.findAll()
             assertEquals(1,records.size)
@@ -36,7 +38,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
 
         "should do blacklist anonmyzation for multiple records with simple primaryKey"{
-            val dbConfig = hashMapOf("url" to "jdbc:h2:mem:movies", "user" to "", "password" to "")
+            val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val moviesTable = MoviesTable(dbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
                     .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
@@ -46,7 +48,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(DefaultStringStrategy("MY VALUE"))
                         anonymize("GENRE")
-                    }.execute()
+                    }.execute(progressBar = false)
 
             val records = moviesTable.findAll()
             assertEquals(2,records.size)

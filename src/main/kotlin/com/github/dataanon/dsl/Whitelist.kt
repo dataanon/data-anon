@@ -1,11 +1,12 @@
 package com.github.dataanon.dsl
 
+import com.github.dataanon.DbConfig
 import com.github.dataanon.WhitelistTable
 import com.github.dataanon.jdbc.TableReader
 import com.github.dataanon.jdbc.TableWriter
 import reactor.core.publisher.Flux
 
-class Whitelist(private val sourceDbConfig: Map<String, Any>, private val destDbConfig: Map<String, Any>) : Strategy() {
+class Whitelist(private val sourceDbConfig: DbConfig, private val destDbConfig: DbConfig) : Strategy() {
 
     fun table(tableName: String, init: WhitelistTable.() -> Unit): Strategy {
         table = WhitelistTable(tableName)
@@ -13,10 +14,10 @@ class Whitelist(private val sourceDbConfig: Map<String, Any>, private val destDb
         return this
     }
 
-    override fun execute() {
-        val reader = TableReader(sourceDbConfig, table)
+    override fun execute(limit: Long, progressBar: Boolean) {
+        val reader = TableReader(sourceDbConfig, table, limit)
         Flux.fromIterable(Iterable { reader })
                 .map(this::anonymize)
-                .subscribe(TableWriter(destDbConfig, table, reader.totalNoOfRecords()))
+                .subscribe(TableWriter(destDbConfig, table, reader.totalNoOfRecords(), progressBar))
     }
 }

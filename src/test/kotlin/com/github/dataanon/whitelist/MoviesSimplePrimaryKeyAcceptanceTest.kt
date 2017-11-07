@@ -1,5 +1,6 @@
 package com.github.dataanon.whitelist
 
+import com.github.dataanon.DbConfig
 import com.github.dataanon.dsl.Whitelist
 import com.github.dataanon.strategies.DefaultStringStrategy
 import com.github.dataanon.support.MoviesTable
@@ -11,12 +12,12 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
     init {
         "should do whitelist anonmyzation for multiple record with simple primaryKey"{
-            val sourceDbConfig = hashMapOf("url" to "jdbc:h2:mem:movies_source", "user" to "", "password" to "")
+            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies_source", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
                     .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
 
-            val destDbConfig = hashMapOf("url" to "jdbc:h2:mem:movies_dest", "user" to "", "password" to "")
+            val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable = MoviesTable(destDbConfig)
             assertEquals(0,destTable.findAll().size)
 
@@ -26,7 +27,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                         whitelist("MOVIE_ID","RELEASE_DATE")
                         anonymize("TITLE").using(DefaultStringStrategy("MY VALUE"))
                         anonymize("GENRE")
-                    }.execute()
+                    }.execute(progressBar = false)
 
             val records = destTable.findAll()
             assertEquals(2,records.size)

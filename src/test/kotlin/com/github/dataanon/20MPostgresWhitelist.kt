@@ -7,16 +7,13 @@ import com.github.dataanon.strategies.DefaultDoubleStrategy
  * CREATE TABLE RATINGS_A(USERID INTEGER, MOVIEID INTEGER,RATING NUMERIC,TIMESTAMP BIGINT, PRIMARY KEY(USERID, MOVIEID))
  */
 fun main(args: Array<String>) {
-    val source = hashMapOf("url" to "jdbc:postgresql://localhost:5432/movies", "user" to "sunitparekh", "password" to ""
-//            , "limit" to 1000000L
-    )
-    val dest = hashMapOf("url" to "jdbc:postgresql://localhost:5432/moviesdest", "user" to "sunitparekh", "password" to "")
-
+    val source = DbConfig("jdbc:postgresql://localhost:5432/movies", "sunitparekh", "")
+    val dest = DbConfig("jdbc:postgresql://localhost:5432/moviesdest", "sunitparekh", "")
 
     Whitelist(source,dest)
             .table("RATINGS_A") {
                 whitelist("MOVIEID","USERID","TIMESTAMP")
                 anonymize("RATING").using(DefaultDoubleStrategy(4.3))
             }
-            .execute()
+            .execute(limit = 100000)
 }

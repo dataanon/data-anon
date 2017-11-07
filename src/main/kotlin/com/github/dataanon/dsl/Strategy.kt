@@ -14,5 +14,5 @@ abstract class Strategy {
         return record
     }
 
-    abstract fun execute()
+    abstract fun execute(limit: Long = -1, progressBar: Boolean = true)
 }
