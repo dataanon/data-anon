@@ -12,7 +12,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin.version>1.1.51</kotlin.version>
+        <kotlin.test.version>2.0.5</kotlin.test.version>
+        <version.jacoco>0.7.6.201602180812</version.jacoco>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -23,7 +27,7 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
-            <version>RELEASE</version>
+            <version>${kotlin.version}</version>
         </dependency>
         <dependency>
             <groupId>me.tongfei</groupId>
@@ -32,14 +36,14 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
-            <version>RELEASE</version>
+            <artifactId>kotlin-test</artifactId>
+            <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.kotlintest</groupId>
             <artifactId>kotlintest</artifactId>
-            <version>RELEASE</version>
+            <version>${kotlin.test.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -64,7 +68,7 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-                <version>RELEASE</version>
+                <version>${kotlin.version}</version>
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -79,6 +83,37 @@
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${version.jacoco}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <outputDirectory>target/jacoco</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
