@@ -3,28 +3,26 @@ package com.github.dataanon.jdbc
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.model.Record
 import com.github.dataanon.model.Table
-import me.tongfei.progressbar.ProgressBar
-import me.tongfei.progressbar.ProgressBarStyle
+import com.github.dataanon.utils.ProgressBarGenerator
 import org.reactivestreams.Subscription
 import reactor.core.publisher.BaseSubscriber
 import reactor.core.publisher.SignalType
 import java.sql.PreparedStatement
 
 
-class TableWriter(dbConfig: DbConfig, val table: Table, totalNoOfRecords: Long, val progressBar: Boolean) : BaseSubscriber<Record>() {
+class TableWriter(dbConfig: DbConfig, private val table: Table, private val progressBar: ProgressBarGenerator) : BaseSubscriber<Record>() {
     private val conn = dbConfig.connection()
     private val BATCH_COUNT = 1000
     private lateinit var stmt: PreparedStatement
     private lateinit var fields: List<String>
     private var batchIndex = 0
-    private val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
 
     init {
         conn.autoCommit = false
     }
 
     override fun hookOnSubscribe(subscription: Subscription?) {
-        if (progressBar) pb.start()
+        progressBar.start()
         val sql = table.generateWriteQuery()
         println(sql)
         this.stmt   = conn.prepareStatement(sql)
@@ -51,12 +49,12 @@ class TableWriter(dbConfig: DbConfig, val table: Table, totalNoOfRecords: Long, 
 
         setStatementParameters(record)
         executeBatch()
-        if (progressBar) pb.step()
+        progressBar.step()
         request(1)
     }
 
     override fun hookFinally(type: SignalType?) {
-        if (progressBar) pb.stop()
+        progressBar.stop()
         stmt.executeBatch()
         conn.commit()
         stmt.clearBatch()

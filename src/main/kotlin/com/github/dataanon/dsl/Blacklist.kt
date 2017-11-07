@@ -1,9 +1,10 @@
 package com.github.dataanon.dsl
 
-import com.github.dataanon.model.BlacklistTable
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.jdbc.TableReader
 import com.github.dataanon.jdbc.TableWriter
+import com.github.dataanon.model.BlacklistTable
+import com.github.dataanon.model.DbConfig
+import com.github.dataanon.utils.ProgressBarGenerator
 import reactor.core.publisher.Flux
 
 class Blacklist(private val dbConfig: DbConfig): Strategy() {
@@ -18,6 +19,6 @@ class Blacklist(private val dbConfig: DbConfig): Strategy() {
         val reader = TableReader(dbConfig, table, limit)
         Flux.fromIterable(Iterable { reader })
                 .map(this::anonymize)
-                .subscribe(TableWriter(dbConfig, table, reader.totalNoOfRecords(), progressBar))
+                .subscribe(TableWriter(dbConfig, table, ProgressBarGenerator(progressBar, table.name, {reader.totalNoOfRecords()})))
     }
 }
