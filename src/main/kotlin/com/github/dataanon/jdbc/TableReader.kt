@@ -7,7 +7,7 @@ import com.github.dataanon.Table
 import java.sql.ResultSet
 
 class TableReader(dbConfig: DbConfig, private val table: Table, private val limit: Long) : Iterator<Record> {
-    private var conn = dbConfig.conn()
+    private var conn = dbConfig.connection()
     private var rs: ResultSet
     private var index = 0
 

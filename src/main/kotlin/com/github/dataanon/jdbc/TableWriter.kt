@@ -12,7 +12,7 @@ import java.sql.PreparedStatement
 
 
 class TableWriter(dbConfig: DbConfig, val table: Table, totalNoOfRecords: Long, val progressBar: Boolean) : BaseSubscriber<Record>() {
-    private var conn = dbConfig.conn()
+    private var conn = dbConfig.connection()
     private lateinit var stmt: PreparedStatement
     private lateinit var fields: List<String>
     private val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
@@ -27,25 +27,30 @@ class TableWriter(dbConfig: DbConfig, val table: Table, totalNoOfRecords: Long, 
         if (progressBar) pb.start()
         val sql = table.generateWriteQuery()
         println(sql)
-        this.stmt = conn.prepareStatement(sql)
+        this.stmt   = conn.prepareStatement(sql)
         this.fields = table.allColumns()
         request(1)
     }
 
     override fun hookOnNext(record: Record) {
         batchIndex++
-        fields.forEachIndexed { i, f ->
-            val field = record.find(f)
-            stmt.setObject(i + 1, field.newValue)
-        }
-        stmt.addBatch()
 
-        if (batchIndex % BATCH_COUNT == 0) {
-            stmt.executeBatch()
-            conn.commit()
-            stmt.clearBatch()
-            batchIndex = 0
+        fun executeBatch() {
+            stmt.addBatch()
+
+            if (batchIndex % BATCH_COUNT == 0) {
+                stmt.executeBatch()
+                conn.commit()
+                stmt.clearBatch()
+                batchIndex = 0
+            }
         }
+        fun setStatementParameters(record: Record) = fields
+                                                        .map { record.find(it) }
+                                                        .forEachIndexed { index, field -> stmt.setObject(index + 1, field.newValue)}
+
+        setStatementParameters(record)
+        executeBatch()
         if (progressBar) pb.step()
         request(1)
     }
