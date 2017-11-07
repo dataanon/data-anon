@@ -19,9 +19,16 @@ class TableReader(dbConfig: DbConfig, private val table: Table, private val limi
         rs       = stmt.executeQuery(sql)
     }
 
-    fun totalNoOfRecords(): Long {
-        if (limit > 1) return limit
+    fun totalNoOfRecords(): Long     = if (limit > 1) limit else getTotalRecords()
 
+    override fun hasNext(): Boolean  = if (rs.next()) true else closeConnection()
+
+    override fun next(): Record {
+        index++
+        return Record(table.allColumns().map { Field(it, rs.getObject(it)) }, index)
+    }
+
+    private fun getTotalRecords(): Long {
         val rs = conn.createStatement().executeQuery("SELECT COUNT(1) FROM ${table.name}")
         rs.next()
         val count = rs.getLong(1)
@@ -29,18 +36,9 @@ class TableReader(dbConfig: DbConfig, private val table: Table, private val limi
         return count
     }
 
-    override fun hasNext(): Boolean {
-        val isNext = rs.next()
-        if (!isNext) {
-            rs.close()
-            conn.close()
-            return false
-        }
-        return isNext
-    }
-
-    override fun next(): Record {
-        index++
-        return Record(table.allColumns().map { Field(it, rs.getObject(it)) }, index)
+    private fun closeConnection(): Boolean {
+        rs.close()
+        conn.close()
+        return false
     }
 }

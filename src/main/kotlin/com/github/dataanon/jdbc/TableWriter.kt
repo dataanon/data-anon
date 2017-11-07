@@ -12,12 +12,12 @@ import java.sql.PreparedStatement
 
 
 class TableWriter(dbConfig: DbConfig, val table: Table, totalNoOfRecords: Long, val progressBar: Boolean) : BaseSubscriber<Record>() {
-    private var conn = dbConfig.connection()
+    private val conn = dbConfig.connection()
+    private val BATCH_COUNT = 1000
     private lateinit var stmt: PreparedStatement
     private lateinit var fields: List<String>
-    private val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
     private var batchIndex = 0
-    private val BATCH_COUNT = 1000
+    private val pb = ProgressBar(table.name, totalNoOfRecords, ProgressBarStyle.ASCII)
 
     init {
         conn.autoCommit = false
