@@ -3,9 +3,10 @@ package com.github.dataanon.strategy
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
 import com.github.dataanon.utils.FlatFileContentStore
+import com.github.dataanon.utils.RandomSampling
 import kotlin.reflect.KClass
 
-open class PickFromFile<T: Any>(filePath: String) : com.github.dataanon.strategy.AnonymizationStrategy<T>, com.github.dataanon.utils.RandomSampling {
+open class PickFromFile<T: Any>(filePath: String) : AnonymizationStrategy<T>, RandomSampling {
 
     init {
         require(filePath.isNotBlank(), {"filePath can not be empty while using PickFromFile"})
