@@ -4,7 +4,7 @@ import com.github.dataanon.strategies.AnonymizationStrategy
 import com.github.dataanon.strategies.DefaultStringStrategy
 
 abstract class Table(val name: String) {
-    var columnsToBeAnonymized = mutableMapOf<String,AnonymizationStrategy>()
+    val columnsToBeAnonymized = mutableMapOf<String,Any>()
 
     fun anonymize(columnName: String): Column {
         val column = Column(columnName)
@@ -12,6 +12,7 @@ abstract class Table(val name: String) {
         return column
     }
 
+    // TODO: remove from DSL
     fun generateSelectQuery(limit: Long): String {
 
         fun selectClause() = "SELECT "
@@ -27,7 +28,7 @@ abstract class Table(val name: String) {
     abstract fun allColumns(): List<String>
 
     inner class Column(private val name: String) {
-        fun using(strategy: AnonymizationStrategy) {
+        fun <T: Any> using(strategy: AnonymizationStrategy<T>) {
             columnsToBeAnonymized[name] = strategy
         }
     }

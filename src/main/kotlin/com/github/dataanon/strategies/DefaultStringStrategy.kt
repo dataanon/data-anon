@@ -3,8 +3,8 @@ package com.github.dataanon.strategies
 import com.github.dataanon.Field
 import com.github.dataanon.Record
 
-class DefaultStringStrategy(private val value: String = "DEFAULT VALUE") : AnonymizationStrategy {
-    override fun anonymize(field: Field, record: Record): Any {
+class DefaultStringStrategy(private val value: String = "DEFAULT VALUE") : AnonymizationStrategy<String> {
+    override fun anonymize(field: Field<String>, record: Record): String {
         return value
     }
 }

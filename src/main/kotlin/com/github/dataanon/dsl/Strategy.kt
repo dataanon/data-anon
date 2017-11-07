@@ -2,6 +2,7 @@ package com.github.dataanon.dsl
 
 import com.github.dataanon.Record
 import com.github.dataanon.Table
+import com.github.dataanon.strategies.AnonymizationStrategy
 
 abstract class Strategy {
     protected lateinit var table: Table
@@ -9,7 +10,7 @@ abstract class Strategy {
     protected fun anonymize(record: Record): Record {
         table.columnsToBeAnonymized.forEach { k, v ->
             val field = record.find(k)
-            field.newValue = v.anonymize(field, record)
+            field.newValue = (v as AnonymizationStrategy<Any>).anonymize(field, record)
         }
         return record
     }

@@ -41,11 +41,10 @@ class TableReader(private val dbConfig: DbConfig, private val table: Table, priv
 
     override fun next(): Record {
         index++
-        return Record(table.allColumns().map { fieldFromResultSet(it) }, index)
+        return Record(table.allColumns().map {
+            val value = rs.getObject(it)
+            Field(it, value, value)
+        }, index)
     }
 
-    private fun fieldFromResultSet(columnName: String): Field {
-        val value = rs.getObject(columnName)
-        return Field(columnName, value::class.toString(), value, value)
-    }
 }
