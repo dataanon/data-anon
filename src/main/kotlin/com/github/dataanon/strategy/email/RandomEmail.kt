@@ -5,7 +5,7 @@ import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.strategy.PickFromFile
 
-class RandomEmail(val host: String = "data-anonymization", val tld: String = "com") : AnonymizationStrategy<String> {
+class RandomEmail(private val host: String = "data-anonymization", private val tld: String = "com") : AnonymizationStrategy<String> {
 
     init {
         require(host.isNotBlank(), {"host can not be empty while using RandomEmail"})

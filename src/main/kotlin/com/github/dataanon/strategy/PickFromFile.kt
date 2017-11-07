@@ -11,7 +11,7 @@ open class PickFromFile<T: Any>(filePath: String) : com.github.dataanon.strategy
         require(filePath.isNotBlank(), {"filePath can not be empty while using PickFromFile"})
     }
 
-    val values = FlatFileContentStore.getFileContentByPath(filePath)
+    private val values = FlatFileContentStore.getFileContentByPath(filePath)
 
     override fun anonymize(field: Field<T>, record: Record): T {
         return cast(sample(values), field.oldValue::class)

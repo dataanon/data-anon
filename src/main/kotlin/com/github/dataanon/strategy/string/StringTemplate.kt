@@ -10,7 +10,7 @@ import com.github.dataanon.strategy.name.RandomLastName
 import com.github.dataanon.strategy.string.SupportedStringTemplatePlaceholders.FIELD_VALUE
 import com.github.dataanon.strategy.string.SupportedStringTemplatePlaceholders.ROW_NUMBER
 
-class StringTemplate(val template: String) : AnonymizationStrategy<String> {
+class StringTemplate(private val template: String) : AnonymizationStrategy<String> {
 
     init {
         require(template.isNotBlank(), {"template can not be empty while using StringTemplate"})

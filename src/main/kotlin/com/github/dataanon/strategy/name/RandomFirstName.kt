@@ -11,7 +11,7 @@ class RandomFirstName(sourceFilePath: String = RandomFirstName::class.java.getRe
         require(sourceFilePath.isNotBlank(), {"sourceFilePath can not be empty while using RandomFirstName"})
     }
 
-    val pickFromFile = PickFromFile<String>(filePath = sourceFilePath)
+    private val pickFromFile = PickFromFile<String>(filePath = sourceFilePath)
 
     override fun anonymize(field: Field<String>, record: Record): String = pickFromFile.anonymize(field, record)
 }

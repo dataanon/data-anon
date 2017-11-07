@@ -13,8 +13,8 @@ class RandomFullName(firstNameSourceFilePath: String = RandomFirstName::class.ja
         require(lastNameSourceFilePath.isNotBlank(),  {"lastNameSourceFilePath can not be empty while using RandomFullName"})
     }
 
-    val pickFirstNames = PickFromFile<String>(filePath = firstNameSourceFilePath)
-    val pickLastNames  = PickFromFile<String>(filePath = lastNameSourceFilePath)
+    private val pickFirstNames = PickFromFile<String>(filePath = firstNameSourceFilePath)
+    private val pickLastNames  = PickFromFile<String>(filePath = lastNameSourceFilePath)
 
     override fun anonymize(field: Field<String>, record: Record): String = "${pickFirstNames.anonymize(field, record)} ${pickLastNames.anonymize(field, record)}"
 }

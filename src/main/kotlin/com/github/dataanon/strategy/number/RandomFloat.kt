@@ -5,7 +5,7 @@ import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.utils.RandomUtils
 
-class RandomFloat(val from: Float = 0.0f, val to: Float = 100.0f) : AnonymizationStrategy<Float> {
+class RandomFloat(private val from: Float = 0.0f, private val to: Float = 100.0f) : AnonymizationStrategy<Float> {
 
     override fun anonymize(field: Field<Float>, record: Record): Float = RandomUtils.generateRandomFloat(from = from, to = to)
 }

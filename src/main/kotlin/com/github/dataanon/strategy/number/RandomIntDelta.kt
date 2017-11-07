@@ -5,7 +5,7 @@ import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.utils.RandomUtils
 
-class RandomIntDelta(val delta: Int = 10) : AnonymizationStrategy<Int> {
+class RandomIntDelta(private val delta: Int = 10) : AnonymizationStrategy<Int> {
 
     override fun anonymize(field: Field<Int>, record: Record): Int {
 
