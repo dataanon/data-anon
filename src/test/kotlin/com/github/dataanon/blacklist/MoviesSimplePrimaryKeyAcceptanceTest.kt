@@ -2,7 +2,7 @@ package com.github.dataanon.blacklist
 
 import com.github.dataanon.DbConfig
 import com.github.dataanon.dsl.Blacklist
-import com.github.dataanon.strategies.DefaultStringStrategy
+import com.github.dataanon.strategy.DefaultStringStrategy
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.StringSpec
 import java.sql.Date

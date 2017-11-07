@@ -1,7 +1,7 @@
 package com.github.dataanon
 
-import com.github.dataanon.strategies.AnonymizationStrategy
-import com.github.dataanon.strategies.DefaultStringStrategy
+import com.github.dataanon.strategy.AnonymizationStrategy
+import com.github.dataanon.strategy.DefaultStringStrategy
 
 abstract class Table(val name: String) {
     val columnsToBeAnonymized = mutableMapOf<String,Any>()

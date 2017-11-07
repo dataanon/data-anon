@@ -2,7 +2,7 @@ package com.github.dataanon.dsl
 
 import com.github.dataanon.Record
 import com.github.dataanon.Table
-import com.github.dataanon.strategies.AnonymizationStrategy
+import com.github.dataanon.strategy.AnonymizationStrategy
 
 abstract class Strategy {
     protected lateinit var table: Table

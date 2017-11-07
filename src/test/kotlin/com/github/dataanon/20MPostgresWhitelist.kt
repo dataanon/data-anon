@@ -1,7 +1,7 @@
 package com.github.dataanon
 
 import com.github.dataanon.dsl.Whitelist
-import com.github.dataanon.strategies.DefaultDoubleStrategy
+import com.github.dataanon.strategy.DefaultDoubleStrategy
 
 /**
  * CREATE TABLE RATINGS_A(USERID INTEGER, MOVIEID INTEGER,RATING NUMERIC,TIMESTAMP BIGINT, PRIMARY KEY(USERID, MOVIEID))

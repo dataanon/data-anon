@@ -2,7 +2,7 @@ package com.github.dataanon.blacklist
 
 import com.github.dataanon.DbConfig
 import com.github.dataanon.dsl.Blacklist
-import com.github.dataanon.strategies.DefaultIntStrategy
+import com.github.dataanon.strategy.DefaultIntStrategy
 import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.StringSpec
 import java.sql.Timestamp
