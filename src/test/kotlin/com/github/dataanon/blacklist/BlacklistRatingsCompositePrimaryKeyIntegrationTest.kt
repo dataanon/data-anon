@@ -4,18 +4,15 @@ import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.support.RatingsTable
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.specs.FunSpec
 import java.sql.Timestamp
 import kotlin.test.assertEquals
 
-class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
+class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
 
     init {
-        "should do blacklist anonmyzation for multiple record with composite primaryKey"{
-            val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
-            val ratingsTable = RatingsTable(dbConfig)
-                    .insert(1, 1, 4, Timestamp(1509701304))
-                    .insert(1, 2, 5, Timestamp(1509701310))
+        test("should do blacklist anonymization for multiple record with composite primaryKey"){
+            val (dbConfig, ratingsTable) = prepareData()
 
             Blacklist(dbConfig)
                     .table("RATINGS",listOf("MOVIE_ID", "USER_ID")) {
@@ -23,8 +20,8 @@ class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
                     }.execute(progressBarEnabled = false)
 
             val records = ratingsTable.findAll()
-            assertEquals(2,records.size)
 
+            assertEquals(2,records.size)
             assertEquals(1, records[0]["MOVIE_ID"])
             assertEquals(1, records[0]["USER_ID"])
             assertEquals(3, records[0]["RATING"])
@@ -37,5 +34,13 @@ class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
 
             ratingsTable.close()
         }
+    }
+
+    private fun prepareData(): Pair<DbConfig, RatingsTable> {
+        val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+        val ratingsTable = RatingsTable(dbConfig)
+                .insert(1, 1, 4, Timestamp(1509701304))
+                .insert(1, 2, 5, Timestamp(1509701310))
+        return Pair(dbConfig, ratingsTable)
     }
 }

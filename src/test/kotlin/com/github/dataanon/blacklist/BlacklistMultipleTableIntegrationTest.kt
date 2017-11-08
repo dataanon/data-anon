@@ -1,30 +1,25 @@
 package com.github.dataanon.blacklist
 
-import com.github.dataanon.Matchers
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import com.github.dataanon.support.RatingsTable
-import io.kotlintest.matchers.shouldEqual
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.specs.FunSpec
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.regex.Pattern
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-class MultipleTableAcceptanceTest : StringSpec(), Matchers {
+class BlacklistMultipleTableIntegrationTest : FunSpec() {
 
     init {
-        "should do blacklist anonmyzation for multiple tables"{
 
-            val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
-            val moviesTable = MoviesTable(dbConfig)
-                    .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
-            val ratingsTable = RatingsTable(dbConfig)
-                    .insert(1, 1, 4, Timestamp(1509701304))
-                    .insert(1, 2, 5, Timestamp(1509701310))
+        test("should do blacklist anonymization for multiple tables"){
+            val (dbConfig, moviesTable, ratingsTable) = prepareData()
+            val pattern                               = Pattern.compile("[a-zA-Z]+")
 
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
@@ -37,16 +32,14 @@ class MultipleTableAcceptanceTest : StringSpec(), Matchers {
                     .execute(progressBarEnabled = false)
 
             val moviesRecords = moviesTable.findAll()
+            val ratingRecords = ratingsTable.findAll()
+
             assertEquals(1, moviesRecords.size)
             assertEquals(1, moviesRecords[0]["MOVIE_ID"])
             assertEquals("MY VALUE", moviesRecords[0]["TITLE"])
-
-            val matcher    = Pattern.compile("[a-zA-Z]+").matcher(moviesRecords[0]["GENRE"].toString())
-            matcher.matches() shouldEqual true
             assertEquals(Date(1999, 5, 2), moviesRecords[0]["RELEASE_DATE"])
-            moviesTable.close()
+            assertTrue(pattern.matcher(moviesRecords[0]["GENRE"].toString()).matches())
 
-            val ratingRecords = ratingsTable.findAll()
             assertEquals(2,ratingRecords.size)
             assertEquals(1, ratingRecords[0]["MOVIE_ID"])
             assertEquals(1, ratingRecords[0]["USER_ID"])
@@ -56,7 +49,22 @@ class MultipleTableAcceptanceTest : StringSpec(), Matchers {
             assertEquals(2, ratingRecords[1]["USER_ID"])
             assertEquals(3, ratingRecords[1]["RATING"])
             assertEquals(Timestamp(1509701310), ratingRecords[1]["CREATED_AT"])
-            ratingsTable.close()
+
+            closeResources(moviesTable, ratingsTable)
         }
+    }
+
+    private fun closeResources(moviesTable: MoviesTable, ratingsTable: RatingsTable) {
+        moviesTable.close()
+        ratingsTable.close()
+    }
+
+    private fun prepareData(): Triple<DbConfig, MoviesTable, RatingsTable> {
+        val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+        val moviesTable = MoviesTable(dbConfig).insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
+        val ratingsTable = RatingsTable(dbConfig)
+                            .insert(1, 1, 4, Timestamp(1509701304))
+                            .insert(1, 2, 5, Timestamp(1509701310))
+        return Triple(dbConfig, moviesTable, ratingsTable)
     }
 }

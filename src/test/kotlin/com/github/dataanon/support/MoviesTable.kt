@@ -5,7 +5,7 @@ import java.sql.Connection
 import java.sql.Date
 
 class MoviesTable(dbConfig: DbConfig) {
-    private var conn: Connection = dbConfig.connection()
+    private val conn: Connection = dbConfig.connection()
 
     init {
             conn.createStatement().executeUpdate("DROP TABLE IF EXISTS MOVIES")
@@ -34,10 +34,10 @@ class MoviesTable(dbConfig: DbConfig) {
         val rs = conn.createStatement().executeQuery("SELECT * FROM MOVIES")
         while(rs.next()){
             val record = hashMapOf<String,Any>()
-            record["MOVIE_ID"] = rs.getInt("MOVIE_ID")
-            record["TITLE"] = rs.getString("TITLE")
-            record["GENRE"] = rs.getString("GENRE")
-            record["RELEASE_DATE"] = rs.getDate("RELEASE_DATE")
+            record["MOVIE_ID"]      = rs.getInt("MOVIE_ID")
+            record["TITLE"]         = rs.getString("TITLE")
+            record["GENRE"]         = rs.getString("GENRE")
+            record["RELEASE_DATE"]  = rs.getDate("RELEASE_DATE")
             records.add(record)
         }
         rs.close()
@@ -47,5 +47,4 @@ class MoviesTable(dbConfig: DbConfig) {
     fun close(){
         conn.close()
     }
-
 }
