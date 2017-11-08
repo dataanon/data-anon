@@ -1,7 +1,7 @@
 package com.github.dataanon.strategy.string
 
-import com.github.dataanon.model.Field
 import com.github.dataanon.Matchers
+import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.PickFromFile
 import io.kotlintest.matchers.should

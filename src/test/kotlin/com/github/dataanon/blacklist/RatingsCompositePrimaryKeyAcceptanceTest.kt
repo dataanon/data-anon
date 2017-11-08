@@ -1,7 +1,7 @@
 package com.github.dataanon.blacklist
 
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.dsl.Blacklist
+import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.StringSpec
@@ -20,7 +20,7 @@ class RatingsCompositePrimaryKeyAcceptanceTest : StringSpec() {
             Blacklist(dbConfig)
                     .table("RATINGS",listOf("MOVIE_ID", "USER_ID")) {
                         anonymize("RATING").using(FixedInt(3))
-                    }.execute(progressBar = false)
+                    }.execute(progressBarEnabled = false)
 
             val records = ratingsTable.findAll()
             assertEquals(2,records.size)

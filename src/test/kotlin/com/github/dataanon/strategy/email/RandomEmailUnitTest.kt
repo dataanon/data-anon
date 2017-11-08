@@ -1,7 +1,7 @@
 package com.github.dataanon.strategy.email
 
-import com.github.dataanon.model.Field
 import com.github.dataanon.Matchers
+import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
 import io.kotlintest.matchers.should
 import io.kotlintest.matchers.shouldThrow

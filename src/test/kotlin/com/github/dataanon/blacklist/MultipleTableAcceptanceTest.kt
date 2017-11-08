@@ -31,7 +31,7 @@ class MultipleTableAcceptanceTest : StringSpec() {
                     .table("RATINGS", listOf("MOVIE_ID", "USER_ID")) {
                         anonymize("RATING").using(FixedInt(3))
                     }
-                    .execute(progressBar = false)
+                    .execute(progressBarEnabled = false)
 
             val moviesRecords = moviesTable.findAll()
             assertEquals(1, moviesRecords.size)

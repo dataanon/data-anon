@@ -13,7 +13,7 @@ abstract class Table(val name: String) {
     }
 
     // TODO: remove from DSL
-    fun execute(record: Record): Record {
+    internal fun execute(record: Record): Record {
         columnsToBeAnonymized.forEach { k, v ->
             val field = record.find(k)
             field.newValue = (v as AnonymizationStrategy<Any>).anonymize(field, record)
@@ -21,7 +21,7 @@ abstract class Table(val name: String) {
         return record
     }
 
-    fun generateSelectQuery(limit: Long): String {
+    internal fun generateSelectQuery(limit: Long): String {
 
         val selectClause = "SELECT "
         val columnSelectionClause = allColumns().joinToString(",")
@@ -31,9 +31,9 @@ abstract class Table(val name: String) {
         return selectClause + columnSelectionClause + fromClause + limitClause
     }
 
-    abstract fun generateWriteQuery(): String
+    abstract internal fun generateWriteQuery(): String
 
-    abstract fun allColumns(): List<String>
+    abstract internal fun allColumns(): List<String>
 
     inner class Column(private val name: String) {
         fun <T: Any> using(strategy: AnonymizationStrategy<T>) {

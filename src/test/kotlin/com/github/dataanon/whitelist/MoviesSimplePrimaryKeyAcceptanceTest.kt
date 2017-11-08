@@ -1,7 +1,7 @@
 package com.github.dataanon.whitelist
 
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.dsl.Whitelist
+import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.StringSpec
@@ -27,7 +27,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                         whitelist("MOVIE_ID","RELEASE_DATE")
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
-                    }.execute(progressBar = false)
+                    }.execute(progressBarEnabled = false)
 
             val records = destTable.findAll()
             assertEquals(2,records.size)
