@@ -13,6 +13,14 @@ abstract class Table(val name: String) {
     }
 
     // TODO: remove from DSL
+    fun execute(record: Record): Record {
+        columnsToBeAnonymized.forEach { k, v ->
+            val field = record.find(k)
+            field.newValue = (v as AnonymizationStrategy<Any>).anonymize(field, record)
+        }
+        return record
+    }
+
     fun generateSelectQuery(limit: Long): String {
 
         val selectClause = "SELECT "

@@ -23,7 +23,7 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
-                    }.execute(progressBar = true)
+                    }.execute(progressBar = false)
 
             val records = moviesTable.findAll()
             assertEquals(1,records.size)
