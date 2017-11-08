@@ -1,7 +1,7 @@
 package com.github.dataanon.utils
 
-import com.github.dataanon.exception.NoAnonymizationStrategyAvailableException
 import com.github.dataanon.strategy.AnonymizationStrategy
+import com.github.dataanon.strategy.CopyAnonymizationStrategy
 import com.github.dataanon.strategy.bool.RandomBooleanTrueFalse
 import com.github.dataanon.strategy.number.RandomDouble
 import com.github.dataanon.strategy.number.RandomFloat
@@ -22,5 +22,5 @@ object DefaultAnonymizationStrategies {
     }
 
     fun getAnonymizationStrategy(kClass: KClass<*>) = if (defaultStrategies[kClass] != null) defaultStrategies[kClass]
-                                                      else throw NoAnonymizationStrategyAvailableException("No anonymization strategy available for $kClass")
+                                                      else CopyAnonymizationStrategy<Any>()
 }
