@@ -13,7 +13,8 @@ abstract class Strategy {
     fun execute(limit: Long = -1, progressBarEnabled: Boolean = true) {
         tables.forEach { table ->
             val reader = TableReader(sourceDbConfig(), table, limit)
-            val writer = TableWriter(destDbConfig(), table, ProgressBarGenerator(progressBarEnabled, table.name, { reader.totalNoOfRecords() }))
+            val progressBar = ProgressBarGenerator(progressBarEnabled, table.name, { reader.totalNoOfRecords() })
+            val writer = TableWriter(destDbConfig(), table, progressBar)
 
             Flux.fromIterable(Iterable { reader })
                     .map { table.execute(it) }
