@@ -8,7 +8,7 @@ import com.github.dataanon.utils.ProgressBarGenerator
 import reactor.core.publisher.Flux
 
 abstract class Strategy {
-    protected var tables = mutableListOf<Table>()
+    protected val tables = mutableListOf<Table>()
 
     fun execute(limit: Long = -1, progressBarEnabled: Boolean = true) {
         tables.forEach { table ->
@@ -22,5 +22,5 @@ abstract class Strategy {
     }
 
     abstract protected fun sourceDbConfig(): DbConfig
-    abstract protected fun destDbConfig(): DbConfig
+    abstract protected fun destDbConfig():   DbConfig
 }
