@@ -23,5 +23,4 @@ abstract class Strategy {
 
     abstract protected fun sourceDbConfig(): DbConfig
     abstract protected fun destDbConfig(): DbConfig
-
 }

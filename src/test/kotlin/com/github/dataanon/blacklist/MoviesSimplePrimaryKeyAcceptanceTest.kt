@@ -18,7 +18,6 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
             val moviesTable = MoviesTable(dbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
 
-
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(FixedString("MY VALUE"))
@@ -65,8 +64,5 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
 
             moviesTable.close()
         }
-
-
     }
-
 }

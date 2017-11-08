@@ -52,8 +52,6 @@ class MultipleTableAcceptanceTest : StringSpec() {
             assertEquals(3, ratingRecords[1]["RATING"])
             assertEquals(Timestamp(1509701310), ratingRecords[1]["CREATED_AT"])
             ratingsTable.close()
-
         }
     }
-
 }

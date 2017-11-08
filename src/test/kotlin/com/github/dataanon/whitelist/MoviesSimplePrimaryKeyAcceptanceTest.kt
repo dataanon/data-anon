@@ -21,7 +21,6 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
             val destTable = MoviesTable(destDbConfig)
             assertEquals(0,destTable.findAll().size)
 
-
             Whitelist(sourceDbConfig,destDbConfig)
                     .table("MOVIES") {
                         whitelist("MOVIE_ID","RELEASE_DATE")
@@ -45,7 +44,5 @@ class MoviesSimplePrimaryKeyAcceptanceTest : StringSpec() {
             sourceTable.close()
             destTable.close()
         }
-
     }
-
 }
