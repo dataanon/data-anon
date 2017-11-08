@@ -35,5 +35,4 @@ class RandomFloatDeltaUnitTest : FunSpec(), Matchers {
             anonymized should beIn(-30.0f..70.0f)
         }
     }
-
 }

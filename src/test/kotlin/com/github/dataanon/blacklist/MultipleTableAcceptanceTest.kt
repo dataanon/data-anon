@@ -1,17 +1,20 @@
 package com.github.dataanon.blacklist
 
+import com.github.dataanon.Matchers
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import com.github.dataanon.support.RatingsTable
+import io.kotlintest.matchers.shouldEqual
 import io.kotlintest.specs.StringSpec
 import java.sql.Date
 import java.sql.Timestamp
+import java.util.regex.Pattern
 import kotlin.test.assertEquals
 
-class MultipleTableAcceptanceTest : StringSpec() {
+class MultipleTableAcceptanceTest : StringSpec(), Matchers {
 
     init {
         "should do blacklist anonmyzation for multiple tables"{
@@ -37,7 +40,9 @@ class MultipleTableAcceptanceTest : StringSpec() {
             assertEquals(1, moviesRecords.size)
             assertEquals(1, moviesRecords[0]["MOVIE_ID"])
             assertEquals("MY VALUE", moviesRecords[0]["TITLE"])
-            assertEquals("DEFAULT VALUE", moviesRecords[0]["GENRE"])
+
+            val matcher    = Pattern.compile("[a-zA-Z]+").matcher(moviesRecords[0]["GENRE"].toString())
+            matcher.matches() shouldEqual true
             assertEquals(Date(1999, 5, 2), moviesRecords[0]["RELEASE_DATE"])
             moviesTable.close()
 

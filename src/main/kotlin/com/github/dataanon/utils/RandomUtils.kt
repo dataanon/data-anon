@@ -13,12 +13,17 @@ object RandomUtils {
                 append(chars[random.nextInt(randomBound)])
             }
         }
-        .toString()
+                .toString()
     }
 
     fun generateRandomFloat(from: Float = 0.0f, to:Float = 100.0f): Float {
         require(to >= from)
         return Random().nextFloat() * (to - from) + from
+    }
+
+    fun generateRandomDouble(from: Double = 0.0, to:Double = 100.0): Double {
+        require(to >= from)
+        return Random().nextDouble() * (to - from) + from
     }
 
     fun generateRandomInt(from: Int = 0, to:Int = 100): Int {

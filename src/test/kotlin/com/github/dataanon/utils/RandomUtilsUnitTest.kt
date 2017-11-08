@@ -35,6 +35,22 @@ class RandomUtilsUnitTest : FunSpec(), Matchers {
             }
         }
 
+        test("should generate random double with default range") {
+            val random = RandomUtils.generateRandomDouble()
+            random should beIn (0.0..100.0)
+        }
+
+        test("should generate random double given a range") {
+            val random = RandomUtils.generateRandomDouble(from = 100.0, to = 250.0)
+            random should beIn(100.0..250.0)
+        }
+
+        test("should throw IllegalArgumentException") {
+            shouldThrow<IllegalArgumentException> {
+                RandomUtils.generateRandomDouble(from = 10.0, to = 0.0)
+            }
+        }
+
         test("should generate random int with default range") {
             val random = RandomUtils.generateRandomInt()
             random should beIn (0..100)

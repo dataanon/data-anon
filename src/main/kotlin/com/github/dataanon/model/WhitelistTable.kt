@@ -10,16 +10,16 @@ class WhitelistTable(name: String) : Table(name) {
     override fun generateWriteQuery(): String =
             StringBuilder("INSERT INTO $name(").apply {
                 append(whitelist.joinToString(", ")).append(", ")
-                append(columnsToBeAnonymized.keys.joinToString(", "))
+                append(columnNames().joinToString(", "))
                 append(") VALUES(")
                 append(whitelist.joinToString(",") { "?" }).append(",")
-                append(columnsToBeAnonymized.keys.joinToString(",") { "?" })
+                append(columnNames().joinToString(",") { "?" })
                 append(")")
             }.toString()
 
     override fun allColumns(): List<String> {
         val fields = whitelist.toMutableList()
-        fields.addAll(columnsToBeAnonymized.keys)
+        fields.addAll(columnNames())
         return fields
     }
 }

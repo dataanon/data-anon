@@ -1,22 +1,23 @@
 package com.github.dataanon.model
 
 import com.github.dataanon.strategy.AnonymizationStrategy
-import com.github.dataanon.strategy.string.FixedString
+import com.github.dataanon.utils.DefaultAnonymizationStrategies
 
 abstract class Table(val name: String) {
-    val columnsToBeAnonymized = mutableMapOf<String,Any>()
+    private val columnStrategyContainer = mutableMapOf<String, ColumnStrategy>()
 
-    fun anonymize(columnName: String): Column {
-        val column = Column(columnName)
-        columnsToBeAnonymized[columnName] = FixedString("DEFAULT VALUE")
-        return column
+    fun anonymize(columnName: String): ColumnStrategy {
+        val columnStrategy = ColumnStrategy()
+        columnStrategyContainer[columnName] = columnStrategy
+        return columnStrategy
     }
 
-    // TODO: remove from DSL
+    protected fun columnNames() = columnStrategyContainer.keys.toList()
+
     internal fun execute(record: Record): Record {
-        columnsToBeAnonymized.forEach { k, v ->
-            val field = record.find(k)
-            field.newValue = (v as AnonymizationStrategy<Any>).anonymize(field, record)
+        columnStrategyContainer.forEach { columnName, columnStrategy ->
+            val field = record.find(columnName)
+            field.newValue = columnStrategy.anonymize(field, record)
         }
         return record
     }
@@ -35,9 +36,20 @@ abstract class Table(val name: String) {
 
     abstract internal fun allColumns(): List<String>
 
-    inner class Column(private val name: String) {
+    inner class ColumnStrategy {
+        private lateinit var anonymizationStrategy: AnonymizationStrategy<*>
+
         fun <T: Any> using(strategy: AnonymizationStrategy<T>) {
-            columnsToBeAnonymized[name] = strategy
+            anonymizationStrategy = strategy
         }
+
+        internal fun anonymize(field: Field<Any>, record: Record) = anonymizationStrategy(field).anonymize(field, record)
+
+        private fun anonymizationStrategy(field: Field<Any>) = try {
+                                                    anonymizationStrategy as AnonymizationStrategy<Any>
+                                                  }
+                                                  catch (ex: UninitializedPropertyAccessException){
+                                                    DefaultAnonymizationStrategies.getAnonymizationStrategy(field.oldValue::class) as AnonymizationStrategy<Any>
+                                                  }
     }
 }
