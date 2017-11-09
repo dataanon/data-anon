@@ -5,12 +5,21 @@ import com.github.dataanon.utils.DefaultAnonymizationStrategies
 
 abstract class Table(val name: String) {
     private val columnStrategyContainer = mutableMapOf<String, ColumnStrategy>()
+    var whereCondition = ""
 
     fun anonymize(columnName: String): ColumnStrategy {
         val columnStrategy = ColumnStrategy()
         columnStrategyContainer[columnName] = columnStrategy
         return columnStrategy
     }
+
+    fun where(condition: String) {
+        this.whereCondition = condition
+    }
+
+
+
+
 
     protected fun columnNames() = columnStrategyContainer.keys.toList()
 
@@ -23,13 +32,12 @@ abstract class Table(val name: String) {
     }
 
     internal fun generateSelectQuery(limit: Long): String {
-
-        val selectClause = "SELECT "
-        val columnSelectionClause = allColumns().joinToString(",")
-        val fromClause = " FROM $name "
+        val columns = allColumns().joinToString(",")
         val limitClause = if(limit > 0) " LIMIT $limit " else ""
+        val whereClause = if(whereCondition?.isNotEmpty()) " WHERE $whereCondition " else ""
 
-        return selectClause + columnSelectionClause + fromClause + limitClause
+
+        return "SELECT $columns FROM $name $whereClause $limitClause"
     }
 
     abstract internal fun generateWriteQuery(): String

@@ -1,4 +1,4 @@
-package com.github.dataanon.blacklist
+package com.github.dataanon.integration.blacklist
 
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.model.DbConfig
