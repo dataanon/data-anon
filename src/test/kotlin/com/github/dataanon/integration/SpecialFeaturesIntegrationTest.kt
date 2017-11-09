@@ -6,7 +6,9 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.FunSpec
+import org.awaitility.Awaitility.await
 import java.sql.Date
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -31,6 +33,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                         anonymize("GENRE").using(FixedString("Action"))
                     }.execute(progressBarEnabled = false)
 
+            await().timeout(2, TimeUnit.SECONDS).until { destTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
             val records = destTable.findAll()
 
             assertEquals(1, records.size)
@@ -54,6 +57,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                         anonymize("GENRE")
                     }.execute(progressBarEnabled = true)
 
+            await().timeout(2, TimeUnit.SECONDS).until { moviesTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
             val records = moviesTable.findAll()
 
             assertEquals(1, records.size)
@@ -81,6 +85,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                         anonymize("GENRE").using(FixedString("Action"))
                     }.execute(limit = 1, progressBarEnabled = false)
 
+            await().timeout(2, TimeUnit.SECONDS).until { destTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
             val records = destTable.findAll()
 
             assertEquals(1, records.size)

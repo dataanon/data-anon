@@ -5,7 +5,7 @@ import com.github.dataanon.utils.DefaultAnonymizationStrategies
 
 abstract class Table(val name: String) {
     private val columnStrategyContainer = mutableMapOf<String, ColumnStrategy>()
-    var whereCondition = ""
+    internal var whereCondition = ""
 
     fun anonymize(columnName: String): ColumnStrategy {
         val columnStrategy = ColumnStrategy()
@@ -28,7 +28,7 @@ abstract class Table(val name: String) {
     }
 
     internal fun generateSelectQuery(limit: Long): String {
-        val columns = allColumns().joinToString(",")
+        val columns     = allColumns().joinToString(",")
         val limitClause = if(limit > 0) " LIMIT $limit " else ""
         val whereClause = if(whereCondition.isNotEmpty()) " WHERE $whereCondition " else ""
 

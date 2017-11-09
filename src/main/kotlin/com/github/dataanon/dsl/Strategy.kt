@@ -6,14 +6,15 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.model.Table
 import com.github.dataanon.utils.ProgressBarGenerator
 import reactor.core.publisher.Flux
+import reactor.core.scheduler.Schedulers
 
 abstract class Strategy {
     protected val tables = mutableListOf<Table>()
 
     fun execute(limit: Long = -1, progressBarEnabled: Boolean = true) {
         Flux.fromIterable(tables)
-//                .parallel()
-//                .runOn(Schedulers.parallel())
+                .parallel()
+                .runOn(Schedulers.parallel())
                 .log()
                 .subscribe { table -> executeOnTable(table, limit, progressBarEnabled) }
     }

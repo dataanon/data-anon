@@ -5,7 +5,9 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.FunSpec
+import org.awaitility.Awaitility.await
 import java.sql.Date
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -29,6 +31,7 @@ class WhitelistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
                         anonymize("RELEASE_DATE")
                     }.execute(progressBarEnabled = false)
 
+            await().timeout(2, TimeUnit.SECONDS).until { destTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
             val records = destTable.findAll()
 
             assertEquals(2,records.size)
