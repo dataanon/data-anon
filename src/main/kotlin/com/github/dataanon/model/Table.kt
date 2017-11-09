@@ -17,10 +17,6 @@ abstract class Table(val name: String) {
         this.whereCondition = condition
     }
 
-
-
-
-
     protected fun columnNames() = columnStrategyContainer.keys.toList()
 
     internal fun execute(record: Record): Record {
@@ -34,8 +30,7 @@ abstract class Table(val name: String) {
     internal fun generateSelectQuery(limit: Long): String {
         val columns = allColumns().joinToString(",")
         val limitClause = if(limit > 0) " LIMIT $limit " else ""
-        val whereClause = if(whereCondition?.isNotEmpty()) " WHERE $whereCondition " else ""
-
+        val whereClause = if(whereCondition.isNotEmpty()) " WHERE $whereCondition " else ""
 
         return "SELECT $columns FROM $name $whereClause $limitClause"
     }

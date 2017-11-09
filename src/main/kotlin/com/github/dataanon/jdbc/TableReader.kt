@@ -29,7 +29,7 @@ class TableReader(dbConfig: DbConfig, private val table: Table, private val limi
     }
 
     private fun getTotalRecords(): Long {
-        val whereClause = if(table.whereCondition?.isNotEmpty()) " WHERE ${table.whereCondition} " else ""
+        val whereClause = if(table.whereCondition.isNotEmpty()) " WHERE ${table.whereCondition} " else ""
         val rs = conn.createStatement().executeQuery("SELECT COUNT(1) FROM ${table.name} $whereClause")
         rs.next()
         val count = rs.getLong(1)

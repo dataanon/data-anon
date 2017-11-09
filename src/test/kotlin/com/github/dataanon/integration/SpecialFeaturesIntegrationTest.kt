@@ -5,16 +5,16 @@ import com.github.dataanon.dsl.Whitelist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.specs.FunSpec
 import java.sql.Date
 import java.util.regex.Pattern
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SpecialFeaturesTest : StringSpec() {
+class SpecialFeaturesIntegrationTest : FunSpec() {
 
     init {
-        "support to select specific records from table using where clause" {
+        test("support to select specific records from table using where clause") {
             val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
@@ -41,10 +41,9 @@ class SpecialFeaturesTest : StringSpec() {
 
             sourceTable.close()
             destTable.close()
-
         }
 
-        "testing progress bar" {
+        test("testing progress bar") {
             val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val moviesTable = MoviesTable(dbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
@@ -64,10 +63,9 @@ class SpecialFeaturesTest : StringSpec() {
             assertTrue(Pattern.compile("[a-zA-Z]+").matcher(records[0]["GENRE"].toString()).matches())
 
             moviesTable.close()
-
         }
 
-        "limit records for testing" {
+        test("limit records for testing") {
             val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
                     .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
@@ -94,10 +92,6 @@ class SpecialFeaturesTest : StringSpec() {
 
             sourceTable.close()
             destTable.close()
-
         }
-
     }
-
-
 }

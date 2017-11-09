@@ -12,6 +12,9 @@ abstract class Strategy {
 
     fun execute(limit: Long = -1, progressBarEnabled: Boolean = true) {
         Flux.fromIterable(tables)
+//                .parallel()
+//                .runOn(Schedulers.parallel())
+                .log()
                 .subscribe { table -> executeOnTable(table, limit, progressBarEnabled) }
     }
 
