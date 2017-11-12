@@ -27,12 +27,11 @@ abstract class Table(val name: String) {
         return record
     }
 
-    internal fun generateSelectQuery(limit: Long): String {
+    internal fun generateSelectQuery(): String {
         val columns     = allColumns().joinToString(",")
-        val limitClause = if(limit > 0) " LIMIT $limit " else ""
         val whereClause = if(whereCondition.isNotEmpty()) " WHERE $whereCondition " else ""
 
-        return "SELECT $columns FROM $name $whereClause $limitClause"
+        return "SELECT $columns FROM $name $whereClause".trim()
     }
 
     abstract internal fun generateWriteQuery(): String

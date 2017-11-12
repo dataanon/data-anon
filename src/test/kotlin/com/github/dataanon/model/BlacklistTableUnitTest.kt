@@ -10,9 +10,9 @@ class BlacklistTableUnitTest : FunSpec() {
             val blacklistTable = BlacklistTable("MOVIE", listOf("MOVIE_ID"))
             blacklistTable.anonymize("TITLE")
 
-            val selectQuery = blacklistTable.generateSelectQuery(10)
+            val selectQuery = blacklistTable.generateSelectQuery()
 
-            selectQuery.trim() shouldBe "SELECT TITLE,MOVIE_ID FROM MOVIE   LIMIT 10"
+            selectQuery.trim() shouldBe "SELECT TITLE,MOVIE_ID FROM MOVIE"
         }
 
         test("should return select query given where clause") {
@@ -20,9 +20,9 @@ class BlacklistTableUnitTest : FunSpec() {
             blacklistTable.where("RELEASE_YEAR > 1989")
             blacklistTable.anonymize("TITLE")
 
-            val selectQuery = blacklistTable.generateSelectQuery(10)
+            val selectQuery = blacklistTable.generateSelectQuery()
 
-            selectQuery.trim() shouldBe "SELECT TITLE,MOVIE_ID FROM MOVIE  WHERE RELEASE_YEAR > 1989   LIMIT 10"
+            selectQuery.trim() shouldBe "SELECT TITLE,MOVIE_ID FROM MOVIE  WHERE RELEASE_YEAR > 1989"
         }
     }
 }

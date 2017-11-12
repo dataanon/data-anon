@@ -12,14 +12,15 @@ class TableReader(dbConfig: DbConfig, private val table: Table, private val limi
     private var index = 0
 
     init {
+        val sql  = table.generateSelectQuery()
         val stmt = conn.createStatement()
-        val sql  = table.generateSelectQuery(limit)
+        if (limit >= 1 ) stmt.maxRows = limit.toInt()
 
         println(sql)
         rs       = stmt.executeQuery(sql)
     }
 
-    fun totalNoOfRecords(): Long     = if (limit > 1) limit else getTotalRecords()
+    fun totalNoOfRecords(): Long     = if (limit >= 1) limit else getTotalRecords()
 
     override fun hasNext(): Boolean  = if (rs.next()) true else closeConnection()
 
