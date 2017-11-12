@@ -33,7 +33,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                         anonymize("GENRE").using(FixedString("Action"))
                     }.execute(progressBarEnabled = false)
 
-            await().timeout(2, TimeUnit.SECONDS).until { destTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
+            await().timeout(4, TimeUnit.SECONDS).until { destTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
             val records = destTable.findAll()
 
             assertEquals(1, records.size)
