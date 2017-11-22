@@ -12,9 +12,9 @@ class TableReaderIntegrationTest : FunSpec() {
     init {
         test("should return the number of records specified by limit") {
             val (dbConfig, moviesTable) = prepareDataWith5Movies()
-            val blacklistTable  = BlacklistTable("MOVIES", listOf("MOVIE_ID"))
+            val blacklistTable  = BlacklistTable("MOVIES", listOf("MOVIE_ID")).limit(2)
 
-            val tableReader = TableReader(dbConfig, blacklistTable, 2)
+            val tableReader = TableReader(dbConfig, blacklistTable)
 
             tableReader.hasNext() shouldBe true
             tableReader.hasNext() shouldBe true
@@ -27,7 +27,7 @@ class TableReaderIntegrationTest : FunSpec() {
             val (dbConfig, moviesTable) = prepareDataWith5Movies()
             val blacklistTable  = BlacklistTable("MOVIES", listOf("MOVIE_ID"))
 
-            val tableReader = TableReader(dbConfig, blacklistTable, -1)
+            val tableReader = TableReader(dbConfig, blacklistTable)
 
             tableReader.hasNext() shouldBe true
             tableReader.hasNext() shouldBe true

@@ -11,16 +11,16 @@ import reactor.core.scheduler.Schedulers
 abstract class Strategy {
     protected val tables = mutableListOf<Table>()
 
-    fun execute(limit: Long = -1, progressBarEnabled: Boolean = true) {
+    fun execute(progressBarEnabled: Boolean = true) {
         Flux.fromIterable(tables)
                 .parallel()
                 .runOn(Schedulers.parallel())
                 .log()
-                .subscribe { table -> executeOnTable(table, limit, progressBarEnabled) }
+                .subscribe { table -> executeOnTable(table, progressBarEnabled) }
     }
 
-    private fun executeOnTable(table: Table, limit: Long, progressBarEnabled: Boolean) {
-        val reader      = TableReader(sourceDbConfig(), table, limit)
+    private fun executeOnTable(table: Table, progressBarEnabled: Boolean) {
+        val reader      = TableReader(sourceDbConfig(), table)
         val progressBar = ProgressBarGenerator(progressBarEnabled, table.name, { reader.totalNoOfRecords() })
         val writer      = TableWriter(destDbConfig(), table, progressBar)
 

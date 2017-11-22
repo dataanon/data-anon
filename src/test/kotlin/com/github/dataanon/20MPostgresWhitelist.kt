@@ -13,8 +13,9 @@ fun main(args: Array<String>) {
 
     Whitelist(source,dest)
             .table("RATINGS_A") {
+                limit(1_00_000)
                 whitelist("MOVIEID","USERID","TIMESTAMP")
                 anonymize("RATING").using(FixedDouble(4.3))
             }
-            .execute(limit = 1_00_000)
+            .execute()
 }

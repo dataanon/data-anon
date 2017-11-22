@@ -80,10 +80,11 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
 
             Whitelist(sourceDbConfig, destDbConfig)
                     .table("MOVIES") {
+                        limit(1)
                         whitelist("MOVIE_ID", "RELEASE_DATE")
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE").using(FixedString("Action"))
-                    }.execute(limit = 1, progressBarEnabled = false)
+                    }.execute(progressBarEnabled = false)
 
             await().timeout(2, TimeUnit.SECONDS).until { destTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
             val records = destTable.findAll()

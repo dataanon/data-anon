@@ -6,7 +6,7 @@ import com.github.dataanon.model.Record
 import com.github.dataanon.model.Table
 import java.sql.ResultSet
 
-class TableReader(dbConfig: DbConfig, private val table: Table, private val limit: Long) : Iterator<Record> {
+class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Record> {
     private val conn = dbConfig.connection()
     private var rs: ResultSet
     private var index = 0
@@ -14,13 +14,13 @@ class TableReader(dbConfig: DbConfig, private val table: Table, private val limi
     init {
         val sql  = table.generateSelectQuery()
         val stmt = conn.createStatement()
-        if (limit >= 1 ) stmt.maxRows = limit.toInt()
+        if (table.limit >= 1 ) stmt.maxRows = table.limit
 
         println(sql)
         rs       = stmt.executeQuery(sql)
     }
 
-    fun totalNoOfRecords(): Long     = if (limit >= 1) limit else getTotalRecords()
+    fun totalNoOfRecords(): Int     = if (table.limit >= 1) table.limit else getTotalRecords()
 
     override fun hasNext(): Boolean  = if (rs.next()) true else closeConnection()
 
@@ -29,11 +29,10 @@ class TableReader(dbConfig: DbConfig, private val table: Table, private val limi
         return Record(table.allColumns().map { Field(it, rs.getObject(it)) }, index)
     }
 
-    private fun getTotalRecords(): Long {
-        val whereClause = if(table.whereCondition.isNotEmpty()) " WHERE ${table.whereCondition} " else ""
-        val rs = conn.createStatement().executeQuery("SELECT COUNT(1) FROM ${table.name} $whereClause")
+    private fun getTotalRecords(): Int {
+        val rs = conn.createStatement().executeQuery(table.generateCountQuery())
         rs.next()
-        val count = rs.getLong(1)
+        val count = rs.getInt(1)
         rs.close()
         return count
     }
