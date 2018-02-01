@@ -4,7 +4,7 @@ import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.AnonymizationStrategy
 
-class FixedDouble(private val value: Double = 100.0) : AnonymizationStrategy<Double> {
+class FixedFloat(private val value: Float = 100.0f) : AnonymizationStrategy<Float> {
 
-    override fun anonymize(field: Field<Double>, record: Record): Double = value
+    override fun anonymize(field: Field<Float>, record: Record): Float = value
 }

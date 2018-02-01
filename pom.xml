@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.2.10</kotlin.version>
+        <kotlin.version>1.2.21</kotlin.version>
         <kotlin.test.version>2.0.7</kotlin.test.version>
         <version.jacoco>0.8.0</version.jacoco>
     </properties>

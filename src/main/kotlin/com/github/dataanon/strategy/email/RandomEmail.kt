@@ -14,5 +14,5 @@ class RandomEmail(private val host: String = "data-anonymization", private val t
 
     val pickFromFile = PickFromFile<String>(filePath = this::class.java.getResource("/data/first_names.dat").path)
 
-    override  fun anonymize(field: Field<String>, record: Record): String = "${pickFromFile.anonymize(field, record)}@$host.$tld"
+    override  fun anonymize(field: Field<String>, record: Record): String = "${pickFromFile.anonymize(field, record)}${record.rowNum}@$host.$tld"
 }
