@@ -55,12 +55,20 @@ Sample Maven based project are available at...
 * [Java](https://github.com/dataanon/dataanon-java-sample) 
 
 ----------------------
+## Tips
+
+1. In Whitelist approach provide source database connection user with READONLY access.
+2. Use `where` and `limit` to limit the number of rows during anonymization. Very useful for testing purpose.
+3. Extend `DbConfig` and implement `connection` method for special handling while creating database connection.
+
+
+----------------------
 
 ## Roadmap
 
-1. Support for anonymization strategy for Date and DateTime/Timestamp related data type.
-1. Support default strategy based on data type.
-2. MongoDB database.
+1. Support for anonymization strategy for Date and DateTime/Timestamp related data type. As of now you can write you own strategy.
+1. Support default strategy based on data type. As of now you need to specify anonymization strategy for each field.
+1. MongoDB database.
 
 ## Share feedback
 
@@ -118,12 +126,6 @@ Read more about [blacklist and whitelist here](http://sunitspace.blogspot.in/201
 
 
 ----------------------
-## Tips
-
-1. In Whitelist approach make source database connection READONLY.
-2. Use skip and continue to apply different strategies for records.
-3. Use 'where' and ''limit' to limit the number of rows during anonymization. Very useful for testing purpose.
-
 ## Anonymization Strategies
 
 | DataType              | Stratergy                     | Description                                               |
@@ -131,7 +133,7 @@ Read more about [blacklist and whitelist here](http://sunitspace.blogspot.in/201
 | Boolean               | RandomBooleanTrueFalse        | random selection of boolean true and false value          |
 | Boolean               | RandomBooleanOneZero          | random selection of 1 and 0 value representing boolean    |
 | Boolean               | RandomBooleanYN               | random selection of Y and N value representing boolean    |
-| String (Email)        | RandomEmail                   | generates emailId using one of random picked values defined in first_names.dat appended with row number with given host and tld |
+| String (Email)        | RandomEmail                   | generates emailId using one of random picked values defined in specified file (default file is first_names.dat) appended with row number with given host and tld |
 | String (First Name)   | RandomFirstName               | generates first name using one of random picked values from specified file. default file is (first_names.dat) |
 | String (Last Name)    | RandomLastName                | generates last name using one of random picked values from specified file. default file is (last_names.dat) |
 | Integer               | FixedInt                      | replace all records with the same specified fixed integer value (default to 100) |
@@ -145,7 +147,13 @@ Read more about [blacklist and whitelist here](http://sunitspace.blogspot.in/201
 | Double                | RandomDoubleDelta             | generate new double value within random delta value (default is 10.0) on existing value |
 | String                | FixedString                   | replace all records with the same specified fixed string value |
 | String                | LoremIpsum                    | replace with same length (size) Lorem Ipsum string |
-
+| String                | PickStringFromFile            | replace with randomly picked string (line) from file |
+| String                | RandomAlphabetic              | replace with random alphabets char set only creating string |
+| String                | RandomAlphaNumeric            | replace with random alphabets + numbers (alphanumeric char set) creating string |
+| String                | RandomFormattedString         | replace with string build with exactly same format (number replacing number, lowercase replacing lowercase alphabets & uppercase replacing uppercase alphabets |
+| String                | RandomString                  | replace with random generation of string of any char set |
+| String                | StringTemplate                | replace with string generated using template specified |
+| Any                   | PickFromList                  | replaces value with specified type and randomly picked from list of specified values |
 
 ## Write your own Anonymization strategy
 

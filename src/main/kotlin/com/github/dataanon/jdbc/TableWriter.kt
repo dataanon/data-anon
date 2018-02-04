@@ -43,9 +43,9 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
                 batchIndex = 0
             }
         }
-        fun setStatementParameters(record: Record) = fields
-                                                        .map { record.find(it) }
-                                                        .forEachIndexed { index, field -> stmt.setObject(index + 1, field.newValue)}
+        fun setStatementParameters(record: Record) =
+                fields.map { record.find(it) }
+                        .forEachIndexed { index, field -> stmt.setObject(index + 1, field.newValue)}
 
         setStatementParameters(record)
         executeBatch()
