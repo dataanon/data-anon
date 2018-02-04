@@ -1,13 +1,14 @@
 # Data::Anonymization
+
 Data Anonymization tool helps build anonymized production data dumps, 
 which you can use for performance testing, security testing, debugging and development.
 Tool is implemented in Kotlin, and works with Java 8 & Kotlin.
 
 [![Build Status](https://travis-ci.org/dataanon/data-anon.svg?branch=master)](https://travis-ci.org/dataanon/data-anon)
 
-----------------------
-
 ## Getting started
+
+### Kotlin
 
 ```kotlin
 fun main(args: Array<String>) {
@@ -15,7 +16,8 @@ fun main(args: Array<String>) {
     val source = DbConfig("jdbc:h2:tcp://localhost/~/movies_source", "sa", "")
     val dest = DbConfig("jdbc:h2:tcp://localhost/~/movies_dest", "sa", "")
 
-    Whitelist(source, dest) // choose Whitelist or Blacklist strategy for anonymization
+    // choose Whitelist or Blacklist strategy for anonymization
+    Whitelist(source, dest)
             .table("MOVIES") {  // start with table                                
                 where("GENRE = 'Drama'")    // allows to select only desired rows (optional)
                 limit(1_00_000)             // useful for testing (optional)
@@ -31,13 +33,60 @@ fun main(args: Array<String>) {
                     override fun anonymize(field: Field<String>, record: Record): String = "MY MOVIE ${record.rowNum}"
                 })
             }
-            .table("RATINGS") {  // continue with multiple tables
+
+            // continue with multiple tables
+            .table("RATINGS") {
                 whitelist("MOVIE_ID","USER_ID","CREATED_AT")
                 anonymize("RATING").using(FixedDouble(4.3))
             }
             .execute()
 }
 ```
+
+### Java
+
+```java
+public class Anonymizer {
+
+    public static void main(String[] args) {
+
+        // define your database connection settings
+        DbConfig source = new DbConfig("jdbc:h2:tcp://localhost/~/movies_source", "sa", "");
+        DbConfig dest = new DbConfig("jdbc:h2:tcp://localhost/~/movies_dest", "sa", "");
+
+        // choose Whitelist or Blacklist strategy for anonymization
+        new Whitelist(source, dest)
+
+            // start with table
+            .table("MOVIES", table -> {
+                table.where("GENRE = 'Drama'");     // allows to select only desired rows (optional)
+                table.limit(1_00);                  // useful for testing (optional)
+
+                // pass through fields, leave it as is (do not anonymize)
+                table.whitelist("MOVIE_ID", "RELEASE_DATE");
+
+                // field by field decide the anonymization strategy
+                table.anonymize("GENRE").using(new FixedString("Action"));
+
+                // write your own in-line strategy
+                table.anonymize("TITLE").using((AnonymizationStrategy<String>) (field, record) -> "MY MOVIE " + record.getRowNum());
+
+                // return just to cover up for Kotlin, copy as is
+                return Unit.INSTANCE;
+            })
+
+            // continue with multiple tables
+            .table("RATINGS", table -> {
+                table.whitelist("MOVIE_ID", "USER_ID", "CREATED_AT");
+                table.anonymize("RATING").using(new FixedDouble(4.3));
+                return Unit.INSTANCE;
+            })
+            .execute(true);
+    }
+}
+```
+
+
 ## Running
 
     $ mvn compile exec:java
@@ -60,13 +109,13 @@ Sample Maven based project are available at...
 1. In Whitelist approach provide source database connection user with READONLY access.
 2. Use `where` and `limit` to limit the number of rows during anonymization. Very useful for testing purpose.
 3. Extend `DbConfig` and implement `connection` method for special handling while creating database connection.
-
+4. Write your [own anonymization strategy](#write-your-own-anonymization-strategy) for specific cases.
 
 ----------------------
 
 ## Roadmap
 
-1. Support for anonymization strategy for Date and DateTime/Timestamp related data type. As of now you can write you own strategy.
+1. Support for anonymization strategy for Date and DateTime/Timestamp related data type. As of now you can [write you own strategy](#write-your-own-anonymization-strategy).
 1. Support default strategy based on data type. As of now you need to specify anonymization strategy for each field.
 1. MongoDB database.
 
@@ -157,7 +206,7 @@ Read more about [blacklist and whitelist here](http://sunitspace.blogspot.in/201
 
 ## Write your own Anonymization strategy
 
-Implement 'AnonymizationStrategy' interface to write your own strategy.
+Implement `AnonymizationStrategy` interface `override` method to write your own strategy.
 
 ```kotlin
 class RandomString: AnonymizationStrategy<String> {
@@ -165,13 +214,13 @@ class RandomString: AnonymizationStrategy<String> {
 }
 ```
 
-*Field* class represents data related to the field getting processed for anonymization
+`Field` class represents data related to the field getting processed for anonymization
 
 ```kotlin
 class Field<T: Any>(val name: String, val oldValue: T, var newValue: T = oldValue)
 ```
 
-*Record* class represents the current record getting processed with row number and all the fields of the record.
+`Record` class represents the current record getting processed with row number and all the fields of the record.
 Other fields data is useful in case if there is any dependent field value which needs to be derived or calculated.
 
 ```kotlin
