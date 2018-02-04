@@ -1,6 +1,7 @@
 package com.github.dataanon.jdbc
 
 import com.github.dataanon.model.DbConfig
+import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
 import com.github.dataanon.model.Table
 import com.github.dataanon.utils.ProgressBarGenerator
@@ -8,13 +9,16 @@ import org.reactivestreams.Subscription
 import reactor.core.publisher.BaseSubscriber
 import reactor.core.publisher.SignalType
 import java.sql.PreparedStatement
+import java.sql.Types
 
 
 class TableWriter(dbConfig: DbConfig, private val table: Table, private val progressBar: ProgressBarGenerator) : BaseSubscriber<Record>() {
-    private val conn = dbConfig.connection()
     private val BATCH_COUNT = 1000
-    private lateinit var stmt: PreparedStatement
+    private val conn        = dbConfig.connection()
+
+    private lateinit var stmt:   PreparedStatement
     private lateinit var fields: List<String>
+
     private var batchIndex = 0
 
     init {
@@ -45,7 +49,7 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
         }
         fun setStatementParameters(record: Record) =
                 fields.map { record.find(it) }
-                        .forEachIndexed { index, field -> stmt.setObject(index + 1, field.newValue)}
+                      .forEachIndexed { index, field -> writeToStatement(index, field) }
 
         setStatementParameters(record)
         executeBatch()
@@ -60,5 +64,10 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
         stmt.clearBatch()
         stmt.close()
         conn.close()
+    }
+
+    private fun writeToStatement(index: Int, field: Field<Any>) {
+        if ( field.isNull() ) stmt.setNull  (index + 1, Types.NULL)
+        else                  stmt.setObject(index + 1, field.newValue)
     }
 }

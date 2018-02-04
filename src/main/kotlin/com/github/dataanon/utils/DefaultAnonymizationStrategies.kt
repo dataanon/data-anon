@@ -1,5 +1,6 @@
 package com.github.dataanon.utils
 
+import com.github.dataanon.model.NullValue
 import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.strategy.CopyAnonymizationStrategy
 import com.github.dataanon.strategy.bool.RandomBooleanTrueFalse
@@ -19,6 +20,7 @@ object DefaultAnonymizationStrategies {
         defaultStrategies.put(Int::class,       RandomInt())
         defaultStrategies.put(Float::class,     RandomFloat())
         defaultStrategies.put(Double::class,    RandomDouble())
+        defaultStrategies.put(NullValue::class, CopyAnonymizationStrategy<NullValue>())
     }
 
     fun getAnonymizationStrategy(kClass: KClass<*>) = if (defaultStrategies[kClass] != null) defaultStrategies[kClass]

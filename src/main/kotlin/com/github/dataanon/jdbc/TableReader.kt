@@ -1,9 +1,6 @@
 package com.github.dataanon.jdbc
 
-import com.github.dataanon.model.DbConfig
-import com.github.dataanon.model.Field
-import com.github.dataanon.model.Record
-import com.github.dataanon.model.Table
+import com.github.dataanon.model.*
 import java.sql.ResultSet
 
 class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Record> {
@@ -26,8 +23,12 @@ class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Recor
 
     override fun next(): Record {
         index++
-        return Record(table.allColumns().map { Field(it, rs.getObject(it)) }, index)
+        return Record(table.allColumns().map { toField(it) }, index)
     }
+
+    private fun toField(columnName: String)     = Field(columnName, columnValue(columnName))
+
+    private fun columnValue(columnName: String) = rs.getObject(columnName) ?: NullValue
 
     private fun getTotalRecords(): Int {
         val rs = conn.createStatement().executeQuery(table.generateCountQuery())

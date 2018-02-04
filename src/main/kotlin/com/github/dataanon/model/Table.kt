@@ -1,6 +1,7 @@
 package com.github.dataanon.model
 
 import com.github.dataanon.strategy.AnonymizationStrategy
+import com.github.dataanon.strategy.CopyAnonymizationStrategy
 import com.github.dataanon.utils.DefaultAnonymizationStrategies
 
 abstract class Table(val name: String) {
@@ -28,8 +29,8 @@ abstract class Table(val name: String) {
 
     internal fun execute(record: Record): Record {
         columnStrategyContainer.forEach { columnName, columnStrategy ->
-            val field = record.find(columnName)
-            field.newValue = columnStrategy.anonymize(field, record)
+            val field       = record.find(columnName)
+            field.newValue  = columnStrategy.anonymize(field, record)
         }
         return record
     }
@@ -52,13 +53,18 @@ abstract class Table(val name: String) {
             anonymizationStrategy = strategy
         }
 
-        internal fun anonymize(field: Field<Any>, record: Record) = anonymizationStrategy(field).anonymize(field, record)
+        internal fun anonymize(field: Field<Any>, record: Record) = findAnonymizationStrategy(field).anonymize(field, record)
 
-        private fun anonymizationStrategy(field: Field<Any>) = try {
-                                                    anonymizationStrategy as AnonymizationStrategy<Any>
-                                                  }
-                                                  catch (ex: UninitializedPropertyAccessException){
-                                                    DefaultAnonymizationStrategies.getAnonymizationStrategy(field.oldValue::class) as AnonymizationStrategy<Any>
-                                                  }
+        private fun findAnonymizationStrategy(field: Field<Any>)  = if (field.isNull()) nullAnonymizationStrategy()
+                                                                    else                nonNullAnonymizationStrategy(field)
+
+        private fun nullAnonymizationStrategy() = CopyAnonymizationStrategy<NullValue>() as AnonymizationStrategy<Any>
+
+        private fun nonNullAnonymizationStrategy(field: Field<Any>) = try {
+                                                            anonymizationStrategy as AnonymizationStrategy<Any>
+                                                        }
+                                                        catch (ex: UninitializedPropertyAccessException){
+                                                            DefaultAnonymizationStrategies.getAnonymizationStrategy(field.oldValue::class) as AnonymizationStrategy<Any>
+                                                        }
     }
 }
