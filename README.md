@@ -64,6 +64,7 @@ public class Anonymizer {
 
                 // pass through fields, leave it as is (do not anonymize)
                 table.whitelist("MOVIE_ID", "RELEASE_DATE");
+
                 // field by field decide the anonymization strategy
                 table.anonymize("GENRE").using(new FixedString("Action"));
 
@@ -108,13 +109,13 @@ Sample Maven based project are available at...
 1. In Whitelist approach provide source database connection user with READONLY access.
 2. Use `where` and `limit` to limit the number of rows during anonymization. Very useful for testing purpose.
 3. Extend `DbConfig` and implement `connection` method for special handling while creating database connection.
-
+4. Write your [own anonymization strategy](#write-your-own-anonymization-strategy) for specific cases.
 
 ----------------------
 
 ## Roadmap
 
-1. Support for anonymization strategy for Date and DateTime/Timestamp related data type. As of now you can write you own strategy.
+1. Support for anonymization strategy for Date and DateTime/Timestamp related data type. As of now you can [write you own strategy](#write-your-own-anonymization-strategy).
 1. Support default strategy based on data type. As of now you need to specify anonymization strategy for each field.
 1. MongoDB database.
 
@@ -205,7 +206,7 @@ Read more about [blacklist and whitelist here](http://sunitspace.blogspot.in/201
 
 ## Write your own Anonymization strategy
 
-Implement 'AnonymizationStrategy' interface to write your own strategy.
+Implement `AnonymizationStrategy` interface `override` method to write your own strategy.
 
 ```kotlin
 class RandomString: AnonymizationStrategy<String> {
@@ -213,13 +214,13 @@ class RandomString: AnonymizationStrategy<String> {
 }
 ```
 
-*Field* class represents data related to the field getting processed for anonymization
+`Field` class represents data related to the field getting processed for anonymization
 
 ```kotlin
 class Field<T: Any>(val name: String, val oldValue: T, var newValue: T = oldValue)
 ```
 
-*Record* class represents the current record getting processed with row number and all the fields of the record.
+`Record` class represents the current record getting processed with row number and all the fields of the record.
 Other fields data is useful in case if there is any dependent field value which needs to be derived or calculated.
 
 ```kotlin
