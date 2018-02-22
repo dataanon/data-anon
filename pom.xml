@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.dataanon</groupId>
     <artifactId>data-anon</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.9.0</version>
     <packaging>jar</packaging>
 
     <name>data-anon</name>
@@ -21,6 +21,7 @@
         <kotlin.version>1.2.21</kotlin.version>
         <kotlin.test.version>2.0.7</kotlin.test.version>
         <version.jacoco>0.8.0</version.jacoco>
+        <version.dokka>0.9.9</version.dokka>
     </properties>
 
     <scm>
@@ -55,6 +56,28 @@
         <url>https://github.com/dataanon/data-anon/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -101,6 +124,11 @@
             <artifactId>awaitility</artifactId>
             <version>RELEASE</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.dokka</groupId>
+            <artifactId>dokka-maven-plugin</artifactId>
+            <version>0.9.7</version>
         </dependency>
     </dependencies>
 
@@ -208,20 +236,23 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
+                        <groupId>org.jetbrains.dokka</groupId>
+                        <artifactId>dokka-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>attach-javadocs</id>
+                                <phase>prepare-package</phase>
                                 <goals>
-                                    <goal>jar</goal>
+                                    <goal>dokka</goal>
+                                    <goal>javadoc</goal>
+                                    <goal>javadocJar</goal>
                                 </goals>
-                                <configuration>
-                                    <additionalparam>-Xdoclint:none</additionalparam>
-                                </configuration>
                             </execution>
                         </executions>
+                        <configuration>
+                            <includes>
+                                <file>packages.md</file>
+                            </includes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
