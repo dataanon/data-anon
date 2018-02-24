@@ -104,7 +104,7 @@ Sample Maven based project are available at...
 * [Java](https://github.com/dataanon/dataanon-java-sample) 
 
 ----------------------
-## Tips
+## Notes
 
 1. In Whitelist approach provide source database connection user with READONLY access.
 2. Use `where` and `limit` to limit the number of rows during anonymization. Very useful for testing purpose.
