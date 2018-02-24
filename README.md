@@ -89,13 +89,17 @@ public class Anonymizer {
 
 ## Running
 
-    $ mvn compile exec:java
-    
-    Or 
-    
-    $ mvn package
-    $ java -jar target/data-anon.jar 
-         
+```shell
+$ mvn compile exec:java
+```
+
+Or
+
+```shell
+$ mvn package
+$ java -jar target/data-anon.jar
+```
+
 ## Start with samples...
 
 * [Kotlin](https://github.com/dataanon/dataanon-kotlin-sample)
