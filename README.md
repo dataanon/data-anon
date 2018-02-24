@@ -96,15 +96,13 @@ public class Anonymizer {
     $ mvn package
     $ java -jar target/data-anon.jar 
          
-## Examples
-
-Sample Maven based project are available at...
+## Start with samples...
 
 * [Kotlin](https://github.com/dataanon/dataanon-kotlin-sample)
 * [Java](https://github.com/dataanon/dataanon-java-sample) 
 
 ----------------------
-## Notes
+## Notes/tips on usage of tool
 
 1. In Whitelist approach provide source database connection user with READONLY access.
 2. Use `where` and `limit` to limit the number of rows during anonymization. Very useful for testing purpose.
@@ -125,9 +123,11 @@ Please use Github [issues](https://github.com/dataanon/data-anon/issues) to shar
 
 ## Changelog
 
-#### 0.9.0 (Feb ?, 2018)
+#### 0.9.1 (Feb 26, 2018)
 
 1. First initial release with RDBMS support
+2. First class support for table parallelization providing better performance
+3. Easy to use DSL built using Kotlin
 
 ----------------------
 
