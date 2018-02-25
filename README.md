@@ -247,11 +247,6 @@ It is very easy to write inline strategy as well. See examples
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## License
-
-[MIT License](https://github.com/sunitparekh/data-anonymization/blob/master/LICENSE.txt)
-
-
 ## Credits
 
 - [ThoughtWorks Inc](http://www.thoughtworks.com), for allowing us to build this tool and make it open source.
