@@ -2,8 +2,11 @@ package com.github.dataanon.jdbc
 
 import com.github.dataanon.model.*
 import java.sql.ResultSet
+import java.util.logging.Logger
 
 class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Record> {
+    private val logger = Logger.getLogger(TableReader::class.java.name)
+
     private val conn = dbConfig.connection()
     private var rs: ResultSet
     private var index = 0
@@ -13,11 +16,11 @@ class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Recor
         val stmt = conn.createStatement()
         if (table.limit >= 1 ) stmt.maxRows = table.limit
 
-        println(sql)
+        logger.info { "READ SQL: $sql" }
         rs       = stmt.executeQuery(sql)
     }
 
-    fun totalNoOfRecords(): Int     = if (table.limit >= 1) table.limit else getTotalRecords()
+    fun totalNoOfRecords(): Int     = if (table.limit >= 1 && getTotalRecords() > table.limit) table.limit else getTotalRecords()
 
     override fun hasNext(): Boolean  = if (rs.next()) true else closeConnection()
 
