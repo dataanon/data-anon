@@ -5,9 +5,7 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.FunSpec
-import org.awaitility.Awaitility.await
 import java.sql.Timestamp
-import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 
 class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
@@ -21,7 +19,6 @@ class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
                         anonymize("RATING").using(FixedInt(3))
                     }.execute(progressBarEnabled = false)
 
-            await().timeout(2, TimeUnit.SECONDS).until { ratingsTable.findAll()[0]["RATING"].toString().equals("3") }
             val records = ratingsTable.findAll()
 
             assertEquals(2,records.size)

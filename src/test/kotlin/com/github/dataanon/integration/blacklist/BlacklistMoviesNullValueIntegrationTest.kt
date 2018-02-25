@@ -6,9 +6,7 @@ import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.strategy.string.RandomAlphabetic
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.FunSpec
-import org.awaitility.Awaitility
 import java.sql.Date
-import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -27,7 +25,6 @@ class BlacklistMoviesNullValueIntegrationTest : FunSpec() {
                         anonymize("GENRE").using(RandomAlphabetic())
                     }.execute(progressBarEnabled = false)
 
-            Awaitility.await().timeout(2, TimeUnit.SECONDS).until { moviesTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
             val records = moviesTable.findAll()
 
             assertEquals(2, records.size)
@@ -55,7 +52,6 @@ class BlacklistMoviesNullValueIntegrationTest : FunSpec() {
                         anonymize("GENRE")
                     }.execute(progressBarEnabled = false)
 
-            Awaitility.await().timeout(2, TimeUnit.SECONDS).until { moviesTable.findAll()[0]["TITLE"].toString().equals("MY VALUE") }
             val records = moviesTable.findAll()
 
             assertEquals(2, records.size)

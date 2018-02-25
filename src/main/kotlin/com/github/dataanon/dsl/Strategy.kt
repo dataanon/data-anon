@@ -16,10 +16,12 @@ abstract class Strategy {
 
     fun execute(progressBarEnabled: Boolean = true) {
         val latch = CountDownLatch(tables.size)
+
         Flux.fromIterable(tables)
                 .parallel(tables.size)
                 .runOn(Schedulers.parallel())
                 .subscribe { table -> executeOnTable(table, progressBarEnabled, latch) }
+
         latch.await()
     }
 
