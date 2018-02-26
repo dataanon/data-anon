@@ -112,6 +112,7 @@ $ java -jar target/data-anon.jar
 2. Use `where` and `limit` to limit the number of rows during anonymization. Very useful for testing purpose.
 3. Extend `DbConfig` and implement `connection` method for special handling while creating database connection.
 4. Write your [own anonymization strategy](#write-your-own-anonymization-strategy) for specific cases.
+5. `null` values are kept `null` after anonymization.
 
 ----------------------
 

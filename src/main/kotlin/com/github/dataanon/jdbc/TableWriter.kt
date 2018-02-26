@@ -19,7 +19,7 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
     private val logger = Logger.getLogger(TableWriter::class.java.name)
 
     private val BATCH_COUNT = 1000
-    private val TOTAL_ALLOWED_BATCH_ERRORS = 5
+    private val TOTAL_ALLOWED_ERRORS = 1000
 
     private val conn = dbConfig.connection()
 
@@ -43,15 +43,14 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
     }
 
     override fun hookOnNext(record: Record) {
-        batchIndex++
 
         fields.map { record.find(it) }.forEachIndexed { index, field -> writeToStatement(index, field) }
-        stmt.addBatch()
 
-        if (batchIndex % BATCH_COUNT == 0) {
-            executeBatchStmt()
-        }
+        stmt.addBatch()
+        batchIndex++
         progressBar.step()
+
+        if (batchIndex % BATCH_COUNT == 0) executeBatchStmt()
 
         request(1)
     }
@@ -77,19 +76,25 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
 
 
     private fun handleError(t: Throwable) {
-        errorCount++
         if (t is BatchUpdateException) {
-            logger.severe { "BatchUpdateException update counts: ${t.updateCounts}" }
-            t.forEach { logger.log(Level.SEVERE, "Individual error messages in BatchUpdateException: ${it.message}", it) }
+            t.forEach {
+                if (it is BatchUpdateException) return@forEach
+                errorCount++
+                logger.log(Level.SEVERE, "Individual error messages in BatchUpdateException: ${it.message}", it)
+            }
         } else {
+            errorCount++
             logger.log(Level.SEVERE, "Error executing batch record: ${t.message}", t)
         }
-        if (errorCount > TOTAL_ALLOWED_BATCH_ERRORS)
-            throw Exception("Too many error while processing table ${table.name}, terminating table processing.")
+        if (errorCount > TOTAL_ALLOWED_ERRORS) {
+            logger.severe { "Total number of errors occurred is $errorCount for table ${table.name} exceeds allowed $TOTAL_ALLOWED_ERRORS." }
+            throw Exception("Too many errors while processing table ${table.name} exceeds $TOTAL_ALLOWED_ERRORS hence terminating table processing.")
+        }
     }
 
     override fun hookOnComplete() {
-        executeBatchStmt()
+        if (batchIndex > 0) executeBatchStmt()
+        if (errorCount > 0) logger.severe { "On Complete total number of errors occurred is $errorCount for table ${table.name}" }
     }
 
     override fun hookFinally(type: SignalType?) {
