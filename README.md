@@ -109,10 +109,11 @@ $ java -jar target/data-anon.jar
 ## Notes/tips on usage of tool
 
 1. In Whitelist approach provide source database connection user with READONLY access.
-2. Use `where` and `limit` to limit the number of rows during anonymization. Very useful for testing purpose.
-3. Extend `DbConfig` and implement `connection` method for special handling while creating database connection.
-4. Write your [own anonymization strategy](#write-your-own-anonymization-strategy) for specific cases.
-5. `null` values are kept `null` after anonymization.
+1. All messages (incl. errors) are logged in `dataaonn.log` file. Using `logging.properties` control log messages.
+1. Use `where` and `limit` to limit the number of rows during anonymization. Very useful for testing purpose.
+1. Extend `DbConfig` and implement `connection` method for special handling while creating database connection.
+1. Write your [own anonymization strategy](#write-your-own-anonymization-strategy) for specific cases.
+1. `null` values are kept `null` after anonymization.
 
 ----------------------
 
@@ -127,6 +128,11 @@ $ java -jar target/data-anon.jar
 Please use Github [issues](https://github.com/dataanon/data-anon/issues) to share feedback, feature suggestions and report issues.
 
 ## Changelog
+
+#### 1.0.0-SNAPSHOT (Final version to be released soon...)
+
+1. Error handling using logs. All messages logged in `dataaonn.log` file. Using `logging.properties` control log messages.
+
 
 #### 0.9.1 (Feb 26, 2018)
 
