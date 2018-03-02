@@ -5,11 +5,13 @@ import com.github.dataanon.dsl.Whitelist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
+import com.github.dataanon.support.MoviesTableHavingGenreSize10
+import com.github.dataanon.support.RatingsTable
+import com.github.dataanon.utils.DataAnonTestLogHandler
+import io.kotlintest.matchers.*
 import io.kotlintest.specs.FunSpec
 import java.sql.Date
-import java.util.regex.Pattern
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import java.util.logging.Level
 
 class SpecialFeaturesIntegrationTest : FunSpec() {
 
@@ -29,15 +31,17 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                         whitelist("MOVIE_ID", "RELEASE_DATE")
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE").using(FixedString("Action"))
-                    }.execute(progressBarEnabled = false)
+                    }.execute(false)
 
             val records = destTable.findAll()
 
-            assertEquals(1, records.size)
-            assertEquals(1, records[0]["MOVIE_ID"])
-            assertEquals("MY VALUE", records[0]["TITLE"])
-            assertEquals(Date(1999, 5, 2), records[0]["RELEASE_DATE"])
-            assertTrue(Pattern.compile("[a-zA-Z]+").matcher(records[0]["GENRE"].toString()).matches())
+            records.size shouldBe 1
+
+            val anonymizedRecord = records[0]
+            anonymizedRecord["MOVIE_ID"] shouldBe 1
+            anonymizedRecord["TITLE"] shouldBe "MY VALUE"
+            anonymizedRecord["RELEASE_DATE"] shouldBe Date(1999, 5, 2)
+            anonymizedRecord["GENRE"].toString() should match("[a-zA-Z]+")
 
             sourceTable.close()
             destTable.close()
@@ -52,15 +56,17 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
-                    }.execute(progressBarEnabled = true)
+                    }.execute(true)
 
             val records = moviesTable.findAll()
 
-            assertEquals(1, records.size)
-            assertEquals(1, records[0]["MOVIE_ID"])
-            assertEquals("MY VALUE", records[0]["TITLE"])
-            assertEquals(Date(1999, 5, 2), records[0]["RELEASE_DATE"])
-            assertTrue(Pattern.compile("[a-zA-Z]+").matcher(records[0]["GENRE"].toString()).matches())
+            records.size shouldBe 1
+
+            val anonymizedRecord = records[0]
+            anonymizedRecord["MOVIE_ID"] shouldBe 1
+            anonymizedRecord["TITLE"] shouldBe "MY VALUE"
+            anonymizedRecord["RELEASE_DATE"] shouldBe Date(1999, 5, 2)
+            anonymizedRecord["GENRE"].toString() should match("[a-zA-Z]+")
 
             moviesTable.close()
         }
@@ -80,19 +86,111 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                         whitelist("MOVIE_ID", "RELEASE_DATE")
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE").using(FixedString("Action"))
-                    }.execute(progressBarEnabled = false)
+                    }.execute(false)
 
             val records = destTable.findAll()
 
-            assertEquals(1, records.size)
+            records.size shouldBe 1
+
             val anonymizedRecord = records[0]
-            assertEquals(1, anonymizedRecord["MOVIE_ID"])
-            assertEquals("MY VALUE", anonymizedRecord["TITLE"])
-            assertEquals(Date(1999, 5, 2), anonymizedRecord["RELEASE_DATE"])
-            assertTrue(Pattern.compile("[a-zA-Z]+").matcher(anonymizedRecord["GENRE"].toString()).matches())
+            anonymizedRecord["MOVIE_ID"] shouldBe 1
+            anonymizedRecord["TITLE"] shouldBe "MY VALUE"
+            anonymizedRecord["RELEASE_DATE"] shouldBe Date(1999, 5, 2)
+            anonymizedRecord["GENRE"].toString() should match("[a-zA-Z]+")
 
             sourceTable.close()
             destTable.close()
         }
+
+        test("error handling in case of destination table doesn't exists") {
+            DataAnonTestLogHandler.records.clear()
+
+            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val sourceTable = MoviesTable(sourceDbConfig)
+                    .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
+                    .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
+
+            val destDbConfig = DbConfig("jdbc:h2:mem:movies_new", "", "")
+
+            Whitelist(sourceDbConfig, destDbConfig)
+                    .table("MOVIES") {
+                        whitelist("MOVIE_ID", "RELEASE_DATE")
+                        anonymize("TITLE").using(FixedString("MY VALUE"))
+                        anonymize("GENRE").using(FixedString("Action"))
+                    }.execute(false)
+
+            val errors = DataAnonTestLogHandler.records.filter { it.level.intValue() > Level.INFO.intValue() }
+            errors.size shouldBe 1
+            errors[0].message should haveSubstring("Table \"MOVIES\" not found")
+
+            sourceTable.close()
+        }
+
+
+        test("error handling in case of source table doesn't exists") {
+            DataAnonTestLogHandler.records.clear()
+
+            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies_source", "", "")
+
+            val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
+            val destTable = MoviesTable(destDbConfig)
+
+            Whitelist(sourceDbConfig, destDbConfig)
+                    .table("MOVIES") {
+                        whitelist("MOVIE_ID", "RELEASE_DATE")
+                        anonymize("TITLE").using(FixedString("MY VALUE"))
+                        anonymize("GENRE").using(FixedString("Action"))
+                    }.execute(false)
+
+            val records = destTable.findAll()
+            records.size shouldBe 0
+
+            val errors = DataAnonTestLogHandler.records.filter { it.level.intValue() > Level.INFO.intValue() }
+            errors.size shouldBe 1
+            errors[0].message should haveSubstring("Table \"MOVIES\" not found")
+
+            destTable.close()
+        }
+
+        test("error handling in case of INSERT statement error exceeds allowed errors") {
+            DataAnonTestLogHandler.records.clear()
+
+            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val sourceTable = MoviesTable(sourceDbConfig)
+                    .insert(1, "Movie 1", "Really Long Genre To be fail 1", Date(1999, 5, 2))
+                    .insert(2, "Movie 2", "Really Long Genre To be fail 2", Date(2005, 5, 2))
+                    .insert(3, "Movie 3", "Action", Date(2005, 5, 2))
+                    .insert(4, "Movie 4", "Really Long Genre To be fail 3", Date(2005, 5, 2))
+                    .insert(5, "Movie 5", "Really Long Genre To be fail 4", Date(2005, 5, 2))
+                    .insert(6, "Movie 6", "Action", Date(2005, 5, 2))
+
+            val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
+            val destTable = MoviesTableHavingGenreSize10(destDbConfig)
+
+            Whitelist(sourceDbConfig, destDbConfig)
+                    .table("MOVIES") {
+                        writeBatchSize(2)
+                        allowedErrors(3)
+                        whitelist("MOVIE_ID", "RELEASE_DATE", "GENRE")
+                        anonymize("TITLE").using(FixedString("MY VALUE"))
+                    }.execute(false)
+
+            val records = destTable.findAll()
+            records.size should beLessThan(3)
+
+            val errors = DataAnonTestLogHandler.records.filter { it.level.intValue() > Level.INFO.intValue() }
+            errors.size shouldBe 6
+            errors[0].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
+            errors[1].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
+            errors[2].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
+            errors[3].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
+            errors[4].message should haveSubstring("Total number of errors occurred is 4 for table MOVIES exceeds allowed 3")
+            errors[5].message should haveSubstring("Too many errors while processing table MOVIES exceeds 3 hence terminating table processing")
+
+            destTable.close()
+            sourceTable.close()
+        }
+
+
     }
 }

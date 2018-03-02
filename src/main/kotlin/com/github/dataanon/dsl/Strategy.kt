@@ -8,6 +8,7 @@ import com.github.dataanon.utils.ProgressBarGenerator
 import reactor.core.publisher.Flux
 import reactor.core.scheduler.Schedulers
 import java.util.concurrent.CountDownLatch
+import java.util.logging.Level
 import java.util.logging.LogManager
 import java.util.logging.Logger
 
@@ -37,7 +38,7 @@ abstract class Strategy {
 
             Flux.fromIterable(Iterable { reader }).map { table.execute(it) }.subscribe(writer)
         } catch (t: Throwable) {
-            logger.severe { "Error processing table '${table.name}': ${t.message}" }
+            logger.log(Level.SEVERE,"Error processing table '${table.name}': ${t.message}",t)
         } finally {
             latch.countDown()
         }

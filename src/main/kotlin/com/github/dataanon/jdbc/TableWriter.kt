@@ -18,39 +18,39 @@ import java.util.logging.Logger
 class TableWriter(dbConfig: DbConfig, private val table: Table, private val progressBar: ProgressBarGenerator) : BaseSubscriber<Record>() {
     private val logger = Logger.getLogger(TableWriter::class.java.name)
 
-    private val BATCH_COUNT = 1000
-    private val TOTAL_ALLOWED_ERRORS = 1000
-
     private val conn = dbConfig.connection()
 
-    private lateinit var stmt: PreparedStatement
-    private lateinit var fields: List<String>
+    private var stmt: PreparedStatement
+    private var fields: List<String>
 
     private var batchIndex = 0
     private var errorCount = 0
 
     init {
         conn.autoCommit = false
-    }
-
-    override fun hookOnSubscribe(subscription: Subscription?) {
         progressBar.start()
         val sql = table.generateWriteQuery()
         logger.info { "WRITE SQL: $sql" }
         this.stmt = conn.prepareStatement(sql)
         this.fields = table.allColumns()
+    }
+
+    override fun hookOnSubscribe(subscription: Subscription?) {
         request(1)
     }
 
-    override fun hookOnNext(record: Record) {
+    override fun hookOnError(throwable: Throwable) {
+        throw throwable
+    }
 
+    override fun hookOnNext(record: Record) {
         fields.map { record.find(it) }.forEachIndexed { index, field -> writeToStatement(index, field) }
 
         stmt.addBatch()
         batchIndex++
         progressBar.step()
 
-        if (batchIndex % BATCH_COUNT == 0) executeBatchStmt()
+        if (batchIndex % table.batchSize == 0) executeBatchStmt()
 
         request(1)
     }
@@ -84,11 +84,11 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
             }
         } else {
             errorCount++
-            logger.log(Level.SEVERE, "Error executing batch record: ${t.message}", t)
+            logger.log(Level.SEVERE, "Error executing batch: ${t.message}", t)
         }
-        if (errorCount > TOTAL_ALLOWED_ERRORS) {
-            logger.severe { "Total number of errors occurred is $errorCount for table ${table.name} exceeds allowed $TOTAL_ALLOWED_ERRORS." }
-            throw Exception("Too many errors while processing table ${table.name} exceeds $TOTAL_ALLOWED_ERRORS hence terminating table processing.")
+        if (errorCount > table.allowedErrors) {
+            logger.severe { "Total number of errors occurred is $errorCount for table ${table.name} exceeds allowed ${table.allowedErrors} ." }
+            throw Exception("Too many errors while processing table ${table.name} exceeds ${table.allowedErrors} hence terminating table processing.")
         }
     }
 
@@ -98,9 +98,9 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
     }
 
     override fun hookFinally(type: SignalType?) {
-        progressBar.stop()
-        stmt.close()
-        conn.close()
+        progressBar?.stop()
+        if (stmt != null) stmt.close()
+        if (conn != null) conn.close()
     }
 
 }

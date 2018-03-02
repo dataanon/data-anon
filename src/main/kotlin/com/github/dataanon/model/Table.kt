@@ -8,6 +8,8 @@ abstract class Table(val name: String) {
     private val columnStrategyContainer = mutableMapOf<String, ColumnStrategy>()
     internal var whereCondition = ""
     internal var limit = -1
+    internal var allowedErrors = 1000
+    internal var batchSize = 1000
 
     fun anonymize(columnName: String): ColumnStrategy {
         val columnStrategy = ColumnStrategy()
@@ -22,6 +24,16 @@ abstract class Table(val name: String) {
 
     fun limit(limit: Int): Table {
         this.limit = limit
+        return this
+    }
+
+    fun writeBatchSize(size: Int): Table {
+        this.batchSize = size
+        return this
+    }
+
+    fun allowedErrors(count: Int): Table {
+        this.allowedErrors = count
         return this
     }
 
