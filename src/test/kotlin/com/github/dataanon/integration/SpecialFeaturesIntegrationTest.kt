@@ -6,7 +6,6 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import com.github.dataanon.support.MoviesTableHavingGenreSize10
-import com.github.dataanon.support.RatingsTable
 import com.github.dataanon.utils.DataAnonTestLogHandler
 import io.kotlintest.matchers.*
 import io.kotlintest.specs.FunSpec
@@ -165,7 +164,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                     .insert(6, "Movie 6", "Action", Date(2005, 5, 2))
 
             val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
-            val destTable = MoviesTableHavingGenreSize10(destDbConfig)
+            val destTable    = MoviesTableHavingGenreSize10(destDbConfig)
 
             Whitelist(sourceDbConfig, destDbConfig)
                     .table("MOVIES") {
@@ -190,7 +189,5 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
             destTable.close()
             sourceTable.close()
         }
-
-
     }
 }

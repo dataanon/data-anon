@@ -4,6 +4,7 @@ import java.util.logging.Handler
 import java.util.logging.LogRecord
 
 class DataAnonTestLogHandler: Handler() {
+
     companion object {
         val records = mutableListOf<LogRecord>()
     }
@@ -17,6 +18,4 @@ class DataAnonTestLogHandler: Handler() {
 
     override fun close() {
     }
-
-
 }
