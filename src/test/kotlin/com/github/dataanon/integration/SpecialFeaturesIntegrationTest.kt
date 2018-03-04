@@ -10,6 +10,7 @@ import com.github.dataanon.utils.DataAnonTestLogHandler
 import io.kotlintest.matchers.*
 import io.kotlintest.specs.FunSpec
 import java.sql.Date
+import java.time.LocalDate
 import java.util.logging.Level
 
 class SpecialFeaturesIntegrationTest : FunSpec() {
@@ -18,8 +19,8 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
         test("support to select specific records from table using where clause") {
             val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
-                    .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
-                    .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
+                    .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
+                    .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
 
             val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable = MoviesTable(destDbConfig)
@@ -39,7 +40,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
             val anonymizedRecord = records[0]
             anonymizedRecord["MOVIE_ID"] shouldBe 1
             anonymizedRecord["TITLE"] shouldBe "MY VALUE"
-            anonymizedRecord["RELEASE_DATE"] shouldBe Date(1999, 5, 2)
+            anonymizedRecord["RELEASE_DATE"] shouldBe LocalDate.of(1999, 5, 2)
             anonymizedRecord["GENRE"].toString() should match("[a-zA-Z]+")
 
             sourceTable.close()
@@ -49,7 +50,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
         test("testing progress bar") {
             val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val moviesTable = MoviesTable(dbConfig)
-                    .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
+                    .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
 
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
@@ -64,7 +65,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
             val anonymizedRecord = records[0]
             anonymizedRecord["MOVIE_ID"] shouldBe 1
             anonymizedRecord["TITLE"] shouldBe "MY VALUE"
-            anonymizedRecord["RELEASE_DATE"] shouldBe Date(1999, 5, 2)
+            anonymizedRecord["RELEASE_DATE"] shouldBe LocalDate.of(1999, 5, 2)
             anonymizedRecord["GENRE"].toString() should match("[a-zA-Z]+")
 
             moviesTable.close()
@@ -73,8 +74,8 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
         test("limit records for testing") {
             val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
-                    .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
-                    .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
+                    .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
+                    .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
 
             val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable = MoviesTable(destDbConfig)
@@ -94,7 +95,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
             val anonymizedRecord = records[0]
             anonymizedRecord["MOVIE_ID"] shouldBe 1
             anonymizedRecord["TITLE"] shouldBe "MY VALUE"
-            anonymizedRecord["RELEASE_DATE"] shouldBe Date(1999, 5, 2)
+            anonymizedRecord["RELEASE_DATE"] shouldBe LocalDate.of(1999, 5, 2)
             anonymizedRecord["GENRE"].toString() should match("[a-zA-Z]+")
 
             sourceTable.close()
@@ -106,8 +107,8 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
 
             val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
-                    .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
-                    .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
+                    .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
+                    .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
 
             val destDbConfig = DbConfig("jdbc:h2:mem:movies_new", "", "")
 
@@ -156,12 +157,12 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
 
             val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
-                    .insert(1, "Movie 1", "Really Long Genre To be fail 1", Date(1999, 5, 2))
-                    .insert(2, "Movie 2", "Really Long Genre To be fail 2", Date(2005, 5, 2))
-                    .insert(3, "Movie 3", "Action", Date(2005, 5, 2))
-                    .insert(4, "Movie 4", "Really Long Genre To be fail 3", Date(2005, 5, 2))
-                    .insert(5, "Movie 5", "Really Long Genre To be fail 4", Date(2005, 5, 2))
-                    .insert(6, "Movie 6", "Action", Date(2005, 5, 2))
+                    .insert(1, "Movie 1", "Really Long Genre To be fail 1", LocalDate.of(1999, 5, 2))
+                    .insert(2, "Movie 2", "Really Long Genre To be fail 2", LocalDate.of(2005, 5, 2))
+                    .insert(3, "Movie 3", "Action", LocalDate.of(2005, 5, 2))
+                    .insert(4, "Movie 4", "Really Long Genre To be fail 3", LocalDate.of(2005, 5, 2))
+                    .insert(5, "Movie 5", "Really Long Genre To be fail 4", LocalDate.of(2005, 5, 2))
+                    .insert(6, "Movie 6", "Action", LocalDate.of(2005, 5, 2))
 
             val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable    = MoviesTableHavingGenreSize10(destDbConfig)

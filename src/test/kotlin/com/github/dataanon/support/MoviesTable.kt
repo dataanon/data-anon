@@ -3,6 +3,8 @@ package com.github.dataanon.support
 import com.github.dataanon.model.DbConfig
 import java.sql.Connection
 import java.sql.Date
+import java.sql.JDBCType
+import java.time.LocalDate
 
 class MoviesTable(dbConfig: DbConfig) {
     private val conn: Connection = dbConfig.connection()
@@ -18,12 +20,12 @@ class MoviesTable(dbConfig: DbConfig) {
         conn.createStatement().executeUpdate(createMovieTable)
     }
 
-    fun insert(movieId: Int, title: String, genre: String?, releaseDate: Date): MoviesTable {
+    fun insert(movieId: Int, title: String, genre: String?, releaseDate: LocalDate): MoviesTable {
         val stmt = conn.prepareStatement("INSERT INTO MOVIES(MOVIE_ID,TITLE,GENRE,RELEASE_DATE) VALUES(?,?,?,?)")
         stmt.setInt(1, movieId)
         stmt.setString(2, title)
         stmt.setString(3, genre)
-        stmt.setDate(4, releaseDate)
+        stmt.setDate(4, Date.valueOf(releaseDate))
         stmt.executeUpdate()
         stmt.close()
         return this
@@ -37,7 +39,7 @@ class MoviesTable(dbConfig: DbConfig) {
             record["MOVIE_ID"] = rs.getInt("MOVIE_ID")
             record["TITLE"] = rs.getString("TITLE")
             record["GENRE"] = rs.getString("GENRE")
-            record["RELEASE_DATE"] = rs.getDate("RELEASE_DATE")
+            record["RELEASE_DATE"] = rs.getDate("RELEASE_DATE").toLocalDate()
             records.add(record)
         }
         rs.close()

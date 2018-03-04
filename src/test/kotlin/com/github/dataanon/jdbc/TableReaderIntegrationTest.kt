@@ -6,6 +6,7 @@ import com.github.dataanon.support.MoviesTable
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.sql.Date
+import java.time.LocalDate
 
 class TableReaderIntegrationTest : FunSpec() {
 
@@ -42,11 +43,11 @@ class TableReaderIntegrationTest : FunSpec() {
     private fun prepareDataWith5Movies(): Pair<DbConfig, MoviesTable> {
         val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
         val moviesTable = MoviesTable(dbConfig)
-                .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
-                .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
-                .insert(3, "Movie 3", "Comedy", Date(2005, 5, 2))
-                .insert(4, "Movie 4", "Horror", Date(2005, 5, 2))
-                .insert(5, "Movie 5", "Fiction", Date(2005, 5, 2))
+                .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
+                .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
+                .insert(3, "Movie 3", "Comedy", LocalDate.of(2005, 5, 2))
+                .insert(4, "Movie 4", "Horror", LocalDate.of(2005, 5, 2))
+                .insert(5, "Movie 5", "Fiction", LocalDate.of(2005, 5, 2))
         return Pair(dbConfig, moviesTable)
     }
 }

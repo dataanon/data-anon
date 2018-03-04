@@ -6,6 +6,7 @@ import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.FunSpec
 import java.sql.Date
+import java.time.LocalDate
 import java.util.regex.Pattern
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -30,7 +31,7 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
             assertEquals(1,records.size)
             assertEquals(1, records[0]["MOVIE_ID"])
             assertEquals("MY VALUE", records[0]["TITLE"])
-            assertEquals(Date(1999, 5, 2), records[0]["RELEASE_DATE"])
+            assertEquals(LocalDate.of(1999, 5, 2), records[0]["RELEASE_DATE"])
             assertTrue(alphabeticPattern.matcher(records[0]["GENRE"].toString()).matches())
 
             moviesTable.close()
@@ -52,11 +53,11 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
             assertEquals(1, records[0]["MOVIE_ID"])
             assertEquals("MY VALUE", records[0]["TITLE"])
             assertTrue(alphabeticPattern.matcher(records[0]["GENRE"].toString()).matches())
-            assertEquals(Date(1999, 5, 2), records[0]["RELEASE_DATE"])
+            assertEquals(LocalDate.of(1999, 5, 2), records[0]["RELEASE_DATE"])
             assertEquals(2, records[1]["MOVIE_ID"])
             assertEquals("MY VALUE", records[1]["TITLE"])
             assertTrue(alphabeticPattern.matcher(records[1]["GENRE"].toString()).matches())
-            assertEquals(Date(2005, 5, 2), records[1]["RELEASE_DATE"])
+            assertEquals(LocalDate.of(2005, 5, 2), records[1]["RELEASE_DATE"])
 
             moviesTable.close()
         }
@@ -65,15 +66,15 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
     private fun prepareDataWith2Movies(): Pair<DbConfig, MoviesTable> {
         val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
         val moviesTable = MoviesTable(dbConfig)
-                .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
-                .insert(2, "Movie 2", "Action", Date(2005, 5, 2))
+                .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
+                .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
         return Pair(dbConfig, moviesTable)
     }
 
     private fun prepareDataWithSingleMovie(): Pair<DbConfig, MoviesTable> {
         val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
         val moviesTable = MoviesTable(dbConfig)
-                .insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
+                .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
         return Pair(dbConfig, moviesTable)
     }
 }

@@ -9,6 +9,9 @@ import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.FunSpec
 import java.sql.Date
 import java.sql.Timestamp
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.regex.Pattern
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -37,18 +40,18 @@ class BlacklistMultipleTableIntegrationTest : FunSpec() {
             assertEquals(1, moviesRecords.size)
             assertEquals(1, moviesRecords[0]["MOVIE_ID"])
             assertEquals("MY VALUE", moviesRecords[0]["TITLE"])
-            assertEquals(Date(1999, 5, 2), moviesRecords[0]["RELEASE_DATE"])
+            assertEquals(LocalDate.of(1999, 5, 2), moviesRecords[0]["RELEASE_DATE"])
             assertTrue(pattern.matcher(moviesRecords[0]["GENRE"].toString()).matches())
 
             assertEquals(2,ratingRecords.size)
             assertEquals(1, ratingRecords[0]["MOVIE_ID"])
             assertEquals(1, ratingRecords[0]["USER_ID"])
             assertEquals(3, ratingRecords[0]["RATING"])
-            assertEquals(Timestamp(1509701304), ratingRecords[0]["CREATED_AT"])
+            assertEquals(LocalDateTime.ofEpochSecond(1509701304,0, ZoneOffset.UTC), ratingRecords[0]["CREATED_AT"])
             assertEquals(1, ratingRecords[1]["MOVIE_ID"])
             assertEquals(2, ratingRecords[1]["USER_ID"])
             assertEquals(3, ratingRecords[1]["RATING"])
-            assertEquals(Timestamp(1509701310), ratingRecords[1]["CREATED_AT"])
+            assertEquals(LocalDateTime.ofEpochSecond(1509701310,0, ZoneOffset.UTC), ratingRecords[1]["CREATED_AT"])
 
             closeResources(moviesTable, ratingsTable)
         }
@@ -61,10 +64,10 @@ class BlacklistMultipleTableIntegrationTest : FunSpec() {
 
     private fun prepareData(): Triple<DbConfig, MoviesTable, RatingsTable> {
         val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
-        val moviesTable = MoviesTable(dbConfig).insert(1, "Movie 1", "Drama", Date(1999, 5, 2))
+        val moviesTable = MoviesTable(dbConfig).insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
         val ratingsTable = RatingsTable(dbConfig)
-                            .insert(1, 1, 4, Timestamp(1509701304))
-                            .insert(1, 2, 5, Timestamp(1509701310))
+                            .insert(1, 1, 4, LocalDateTime.ofEpochSecond(1509701304,0, ZoneOffset.UTC))
+                            .insert(1, 2, 5, LocalDateTime.ofEpochSecond(1509701310,0, ZoneOffset.UTC))
         return Triple(dbConfig, moviesTable, ratingsTable)
     }
 }

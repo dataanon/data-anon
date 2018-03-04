@@ -2,7 +2,9 @@ package com.github.dataanon.support
 
 import com.github.dataanon.model.DbConfig
 import java.sql.Connection
+import java.sql.JDBCType
 import java.sql.Timestamp
+import java.time.LocalDateTime
 
 class RatingsTable(dbConfig: DbConfig) {
     private var conn: Connection = dbConfig.connection()
@@ -18,12 +20,12 @@ class RatingsTable(dbConfig: DbConfig) {
         conn.createStatement().executeUpdate(createMovieTable)
     }
 
-    fun insert(movieId: Int, userId: Int, rating: Int, createdAt: Timestamp) : RatingsTable {
+    fun insert(movieId: Int, userId: Int, rating: Int, createdAt: LocalDateTime) : RatingsTable {
         val stmt = conn.prepareStatement("INSERT INTO RATINGS(MOVIE_ID,USER_ID,RATING,CREATED_AT) VALUES(?,?,?,?)")
         stmt.setInt(1,movieId)
         stmt.setInt(2,userId)
         stmt.setInt(3,rating)
-        stmt.setTimestamp(4,createdAt)
+        stmt.setTimestamp(4,Timestamp.valueOf(createdAt))
         stmt.executeUpdate()
         stmt.close()
         return this
@@ -37,7 +39,7 @@ class RatingsTable(dbConfig: DbConfig) {
             record["MOVIE_ID"] = rs.getInt("MOVIE_ID")
             record["USER_ID"] = rs.getInt("USER_ID")
             record["RATING"] = rs.getInt("RATING")
-            record["CREATED_AT"] = rs.getTimestamp("CREATED_AT")
+            record["CREATED_AT"] = rs.getTimestamp("CREATED_AT").toLocalDateTime()
             records.add(record)
         }
         rs.close()

@@ -6,6 +6,8 @@ import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.FunSpec
 import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import kotlin.test.assertEquals
 
 class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
@@ -25,12 +27,12 @@ class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
             assertEquals(1, records[0]["MOVIE_ID"])
             assertEquals(1, records[0]["USER_ID"])
             assertEquals(3, records[0]["RATING"])
-            assertEquals(Timestamp(1509701304), records[0]["CREATED_AT"])
+            assertEquals(LocalDateTime.ofEpochSecond(1509701304,0, ZoneOffset.UTC), records[0]["CREATED_AT"])
 
             assertEquals(1, records[1]["MOVIE_ID"])
             assertEquals(2, records[1]["USER_ID"])
             assertEquals(3, records[1]["RATING"])
-            assertEquals(Timestamp(1509701310), records[1]["CREATED_AT"])
+            assertEquals(LocalDateTime.ofEpochSecond(1509701310,0, ZoneOffset.UTC), records[1]["CREATED_AT"])
 
             ratingsTable.close()
         }
@@ -39,8 +41,8 @@ class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
     private fun prepareData(): Pair<DbConfig, RatingsTable> {
         val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
         val ratingsTable = RatingsTable(dbConfig)
-                .insert(1, 1, 4, Timestamp(1509701304))
-                .insert(1, 2, 5, Timestamp(1509701310))
+                .insert(1, 1, 4, LocalDateTime.ofEpochSecond(1509701304,0, ZoneOffset.UTC))
+                .insert(1, 2, 5, LocalDateTime.ofEpochSecond(1509701310,0, ZoneOffset.UTC))
         return Pair(dbConfig, ratingsTable)
     }
 }
