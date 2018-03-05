@@ -7,8 +7,6 @@ import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.FunSpec
-import java.sql.Date
-import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset

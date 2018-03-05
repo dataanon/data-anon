@@ -3,7 +3,6 @@ package com.github.dataanon.support
 import com.github.dataanon.model.DbConfig
 import java.sql.Connection
 import java.sql.Date
-import java.sql.JDBCType
 import java.time.LocalDate
 
 class MoviesTable(dbConfig: DbConfig) {

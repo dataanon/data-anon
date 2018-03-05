@@ -9,7 +9,6 @@ import com.github.dataanon.support.MoviesTableHavingGenreSize10
 import com.github.dataanon.utils.DataAnonTestLogHandler
 import io.kotlintest.matchers.*
 import io.kotlintest.specs.FunSpec
-import java.sql.Date
 import java.time.LocalDate
 import java.util.logging.Level
 

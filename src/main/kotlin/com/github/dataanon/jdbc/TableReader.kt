@@ -1,7 +1,9 @@
 package com.github.dataanon.jdbc
 
 import com.github.dataanon.model.*
+import java.sql.Date
 import java.sql.ResultSet
+import java.sql.Timestamp
 import java.util.logging.Logger
 
 class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Record> {
@@ -31,7 +33,15 @@ class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Recor
 
     private fun toField(columnName: String)     = Field(columnName, columnValue(columnName))
 
-    private fun columnValue(columnName: String) = rs.getObject(columnName) ?: NullValue
+    private fun columnValue(columnName: String): Any {
+        val value = rs.getObject(columnName)
+        return when (value) {
+            is Date -> value.toLocalDate()
+            is Timestamp -> value.toLocalDateTime()
+            else -> value ?: NullValue
+        }
+
+    }
 
     private fun getTotalRecords(): Int {
         val rs = conn.createStatement().executeQuery(table.generateCountQuery())

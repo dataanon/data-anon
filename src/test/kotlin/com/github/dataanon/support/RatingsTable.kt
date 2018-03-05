@@ -2,7 +2,6 @@ package com.github.dataanon.support
 
 import com.github.dataanon.model.DbConfig
 import java.sql.Connection
-import java.sql.JDBCType
 import java.sql.Timestamp
 import java.time.LocalDateTime
 

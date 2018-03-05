@@ -5,7 +5,6 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
-import java.sql.Date
 import java.time.LocalDate
 
 class TableReaderIntegrationTest : FunSpec() {

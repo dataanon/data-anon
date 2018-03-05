@@ -5,7 +5,6 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.support.RatingsTable
 import io.kotlintest.specs.FunSpec
-import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import kotlin.test.assertEquals

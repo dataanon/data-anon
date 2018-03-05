@@ -5,7 +5,6 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.specs.FunSpec
-import java.sql.Date
 import java.time.LocalDate
 import java.util.regex.Pattern
 import kotlin.test.assertEquals

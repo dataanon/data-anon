@@ -1,16 +1,13 @@
 package com.github.dataanon.jdbc
 
-import com.github.dataanon.model.DbConfig
-import com.github.dataanon.model.Field
-import com.github.dataanon.model.Record
-import com.github.dataanon.model.Table
+import com.github.dataanon.model.*
 import com.github.dataanon.utils.ProgressBarGenerator
 import org.reactivestreams.Subscription
 import reactor.core.publisher.BaseSubscriber
 import reactor.core.publisher.SignalType
-import java.sql.BatchUpdateException
-import java.sql.PreparedStatement
-import java.sql.Types
+import java.sql.*
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -56,9 +53,13 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
     }
 
     private fun writeToStatement(index: Int, field: Field<Any>) {
-        when {
-            field.isNull() -> stmt.setNull(index + 1, Types.NULL)
-            else -> stmt.setObject(index + 1, field.newValue)
+        val columnIndex = index + 1
+        val newValue = field.newValue
+        when (newValue) {
+            is NullValue -> stmt.setNull(columnIndex, Types.NULL)
+            is LocalDate -> stmt.setDate(columnIndex, Date.valueOf(newValue))
+            is LocalDateTime -> stmt.setTimestamp(columnIndex, Timestamp.valueOf(newValue))
+            else -> stmt.setObject(columnIndex, newValue)
         }
     }
 
@@ -100,7 +101,7 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
     override fun hookFinally(type: SignalType?) {
         progressBar?.stop()
         if (stmt != null) stmt.close()
-        if (conn != null) conn.close()
+        conn?.close()
     }
 
 }
