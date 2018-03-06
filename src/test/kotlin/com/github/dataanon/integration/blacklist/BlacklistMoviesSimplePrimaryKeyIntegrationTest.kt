@@ -1,7 +1,9 @@
 package com.github.dataanon.integration.blacklist
 
+import com.github.dataanon.Matchers
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.model.DbConfig
+import com.github.dataanon.strategy.datetime.DateRandomDelta
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.matchers.match
@@ -11,7 +13,7 @@ import io.kotlintest.specs.FunSpec
 import java.time.LocalDate
 
 
-class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
+class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec(), Matchers {
 
     init {
         test("should do blacklist anonymization for single record with simple primaryKey"){
@@ -22,6 +24,7 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
+                        anonymize("RELEASE_DATE").using(DateRandomDelta(10))
                     }.execute(progressBarEnabled = false)
 
             val records = moviesTable.findAll()
@@ -29,7 +32,7 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
             records.size shouldBe 1
             records[0]["MOVIE_ID"] shouldBe 1
             records[0]["TITLE"] shouldBe "MY VALUE"
-            records[0]["RELEASE_DATE"] shouldBe LocalDate.of(1999, 5, 2)
+            (records[0]["RELEASE_DATE"] as LocalDate) should beIn(LocalDate.of(1999, 5, 2).minusDays(10)..LocalDate.of(1999, 5, 2).plusDays(10))
             records[0]["GENRE"].toString() should match("[a-zA-Z]+")
 
             moviesTable.close()
@@ -42,6 +45,7 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(FixedString("MY VALUE"))
                         anonymize("GENRE")
+                        anonymize("RELEASE_DATE").using(DateRandomDelta(5))
                     }.execute(progressBarEnabled = false)
 
             val records = moviesTable.findAll()
@@ -49,12 +53,12 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
             records.size shouldBe 2
             records[0]["MOVIE_ID"] shouldBe 1
             records[0]["TITLE"] shouldBe "MY VALUE"
-            records[0]["RELEASE_DATE"] shouldBe LocalDate.of(1999, 5, 2)
+            (records[0]["RELEASE_DATE"] as LocalDate) should beIn(LocalDate.of(1999, 5, 2).minusDays(5)..LocalDate.of(1999, 5, 2).plusDays(5))
             records[0]["GENRE"].toString() should match("[a-zA-Z]+")
 
             records[1]["MOVIE_ID"] shouldBe 2
             records[1]["TITLE"] shouldBe "MY VALUE"
-            records[1]["RELEASE_DATE"] shouldBe LocalDate.of(2005, 5, 2)
+            (records[1]["RELEASE_DATE"] as LocalDate) should beIn(LocalDate.of(2005, 5, 2).minusDays(5)..LocalDate.of(2005, 5, 2).plusDays(5))
             records[1]["GENRE"].toString() should match("[a-zA-Z]+")
 
             moviesTable.close()
