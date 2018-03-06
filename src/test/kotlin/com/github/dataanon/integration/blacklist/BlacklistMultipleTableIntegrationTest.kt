@@ -6,13 +6,13 @@ import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import com.github.dataanon.support.RatingsTable
+import io.kotlintest.matchers.match
+import io.kotlintest.matchers.should
+import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.regex.Pattern
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class BlacklistMultipleTableIntegrationTest : FunSpec() {
 
@@ -20,7 +20,6 @@ class BlacklistMultipleTableIntegrationTest : FunSpec() {
 
         test("should do blacklist anonymization for multiple tables"){
             val (dbConfig, moviesTable, ratingsTable) = prepareData()
-            val pattern                               = Pattern.compile("[a-zA-Z]+")
 
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
@@ -35,21 +34,23 @@ class BlacklistMultipleTableIntegrationTest : FunSpec() {
             val moviesRecords = moviesTable.findAll()
             val ratingRecords = ratingsTable.findAll()
 
-            assertEquals(1, moviesRecords.size)
-            assertEquals(1, moviesRecords[0]["MOVIE_ID"])
-            assertEquals("MY VALUE", moviesRecords[0]["TITLE"])
-            assertEquals(LocalDate.of(1999, 5, 2), moviesRecords[0]["RELEASE_DATE"])
-            assertTrue(pattern.matcher(moviesRecords[0]["GENRE"].toString()).matches())
 
-            assertEquals(2,ratingRecords.size)
-            assertEquals(1, ratingRecords[0]["MOVIE_ID"])
-            assertEquals(1, ratingRecords[0]["USER_ID"])
-            assertEquals(3, ratingRecords[0]["RATING"])
-            assertEquals(LocalDateTime.ofEpochSecond(1509701304,0, ZoneOffset.UTC), ratingRecords[0]["CREATED_AT"])
-            assertEquals(1, ratingRecords[1]["MOVIE_ID"])
-            assertEquals(2, ratingRecords[1]["USER_ID"])
-            assertEquals(3, ratingRecords[1]["RATING"])
-            assertEquals(LocalDateTime.ofEpochSecond(1509701310,0, ZoneOffset.UTC), ratingRecords[1]["CREATED_AT"])
+            moviesRecords.size shouldBe 1
+            moviesRecords[0]["MOVIE_ID"] shouldBe 1
+            moviesRecords[0]["TITLE"] shouldBe "MY VALUE"
+            moviesRecords[0]["RELEASE_DATE"] shouldBe LocalDate.of(1999, 5, 2)
+            moviesRecords[0]["GENRE"].toString() should match("[a-zA-Z]+")
+
+            ratingRecords.size shouldBe 2
+            ratingRecords[0]["MOVIE_ID"] shouldBe 1
+            ratingRecords[0]["USER_ID"] shouldBe 1
+            ratingRecords[0]["RATING"] shouldBe 3
+            ratingRecords[0]["CREATED_AT"] shouldBe LocalDateTime.ofEpochSecond(1509701304, 0, ZoneOffset.UTC)
+
+            ratingRecords[1]["MOVIE_ID"] shouldBe 1
+            ratingRecords[1]["USER_ID"] shouldBe 2
+            ratingRecords[1]["RATING"] shouldBe 3
+            ratingRecords[1]["CREATED_AT"] shouldBe LocalDateTime.ofEpochSecond(1509701310, 0, ZoneOffset.UTC)
 
             closeResources(moviesTable, ratingsTable)
         }

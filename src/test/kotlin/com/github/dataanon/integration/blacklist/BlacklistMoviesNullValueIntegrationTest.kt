@@ -5,11 +5,11 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.strategy.string.RandomAlphabetic
 import com.github.dataanon.support.MoviesTable
+import io.kotlintest.matchers.match
+import io.kotlintest.matchers.should
+import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.time.LocalDate
-import java.util.regex.Pattern
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class BlacklistMoviesNullValueIntegrationTest : FunSpec() {
 
@@ -17,7 +17,6 @@ class BlacklistMoviesNullValueIntegrationTest : FunSpec() {
         test("should do blacklist anonymization for multiple records with movie genre as null and anonymization strategy is provided for null field") {
 
             val (dbConfig, moviesTable) = prepareDataWith2Movies()
-            val alphabeticPattern       = Pattern.compile("[a-zA-Z]+")
 
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
@@ -27,16 +26,16 @@ class BlacklistMoviesNullValueIntegrationTest : FunSpec() {
 
             val records = moviesTable.findAll()
 
-            assertEquals(2, records.size)
-            assertEquals(1, records[0]["MOVIE_ID"])
-            assertEquals("MY VALUE", records[0]["TITLE"])
-            assertEquals(LocalDate.of(1999, 5, 2), records[0]["RELEASE_DATE"])
-            assertEquals(null, records[0]["GENRE"])
+            records.size shouldBe 2
+            records[0]["MOVIE_ID"] shouldBe 1
+            records[0]["TITLE"] shouldBe "MY VALUE"
+            records[0]["RELEASE_DATE"] shouldBe LocalDate.of(1999, 5, 2)
+            records[0]["GENRE"] shouldBe null
 
-            assertEquals(2, records[1]["MOVIE_ID"])
-            assertEquals("MY VALUE", records[1]["TITLE"])
-            assertEquals(LocalDate.of(2005, 5, 2), records[1]["RELEASE_DATE"])
-            assertTrue(alphabeticPattern.matcher(records[1]["GENRE"].toString()).matches())
+            records[1]["MOVIE_ID"] shouldBe 2
+            records[1]["TITLE"] shouldBe "MY VALUE"
+            records[1]["RELEASE_DATE"] shouldBe LocalDate.of(2005, 5, 2)
+            records[1]["GENRE"].toString() should match("[a-zA-Z]+")
 
             moviesTable.close()
         }
@@ -44,7 +43,6 @@ class BlacklistMoviesNullValueIntegrationTest : FunSpec() {
         test("should do blacklist anonymization for multiple records with movie genre as null") {
 
             val (dbConfig, moviesTable) = prepareDataWith2Movies()
-            val alphabeticPattern       = Pattern.compile("[a-zA-Z]+")
 
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
@@ -54,16 +52,16 @@ class BlacklistMoviesNullValueIntegrationTest : FunSpec() {
 
             val records = moviesTable.findAll()
 
-            assertEquals(2, records.size)
-            assertEquals(1, records[0]["MOVIE_ID"])
-            assertEquals("MY VALUE", records[0]["TITLE"])
-            assertEquals(LocalDate.of(1999, 5, 2), records[0]["RELEASE_DATE"])
-            assertEquals(null, records[0]["GENRE"])
+            records.size shouldBe 2
+            records[0]["MOVIE_ID"] shouldBe 1
+            records[0]["TITLE"] shouldBe "MY VALUE"
+            records[0]["RELEASE_DATE"] shouldBe LocalDate.of(1999, 5, 2)
+            records[0]["GENRE"] shouldBe null
 
-            assertEquals(2, records[1]["MOVIE_ID"])
-            assertEquals("MY VALUE", records[1]["TITLE"])
-            assertEquals(LocalDate.of(2005, 5, 2), records[1]["RELEASE_DATE"])
-            assertTrue(alphabeticPattern.matcher(records[1]["GENRE"].toString()).matches())
+            records[1]["MOVIE_ID"] shouldBe 2
+            records[1]["TITLE"] shouldBe "MY VALUE"
+            records[1]["RELEASE_DATE"] shouldBe LocalDate.of(2005, 5, 2)
+            records[1]["GENRE"].toString() should match("[a-zA-Z]+")
 
             moviesTable.close()
         }
