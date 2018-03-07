@@ -1,7 +1,9 @@
 package com.github.dataanon.integration.blacklist
 
+import com.github.dataanon.Matchers
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.model.DbConfig
+import com.github.dataanon.strategy.datetime.DateTimeRandomDelta
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
@@ -10,11 +12,12 @@ import io.kotlintest.matchers.match
 import io.kotlintest.matchers.should
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-class BlacklistMultipleTableIntegrationTest : FunSpec() {
+class BlacklistMultipleTableIntegrationTest : FunSpec(), Matchers {
 
     init {
 
@@ -28,6 +31,7 @@ class BlacklistMultipleTableIntegrationTest : FunSpec() {
                     }
                     .table("RATINGS", listOf("MOVIE_ID", "USER_ID")) {
                         anonymize("RATING").using(FixedInt(3))
+                        anonymize("CREATED_AT").using(DateTimeRandomDelta(Duration.ofSeconds(250)))
                     }
                     .execute(progressBarEnabled = false)
 
@@ -45,12 +49,14 @@ class BlacklistMultipleTableIntegrationTest : FunSpec() {
             ratingRecords[0]["MOVIE_ID"] shouldBe 1
             ratingRecords[0]["USER_ID"] shouldBe 1
             ratingRecords[0]["RATING"] shouldBe 3
-            ratingRecords[0]["CREATED_AT"] shouldBe LocalDateTime.ofEpochSecond(1509701304, 0, ZoneOffset.UTC)
+            val timestamp1 = LocalDateTime.ofEpochSecond(1509701304, 0, ZoneOffset.UTC)
+            (ratingRecords[0]["CREATED_AT"] as LocalDateTime) should beIn(timestamp1.minusSeconds(250)..timestamp1.plusSeconds(250))
 
             ratingRecords[1]["MOVIE_ID"] shouldBe 1
             ratingRecords[1]["USER_ID"] shouldBe 2
             ratingRecords[1]["RATING"] shouldBe 3
-            ratingRecords[1]["CREATED_AT"] shouldBe LocalDateTime.ofEpochSecond(1509701310, 0, ZoneOffset.UTC)
+            val timestamp2 = LocalDateTime.ofEpochSecond(1509701310, 0, ZoneOffset.UTC)
+            (ratingRecords[0]["CREATED_AT"] as LocalDateTime) should beIn(timestamp2.minusSeconds(250)..timestamp2.plusSeconds(250))
 
             closeResources(moviesTable, ratingsTable)
         }

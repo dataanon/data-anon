@@ -213,6 +213,7 @@ Read more about [blacklist and whitelist here](http://sunitspace.blogspot.in/201
 | String                | RandomFormattedString         | replace with string build with exactly same format (number replacing number, lowercase replacing lowercase alphabets & uppercase replacing uppercase alphabets |
 | String                | RandomString                  | replace with random generation of string of any char set |
 | String                | StringTemplate                | replace with string generated using template specified |
+| Date                  | DateRandomDelta               | current date is changed randomly within given range of days |
 | Any                   | PickFromList                  | replaces value with specified type and randomly picked from list of specified values |
 
 ## Write your own Anonymization strategy

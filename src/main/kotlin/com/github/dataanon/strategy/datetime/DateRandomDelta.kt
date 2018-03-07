@@ -6,16 +6,14 @@ import com.github.dataanon.strategy.AnonymizationStrategy
 import java.time.LocalDate
 import java.util.Random
 
-class DateRandomDelta(val days: Int): AnonymizationStrategy<LocalDate> {
+class DateRandomDelta(private val days: Int): AnonymizationStrategy<LocalDate> {
+
     override fun anonymize(field: Field<LocalDate>, record: Record): LocalDate {
-        val randomInt = rand(-days,days)
-        return when {
-            randomInt > 0 -> field.oldValue.plusDays(randomInt.toLong())
-            randomInt < 0 -> field.oldValue.minusDays(-randomInt.toLong())
-            else -> field.oldValue
+        val randomInt = Random().nextInt(days).toLong()
+        return when (Random().nextBoolean()) {
+            true -> field.oldValue.plusDays(randomInt)
+            false -> field.oldValue.minusDays(randomInt)
         }
     }
-
-    private fun rand(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
 
 }

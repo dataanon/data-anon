@@ -20,7 +20,9 @@ class DateRandomDeltaTest : FunSpec(), Matchers {
             val myTable = table(
                 headers("days"),
                 row(10),
-                row(100)
+                row(53),
+                row(100),
+                row(3450)
             )
             forAll(myTable) { days ->
                 val dateOfBirth = LocalDate.of(1999, 4, 4)
