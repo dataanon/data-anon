@@ -216,6 +216,7 @@ Read more about [blacklist and whitelist here](http://sunitspace.blogspot.in/201
 | Date                  | DateRandomDelta               | date field is changed randomly within given range of days |
 | Timestamp             | DateTimeRandomDelta           | timestamp (datetime) field is changed randomly within given duration |
 | Any                   | PickFromList                  | replaces value with specified type and randomly picked from list of specified values |
+| Any                   | PickFromDatabase              | replaces value with specified type and randomly picked from list of specified values fetched from database |
 
 ## Write your own Anonymization strategy
 

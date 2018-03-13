@@ -1,7 +1,8 @@
-package com.github.dataanon.strategy
+package com.github.dataanon.strategy.list
 
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
+import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.utils.RandomSampling
 
 class PickFromList<T: Any>(private val values: List<T>) : AnonymizationStrategy<T>, RandomSampling {

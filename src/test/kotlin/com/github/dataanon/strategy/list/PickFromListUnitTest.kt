@@ -1,9 +1,9 @@
-package com.github.dataanon.strategy.string
+package com.github.dataanon.strategy.list
 
 import com.github.dataanon.Matchers
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import com.github.dataanon.strategy.PickFromList
+import com.github.dataanon.strategy.list.PickFromList
 import io.kotlintest.matchers.should
 import io.kotlintest.matchers.shouldThrow
 import io.kotlintest.specs.FunSpec

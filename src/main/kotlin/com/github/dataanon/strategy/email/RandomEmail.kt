@@ -3,7 +3,7 @@ package com.github.dataanon.strategy.email
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.AnonymizationStrategy
-import com.github.dataanon.strategy.PickFromFile
+import com.github.dataanon.strategy.list.PickFromFile
 import com.github.dataanon.strategy.name.RandomFirstName
 
 class RandomEmail(sourceFilePath: String = RandomFirstName::class.java.getResource("/data/first_names.dat").path,

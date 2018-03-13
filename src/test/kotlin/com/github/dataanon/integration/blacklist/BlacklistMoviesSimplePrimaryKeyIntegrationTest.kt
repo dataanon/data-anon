@@ -4,6 +4,7 @@ import com.github.dataanon.Matchers
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.datetime.DateRandomDelta
+import com.github.dataanon.strategy.list.PickFromDatabase
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.matchers.match
@@ -23,7 +24,7 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec(), Matchers {
             Blacklist(dbConfig)
                     .table("MOVIES", listOf("MOVIE_ID")) {
                         anonymize("TITLE").using(FixedString("MY VALUE"))
-                        anonymize("GENRE")
+                        anonymize("GENRE").using(PickFromDatabase<String>(dbConfig,"SELECT DISTINCT GENRE FROM MOVIES"))
                         anonymize("RELEASE_DATE").using(DateRandomDelta(10))
                     }.execute(progressBarEnabled = false)
 
@@ -33,7 +34,7 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec(), Matchers {
             records[0]["MOVIE_ID"] shouldBe 1
             records[0]["TITLE"] shouldBe "MY VALUE"
             (records[0]["RELEASE_DATE"] as LocalDate) should beIn(LocalDate.of(1999, 5, 2).minusDays(10)..LocalDate.of(1999, 5, 2).plusDays(10))
-            records[0]["GENRE"].toString() should match("[a-zA-Z]+")
+            records[0]["GENRE"].toString() should beIn(listOf("Drama"))
 
             moviesTable.close()
         }

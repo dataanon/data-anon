@@ -1,7 +1,8 @@
-package com.github.dataanon.strategy
+package com.github.dataanon.strategy.list
 
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
+import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.utils.FlatFileContentStore
 import com.github.dataanon.utils.RandomSampling
 import kotlin.reflect.KClass
