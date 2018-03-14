@@ -23,10 +23,11 @@ fun main(args: Array<String>) {
                 limit(1_00_000)             // useful for testing (optional)
 
                 // pass through fields, leave it as is (do not anonymize)
-                whitelist("MOVIE_ID","RELEASE_DATE")
+                whitelist("MOVIE_ID")
 
                 // field by field decide the anonymization strategy
-                anonymize("GENRE").using(FixedString("Action"))
+                anonymize("GENRE").using(PickFromDatabase<String>(source,"SELECT DISTINCT GENRE FROM MOVIES"))
+                anonymize("RELEASE_DATE").using(DateRandomDelta(10))
 
                 // write your own in-line strategy
                 anonymize("TITLE").using(object: AnonymizationStrategy<String>{
@@ -63,10 +64,11 @@ public class Anonymizer {
                 table.limit(1_00);                  // useful for testing (optional)
 
                 // pass through fields, leave it as is (do not anonymize)
-                table.whitelist("MOVIE_ID", "RELEASE_DATE");
+                table.whitelist("MOVIE_ID");
 
                 // field by field decide the anonymization strategy
-                table.anonymize("GENRE").using(new FixedString("Action"));
+                table.anonymize("GENRE").using(new PickFromDatabase<String>(source,"SELECT DISTINCT GENRE FROM MOVIES"));
+                table.anonymize("RELEASE_DATE").using(new DateRandomDelta(10));
 
                 // write your own in-line strategy
                 table.anonymize("TITLE").using((AnonymizationStrategy<String>) (field, record) -> "MY MOVIE " + record.getRowNum());
@@ -114,12 +116,12 @@ $ java -jar target/data-anon.jar
 1. Extend `DbConfig` and implement `connection` method for special handling while creating database connection.
 1. Write your [own anonymization strategy](#write-your-own-anonymization-strategy) for specific cases.
 1. `null` values are kept `null` after anonymization.
+1. Use `PickFromDatabase` strategy for picking values for existing values and `enum` type values.
 
 ----------------------
 
 ## Roadmap
 
-1. Support for anonymization strategy for Date and DateTime/Timestamp related data type. As of now you can [write you own strategy](#write-your-own-anonymization-strategy).
 1. Support default strategy based on data type. As of now you need to specify anonymization strategy for each field.
 1. MongoDB database.
 
@@ -129,16 +131,17 @@ Please use Github [issues](https://github.com/dataanon/data-anon/issues) to shar
 
 ## Changelog
 
-#### 1.0.0-SNAPSHOT (Final version to be released soon...)
+#### 0.9.3 (Mar 214, 2018)
 
 1. Error handling using logs. All messages logged in `dataaonn.log` file. Using `logging.properties` control log messages.
-
+1. Added date and timestamp related anonymization strategies - DateRandomDelta & DateTimeRandomDelta
+1. PickFromDatabase strategy added to support enum types fields picked up from database column. Useful for names type fields as well.
 
 #### 0.9.1 (Feb 26, 2018)
 
 1. First initial release with RDBMS support
-2. First class support for table parallelization providing better performance
-3. Easy to use DSL built using Kotlin
+1. First class support for table parallelization providing better performance
+1. Easy to use DSL built using Kotlin
 
 ----------------------
 
