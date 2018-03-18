@@ -83,7 +83,7 @@ public class Anonymizer {
                 table.anonymize("RATING").using(new FixedDouble(4.3));
                 return Unit.INSTANCE;
             })
-            .execute(true);
+            .execute();
     }
 }
 ```

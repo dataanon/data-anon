@@ -17,6 +17,7 @@ abstract class Strategy {
     private val logger = Logger.getLogger(Strategy::class.java.name)
     protected val tables = mutableListOf<Table>()
 
+    @JvmOverloads
     fun execute(progressBarEnabled: Boolean = true) {
         val inputStream = Strategy::class.java.classLoader.getResourceAsStream("logging.properties")
         LogManager.getLogManager().readConfiguration(inputStream)
