@@ -3,5 +3,6 @@ script: mvn test
 jdk:
   - oraclejdk8
   - oraclejdk9
+  - oraclejdk10
 after_success:
   - mvn jacoco:report
