@@ -9,11 +9,10 @@ class WhitelistTable(name: String) : Table(name) {
 
     override fun generateWriteQuery(): String =
             StringBuilder("INSERT INTO $name(").apply {
-                append(whitelist.joinToString(", ")).append(", ")
-                append(columnNames().joinToString(", "))
+                val columns = whitelist + columnNames()
+                append(columns.joinToString(", "))
                 append(") VALUES(")
-                append(whitelist.joinToString(",") { "?" }).append(",")
-                append(columnNames().joinToString(",") { "?" })
+                append(columns.joinToString(",") { "?" })
                 append(")")
             }.toString()
 
