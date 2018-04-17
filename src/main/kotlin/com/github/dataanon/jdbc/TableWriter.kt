@@ -89,7 +89,7 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
         }
         if (errorCount > table.allowedErrors) {
             logger.severe { "Total number of errors occurred is $errorCount for table ${table.name} exceeds allowed ${table.allowedErrors} ." }
-            throw Exception("Too many errors while processing table ${table.name} exceeds ${table.allowedErrors} hence terminating table processing.")
+            throw Exception("Too many errors while processing table ${table.name}. Exceeds ${table.allowedErrors} errors hence terminating table processing.")
         }
     }
 

@@ -184,7 +184,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
             errors[2].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
             errors[3].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
             errors[4].message should haveSubstring("Total number of errors occurred is 4 for table MOVIES exceeds allowed 3")
-            errors[5].message should haveSubstring("Too many errors while processing table MOVIES exceeds 3 hence terminating table processing")
+            errors[5].message should haveSubstring("Too many errors while processing table MOVIES. Exceeds 3 errors hence terminating table processing.")
 
             destTable.close()
             sourceTable.close()
