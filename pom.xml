@@ -18,7 +18,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.2.31</kotlin.version>
+        <kotlin.version>1.2.40</kotlin.version>
         <kotlin.test.version>2.0.7</kotlin.test.version>
         <version.jacoco>0.8.1</version.jacoco>
     </properties>
@@ -109,7 +109,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.196</version>
+            <version>1.4.197</version>
             <scope>test</scope>
         </dependency>
         <dependency>
