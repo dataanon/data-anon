@@ -1,7 +1,7 @@
 package com.github.dataanon.model
 
 import com.github.dataanon.strategy.AnonymizationStrategy
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
 class WhitelistTableUnitTest : FunSpec() {

@@ -3,12 +3,12 @@ package com.github.dataanon.strategy.datetime
 import com.github.dataanon.Matchers
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import io.kotlintest.matchers.should
-import io.kotlintest.properties.forAll
-import io.kotlintest.properties.headers
-import io.kotlintest.properties.row
-import io.kotlintest.properties.table
+import io.kotlintest.should
 import io.kotlintest.specs.FunSpec
+import io.kotlintest.tables.forAll
+import io.kotlintest.tables.headers
+import io.kotlintest.tables.row
+import io.kotlintest.tables.table
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset

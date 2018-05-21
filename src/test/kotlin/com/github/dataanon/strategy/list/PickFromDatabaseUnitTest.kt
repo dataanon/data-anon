@@ -5,8 +5,8 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
 import com.github.dataanon.support.MoviesTable
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldThrow
+import io.kotlintest.should
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
 import java.time.LocalDate
 

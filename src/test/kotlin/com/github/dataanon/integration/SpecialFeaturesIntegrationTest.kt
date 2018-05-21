@@ -7,7 +7,11 @@ import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import com.github.dataanon.support.MoviesTableHavingGenreSize10
 import com.github.dataanon.utils.DataAnonTestLogHandler
-import io.kotlintest.matchers.*
+import io.kotlintest.matchers.beLessThan
+import io.kotlintest.matchers.haveSubstring
+import io.kotlintest.matchers.match
+import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.time.LocalDate
 import java.util.logging.Level

@@ -3,7 +3,7 @@ package com.github.dataanon.strategy.number
 import com.github.dataanon.Matchers
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import io.kotlintest.matchers.should
+import io.kotlintest.should
 import io.kotlintest.specs.FunSpec
 
 class RandomIntUnitTest : FunSpec(), Matchers {

@@ -1,9 +1,9 @@
 package com.github.dataanon.utils
 
 import com.github.dataanon.Matchers
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.matchers.shouldThrow
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
 
 class RandomUtilsUnitTest : FunSpec(), Matchers {
@@ -45,7 +45,7 @@ class RandomUtilsUnitTest : FunSpec(), Matchers {
             random should beIn(100.0..250.0)
         }
 
-        test("should throw IllegalArgumentException") {
+        test("should throw IllegalArgumentException 1") {
             shouldThrow<IllegalArgumentException> {
                 RandomUtils.generateRandomDouble(from = 10.0, to = 0.0)
             }
@@ -61,7 +61,7 @@ class RandomUtilsUnitTest : FunSpec(), Matchers {
             random should beIn (100..250)
         }
 
-        test("should throw IllegalArgumentException") {
+        test("should throw IllegalArgumentException 2") {
             shouldThrow<IllegalArgumentException> {
                 RandomUtils.generateRandomInt(from = 10, to = 0)
             }

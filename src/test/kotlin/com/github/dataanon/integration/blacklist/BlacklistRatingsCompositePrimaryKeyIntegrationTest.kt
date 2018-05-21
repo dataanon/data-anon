@@ -4,7 +4,7 @@ import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.support.RatingsTable
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.time.LocalDateTime
 import java.time.ZoneOffset

@@ -3,7 +3,7 @@ package com.github.dataanon.jdbc
 import com.github.dataanon.model.BlacklistTable
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.support.MoviesTable
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.time.LocalDate
 

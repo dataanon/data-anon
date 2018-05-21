@@ -3,8 +3,8 @@ package com.github.dataanon.strategy.name
 import com.github.dataanon.Matchers
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldThrow
+import io.kotlintest.should
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
 import java.io.File
 

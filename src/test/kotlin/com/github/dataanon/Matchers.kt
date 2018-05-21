@@ -1,7 +1,8 @@
 package com.github.dataanon
 
-import io.kotlintest.matchers.Matcher
-import io.kotlintest.matchers.Result
+import io.kotlintest.Matcher
+import io.kotlintest.Result
+
 
 interface Matchers {
 

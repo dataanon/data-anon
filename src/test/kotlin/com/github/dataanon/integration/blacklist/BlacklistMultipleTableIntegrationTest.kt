@@ -9,8 +9,8 @@ import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import com.github.dataanon.support.RatingsTable
 import io.kotlintest.matchers.match
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.time.Duration
 import java.time.LocalDate
@@ -50,13 +50,13 @@ class BlacklistMultipleTableIntegrationTest : FunSpec(), Matchers {
             ratingRecords[0]["USER_ID"] shouldBe 1
             ratingRecords[0]["RATING"] shouldBe 3
             val timestamp1 = LocalDateTime.ofEpochSecond(1509701304, 0, ZoneOffset.UTC)
-            (ratingRecords[0]["CREATED_AT"] as LocalDateTime) should beIn(timestamp1.minusSeconds(250)..timestamp1.plusSeconds(250))
+            (ratingRecords[0]["CREATED_AT"] as LocalDateTime) should beIn(timestamp1.minusSeconds(300)..timestamp1.plusSeconds(300))
 
             ratingRecords[1]["MOVIE_ID"] shouldBe 1
             ratingRecords[1]["USER_ID"] shouldBe 2
             ratingRecords[1]["RATING"] shouldBe 3
             val timestamp2 = LocalDateTime.ofEpochSecond(1509701310, 0, ZoneOffset.UTC)
-            (ratingRecords[0]["CREATED_AT"] as LocalDateTime) should beIn(timestamp2.minusSeconds(250)..timestamp2.plusSeconds(250))
+            (ratingRecords[0]["CREATED_AT"] as LocalDateTime) should beIn(timestamp2.minusSeconds(300)..timestamp2.plusSeconds(300))
 
             closeResources(moviesTable, ratingsTable)
         }

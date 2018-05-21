@@ -3,8 +3,8 @@ package com.github.dataanon.strategy.name
 import com.github.dataanon.Matchers
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldEqual
+import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.io.File
 
@@ -33,7 +33,7 @@ class RandomFullNameUnitTest : FunSpec(), Matchers {
             val anonymized     = randomFullName.anonymize(field, emptyRecord)
             val nameComponents = anonymized.split(" ")
 
-            nameComponents.size shouldEqual 2
+            nameComponents.size shouldBe 2
         }
 
         test("should return random full name from provided sources") {
@@ -60,7 +60,7 @@ class RandomFullNameUnitTest : FunSpec(), Matchers {
             val anonymized     = randomFullName.anonymize(field, emptyRecord)
             val nameComponents = anonymized.split(" ")
 
-            nameComponents.size shouldEqual 2
+            nameComponents.size shouldBe 2
         }
     }
 }

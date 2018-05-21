@@ -3,9 +3,9 @@ package com.github.dataanon.strategy.string
 import com.github.dataanon.Matchers
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldEqual
-import io.kotlintest.matchers.shouldThrow
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
 import java.io.File
 
@@ -20,7 +20,7 @@ class StringTemplateUnitTest : FunSpec(), Matchers {
 
             val  anonymized = stringTemplate.anonymize(field, Record(listOf(), 100))
 
-            anonymized shouldEqual "user_100"
+            anonymized shouldBe "user_100"
         }
 
         test("should return a string after evaluating row number with field value") {
@@ -29,7 +29,7 @@ class StringTemplateUnitTest : FunSpec(), Matchers {
 
             val  anonymized = stringTemplate.anonymize(field, Record(listOf(), 100))
 
-            anonymized shouldEqual "John_100"
+            anonymized shouldBe "John_100"
         }
 
         test("should return a string with random full name consisting of first name and last name separated by underscore") {
@@ -39,7 +39,7 @@ class StringTemplateUnitTest : FunSpec(), Matchers {
             val anonymized      = stringTemplate.anonymize(field, emptyRecord)
             val nameComponents  = anonymized.split("_")
 
-            nameComponents.size shouldEqual 2
+            nameComponents.size shouldBe 2
         }
 
         test("should return a string with random first name and last name") {
@@ -69,7 +69,7 @@ class StringTemplateUnitTest : FunSpec(), Matchers {
             val field          = Field("user_name", "John")
 
             val anonymized      = stringTemplate.anonymize(field, emptyRecord)
-            anonymized shouldEqual "John@thoughtworks.com"
+            anonymized shouldBe "John@thoughtworks.com"
         }
 
         test("should return a random alphabetic string with length based on field value") {
@@ -77,7 +77,7 @@ class StringTemplateUnitTest : FunSpec(), Matchers {
             val field          = Field("user_name", "John")
 
             val anonymized      = stringTemplate.anonymize(field, emptyRecord)
-            anonymized.length  shouldEqual 4
+            anonymized.length  shouldBe 4
         }
 
         test("should return a random alphabetic string") {
@@ -93,7 +93,7 @@ class StringTemplateUnitTest : FunSpec(), Matchers {
             val field          = Field("user_name", "John")
 
             val anonymized      = stringTemplate.anonymize(field, emptyRecord)
-            anonymized.length  shouldEqual 4
+            anonymized.length  shouldBe 4
         }
 
         test("should throw IllegalArgumentException given template is blank"){

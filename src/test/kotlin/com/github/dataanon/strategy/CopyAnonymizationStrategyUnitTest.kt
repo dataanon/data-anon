@@ -2,7 +2,7 @@ package com.github.dataanon.strategy
 
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import io.kotlintest.matchers.shouldEqual
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
 class CopyAnonymizationStrategyUnitTest : FunSpec() {
@@ -16,7 +16,7 @@ class CopyAnonymizationStrategyUnitTest : FunSpec() {
             val copyAnonymizationStrategy  = CopyAnonymizationStrategy<String>()
             val anonymized                 = copyAnonymizationStrategy.anonymize(field, emptyRecord)
 
-            anonymized shouldEqual "John"
+            anonymized shouldBe "John"
         }
 
         test("should return Double value as is given CopyAnonymizationStrategy") {
@@ -25,7 +25,7 @@ class CopyAnonymizationStrategyUnitTest : FunSpec() {
             val copyAnonymizationStrategy  = CopyAnonymizationStrategy<Double>()
             val anonymized                 = copyAnonymizationStrategy.anonymize(field, emptyRecord)
 
-            anonymized shouldEqual 12.56
+            anonymized shouldBe 12.56
         }
 
         test("should return Int value as is given CopyAnonymizationStrategy") {
@@ -34,7 +34,7 @@ class CopyAnonymizationStrategyUnitTest : FunSpec() {
             val copyAnonymizationStrategy  = CopyAnonymizationStrategy<Int>()
             val anonymized                 = copyAnonymizationStrategy.anonymize(field, emptyRecord)
 
-            anonymized shouldEqual 12
+            anonymized shouldBe 12
         }
     }
 }

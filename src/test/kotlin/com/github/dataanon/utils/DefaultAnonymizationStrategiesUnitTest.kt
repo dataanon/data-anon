@@ -6,7 +6,7 @@ import com.github.dataanon.strategy.number.RandomFloat
 import com.github.dataanon.strategy.number.RandomInt
 import com.github.dataanon.strategy.string.RandomAlphabetic
 import io.kotlintest.matchers.beInstanceOf
-import io.kotlintest.matchers.should
+import io.kotlintest.should
 import io.kotlintest.specs.FunSpec
 import java.util.*
 
@@ -17,7 +17,7 @@ class DefaultAnonymizationStrategiesUnitTest : FunSpec(){
             val kClassString = String::class
             val anonymizationStrategy = DefaultAnonymizationStrategies.getAnonymizationStrategy(kClassString)
 
-            anonymizationStrategy.should { beInstanceOf(RandomAlphabetic::class) }
+            anonymizationStrategy should { beInstanceOf(RandomAlphabetic::class) }
         }
 
         test("should return RandomInt for Int as default AnonymizationStrategy"){

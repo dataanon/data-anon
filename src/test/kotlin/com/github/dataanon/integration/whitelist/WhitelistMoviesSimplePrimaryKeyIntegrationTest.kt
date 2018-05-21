@@ -5,11 +5,11 @@ import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.matchers.match
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.LocalDate
-import kotlin.test.assertEquals
 
 class WhitelistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
 

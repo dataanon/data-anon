@@ -1,6 +1,6 @@
 package com.github.dataanon.model
 
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
 class BlacklistTableUnitTest : FunSpec() {

@@ -2,7 +2,7 @@ package com.github.dataanon.strategy.string
 
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
 class LoremIpsumUnitTest : FunSpec() {

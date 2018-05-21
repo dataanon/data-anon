@@ -3,9 +3,9 @@ package com.github.dataanon.strategy.string
 import com.github.dataanon.Matchers
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.matchers.shouldEqual
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
 class RandomStringUnitTest : FunSpec(), Matchers {
@@ -52,7 +52,7 @@ class RandomStringUnitTest : FunSpec(), Matchers {
             val field    = Field("first_name", "John")
 
             val anonymized = strategy.anonymize(field, emptyRecord)
-            anonymized.length shouldEqual 4
+            anonymized.length shouldBe 4
         }
 
         test("should return a random alphabetic string") {
