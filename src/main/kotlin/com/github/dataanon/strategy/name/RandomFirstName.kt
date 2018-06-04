@@ -5,7 +5,7 @@ import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.strategy.list.PickFromFile
 
-class RandomFirstName(sourceFilePath: String = RandomFirstName::class.java.getResource("/data/first_names.dat").path) : AnonymizationStrategy<String> {
+class RandomFirstName(sourceFilePath: String = "/data/first_names.dat") : AnonymizationStrategy<String> {
 
     init {
         require(sourceFilePath.isNotBlank(), {"sourceFilePath can not be empty while using RandomFirstName"})

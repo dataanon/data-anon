@@ -23,7 +23,7 @@ class RandomLastNameUnitTest : FunSpec(), Matchers {
 
         test("should return random Last name from file provided") {
             val firstNames      = File(this::class.java.getResource("/test_last_names.txt").path).readLines()
-            val randomLastName  = RandomLastName(sourceFilePath = this::class.java.getResource("/test_last_names.txt").path)
+            val randomLastName  = RandomLastName(sourceFilePath = "/test_last_names.txt")
             val field           = Field("last_name", "John")
 
             val anonymized = randomLastName.anonymize(field, emptyRecord)

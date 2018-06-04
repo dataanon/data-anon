@@ -6,7 +6,7 @@ import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.strategy.list.PickFromFile
 import com.github.dataanon.strategy.name.RandomFirstName
 
-class RandomEmail(sourceFilePath: String = RandomFirstName::class.java.getResource("/data/first_names.dat").path,
+class RandomEmail(sourceFilePath: String = "/data/first_names.dat",
                   private val host: String = "data-anonymization", private val tld: String = "com") : AnonymizationStrategy<String> {
 
     init {

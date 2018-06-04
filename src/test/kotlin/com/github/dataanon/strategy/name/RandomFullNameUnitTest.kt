@@ -40,8 +40,8 @@ class RandomFullNameUnitTest : FunSpec(), Matchers {
             val firstNames      = File(this::class.java.getResource("/test_first_names.txt").path).readLines()
             val lastNames       = File(this::class.java.getResource("/test_last_names.txt").path).readLines()
             val field           = Field("name", "John Smith")
-            val randomFullName  = RandomFullName(firstNameSourceFilePath = this::class.java.getResource("/test_first_names.txt").path,
-                                                 lastNameSourceFilePath  = this::class.java.getResource("/test_last_names.txt").path
+            val randomFullName  = RandomFullName(firstNameSourceFilePath = "/test_first_names.txt",
+                                                 lastNameSourceFilePath  = "/test_last_names.txt"
                                                  )
 
             val anonymized     = randomFullName.anonymize(field, emptyRecord)
@@ -53,8 +53,8 @@ class RandomFullNameUnitTest : FunSpec(), Matchers {
 
         test("should return random full name  consisting of first name and last name separated by space from provided sources") {
             val field           = Field("name", "John Smith")
-            val randomFullName  = RandomFullName(firstNameSourceFilePath = this::class.java.getResource("/test_first_names.txt").path,
-                    lastNameSourceFilePath  = this::class.java.getResource("/test_last_names.txt").path
+            val randomFullName  = RandomFullName(firstNameSourceFilePath = "/test_first_names.txt",
+                    lastNameSourceFilePath  = "/test_last_names.txt"
             )
 
             val anonymized     = randomFullName.anonymize(field, emptyRecord)
