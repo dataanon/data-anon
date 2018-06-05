@@ -15,8 +15,8 @@ class PickFromFileUnitTest : FunSpec(), Matchers {
 
     init {
         test("should pick a random value from a file containing string") {
-            val filePath      = this::class.java.getResource("/test_countries.txt").path
-            val values        = File(filePath).readLines()
+            val filePath      = "/test_countries.txt"
+            val values        = File(this::class.java.getResource(filePath).path).readLines()
             val field         = Field("country", "India")
             val pickFromFile  = PickFromFile<String>(filePath = filePath)
 
@@ -25,8 +25,8 @@ class PickFromFileUnitTest : FunSpec(), Matchers {
         }
 
         test("should pick a random value from a file containing string using PickStringFromFile") {
-            val filePath      = this::class.java.getResource("/test_countries.txt").path
-            val values        = File(filePath).readLines()
+            val filePath      = "/test_countries.txt"
+            val values        = File(this::class.java.getResource(filePath).path).readLines()
             val field         = Field("country", "India")
             val pickFromFile  = PickStringFromFile(filePath = filePath)
 
@@ -35,8 +35,8 @@ class PickFromFileUnitTest : FunSpec(), Matchers {
         }
 
         test("should pick a random value from a file containing double") {
-            val filePath      = this::class.java.getResource("/test_stock-prices.txt").path
-            val values        = File(filePath).readLines().map { it.toDouble() }
+            val filePath      = "/test_stock-prices.txt"
+            val values        = File(this::class.java.getResource(filePath).path).readLines().map { it.toDouble() }
             val field         = Field("stock-price", 12.90)
             val pickFromFile  = PickFromFile<Double>(filePath = filePath)
 
