@@ -1,5 +1,7 @@
 package com.github.dataanon.utils
 
+import java.io.File
+
 object FlatFileContentStore {
 
     private var fileContent: HashMap<String, List<String>> = HashMap()
@@ -9,7 +11,8 @@ object FlatFileContentStore {
 
     private fun getFileContentPostRead(path: String): List<String> {
         val lineList = mutableListOf<String>()
-        this::class.java.getResourceAsStream(path).bufferedReader().useLines { lines -> lines.forEach { lineList.add(it)} }
+        val resourceAsStream = this::class.java.getResourceAsStream(path) ?: File(path).inputStream()
+        resourceAsStream.bufferedReader().useLines { lines -> lines.forEach { lineList.add(it)} }
 
         fileContent[path] = lineList
         return fileContent[path] as List<String>

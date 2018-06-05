@@ -5,6 +5,7 @@ import com.github.dataanon.model.Record
 import com.github.dataanon.strategy.AnonymizationStrategy
 import com.github.dataanon.utils.FlatFileContentStore
 import com.github.dataanon.utils.RandomSampling
+import java.math.BigDecimal
 import kotlin.reflect.KClass
 
 open class PickFromFile<T: Any>(filePath: String) : AnonymizationStrategy<T>, RandomSampling {
@@ -24,6 +25,7 @@ open class PickFromFile<T: Any>(filePath: String) : AnonymizationStrategy<T>, Ra
         Int::class          -> str.toInt()
         Float::class        -> str.toFloat()
         Double::class       -> str.toDouble()
+        BigDecimal::class   -> str.toBigDecimal()
         Boolean::class      -> str.toBoolean()
         String::class       -> str
         else                -> throw  IllegalArgumentException("type $type not supported in PickFromFile")
