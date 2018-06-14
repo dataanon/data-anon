@@ -4,11 +4,11 @@ import com.github.dataanon.dsl.Whitelist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
+import io.kotlintest.be
 import io.kotlintest.matchers.match
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
-import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.LocalDate
 
 class WhitelistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
@@ -19,7 +19,8 @@ class WhitelistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
             val destDbConfig      = DbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable         = MoviesTable(destDbConfig)
 
-            assertEquals(0,destTable.findAll().size)
+
+            destTable.findAll().size should be(0)
 
             Whitelist(sourceDbConfig,destDbConfig)
                     .table("MOVIES") {
