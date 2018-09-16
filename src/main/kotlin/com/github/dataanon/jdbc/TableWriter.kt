@@ -100,7 +100,7 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
 
     override fun hookFinally(type: SignalType?) {
         progressBar?.stop()
-        if (stmt != null) stmt.close()
+        stmt?.close()
         conn?.close()
     }
 
