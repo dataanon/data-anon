@@ -1,6 +1,8 @@
 package com.github.dataanon.model
 
 class WhitelistTable(name: String) : Table(name) {
+
+
     private val whitelist: ArrayList<String> = arrayListOf()
 
     fun whitelist(vararg columns: String) {
@@ -8,17 +10,21 @@ class WhitelistTable(name: String) : Table(name) {
     }
 
     override fun generateWriteQuery(): String =
-            StringBuilder("INSERT INTO $name(").apply {
-                val columns = whitelist + columnNames()
-                append(columns.joinToString(", "))
-                append(") VALUES(")
-                append(columns.joinToString(",") { "?" })
-                append(")")
-            }.toString()
+        StringBuilder("INSERT INTO $name(").apply {
+            val columns = whitelist + columnNames()
+            append(columns.joinToString(", "))
+            append(") VALUES(")
+            append(columns.joinToString(",") { "?" })
+            append(")")
+        }.toString()
 
     override fun allColumns(): List<String> {
         val fields = whitelist.toMutableList()
         fields.addAll(columnNames())
         return fields
+    }
+
+    override fun allColumnObjects(): List<Column> {
+        return allColumns().map { Column(name = it, isKey = false) }
     }
 }

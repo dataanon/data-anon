@@ -41,42 +41,43 @@ abstract class Table(val name: String) {
 
     internal fun execute(record: Record): Record {
         columnStrategyContainer.forEach { columnName, columnStrategy ->
-            val field       = record.find(columnName)
-            field.newValue  = columnStrategy.anonymize(field, record)
+            val field = record.find(columnName)
+            field.newValue = columnStrategy.anonymize(field, record)
         }
         return record
     }
 
     internal fun generateSelectQuery(): String =
-            "SELECT ${allColumns().joinToString(",")} FROM $name $whereCondition".trim()
+        "SELECT ${allColumns().joinToString(",")} FROM $name $whereCondition".trim()
 
     internal fun generateCountQuery(): String =
-            "SELECT COUNT(1) FROM $name $whereCondition".trim()
+        "SELECT COUNT(1) FROM $name $whereCondition".trim()
 
     abstract internal fun generateWriteQuery(): String
 
     abstract internal fun allColumns(): List<String>
 
+    abstract fun allColumnObjects(): List<Column>
+
 
     inner class ColumnStrategy {
         private lateinit var anonymizationStrategy: AnonymizationStrategy<*>
 
-        fun <T: Any> using(strategy: AnonymizationStrategy<T>) {
+        fun <T : Any> using(strategy: AnonymizationStrategy<T>) {
             anonymizationStrategy = strategy
         }
 
         internal fun anonymize(field: Field<Any>, record: Record) = findAnonymizationStrategy(field).anonymize(field, record)
 
-        private fun findAnonymizationStrategy(field: Field<Any>)  = if (field.isNull()) nullAnonymizationStrategy()
-                                                                    else                nonNullAnonymizationStrategy(field)
+        private fun findAnonymizationStrategy(field: Field<Any>) = if (field.isNull()) nullAnonymizationStrategy()
+        else nonNullAnonymizationStrategy(field)
 
         private fun nullAnonymizationStrategy() = CopyAnonymizationStrategy<NullValue>() as AnonymizationStrategy<Any>
 
         private fun nonNullAnonymizationStrategy(field: Field<Any>) = try {
-                                                            anonymizationStrategy as AnonymizationStrategy<Any>
-                                                        }
-                                                        catch (ex: UninitializedPropertyAccessException){
-                                                            DefaultAnonymizationStrategies.getAnonymizationStrategy(field.oldValue::class) as AnonymizationStrategy<Any>
-                                                        }
+            anonymizationStrategy as AnonymizationStrategy<Any>
+        } catch (ex: UninitializedPropertyAccessException) {
+            DefaultAnonymizationStrategies.getAnonymizationStrategy(field.oldValue::class) as AnonymizationStrategy<Any>
+        }
     }
 }
