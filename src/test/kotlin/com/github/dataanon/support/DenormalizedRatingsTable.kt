@@ -5,24 +5,24 @@ import java.sql.Connection
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
-class RatingsTable(dbConfig: DbConfig) {
+class DenormalizedRatingsTable(dbConfig: DbConfig) {
     private var conn: Connection = dbConfig.connection()
 
     init {
-        conn.createStatement().executeUpdate("DROP TABLE IF EXISTS RATINGS")
-        val createRatingsTable = "CREATE TABLE RATINGS( " +
-            "MOVIE_ID INT, " +
-            "USER_ID INT, " +
+        conn.createStatement().executeUpdate("DROP TABLE IF EXISTS DENORMALIZEDRATINGS")
+        val createDenormalizedRatingsTable = "CREATE TABLE DENORMALISEDRATINGS( " +
+            "MOVIE VARCHAR2(255), " +
+            "USER VARCHAR2(255), " +
             "RATING INT, " +
             "CREATED_AT TIMESTAMP, " +
-            "PRIMARY KEY(MOVIE_ID, USER_ID) )"
-        conn.createStatement().executeUpdate(createRatingsTable)
+            "PRIMARY KEY(MOVIE, USER) )"
+        conn.createStatement().executeUpdate(createDenormalizedRatingsTable)
     }
 
-    fun insert(movieId: Int, userId: Int, rating: Int, createdAt: LocalDateTime): RatingsTable {
-        val stmt = conn.prepareStatement("INSERT INTO RATINGS(MOVIE_ID,USER_ID,RATING,CREATED_AT) VALUES(?,?,?,?)")
-        stmt.setInt(1, movieId)
-        stmt.setInt(2, userId)
+    fun insert(movie: String, user: String, rating: Int, createdAt: LocalDateTime): DenormalizedRatingsTable {
+        val stmt = conn.prepareStatement("INSERT INTO DENORMALISEDRATINGS(MOVIE,USER,RATING,CREATED_AT) VALUES(?,?,?,?)")
+        stmt.setString(1, movie)
+        stmt.setString(2, user)
         stmt.setInt(3, rating)
         stmt.setTimestamp(4, Timestamp.valueOf(createdAt))
         stmt.executeUpdate()
@@ -32,11 +32,11 @@ class RatingsTable(dbConfig: DbConfig) {
 
     fun findAll(): List<Map<String, Any>> {
         val records = mutableListOf<Map<String, Any>>()
-        val rs = conn.createStatement().executeQuery("SELECT * FROM RATINGS")
+        val rs = conn.createStatement().executeQuery("SELECT * FROM DENORMALISEDRATINGS")
         while (rs.next()) {
             val record = hashMapOf<String, Any>()
-            record["MOVIE_ID"] = rs.getInt("MOVIE_ID")
-            record["USER_ID"] = rs.getInt("USER_ID")
+            record["MOVIE"] = rs.getString("MOVIE")
+            record["USER"] = rs.getString("USER")
             record["RATING"] = rs.getInt("RATING")
             record["CREATED_AT"] = rs.getTimestamp("CREATED_AT").toLocalDateTime()
             records.add(record)

@@ -18,7 +18,7 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
     private val conn = dbConfig.connection()
 
     private var stmt: PreparedStatement
-    private var fields: List<String>
+    private var fields: List<Column>
 
     private var batchIndex = 0
     private var errorCount = 0
@@ -29,7 +29,7 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
         val sql = table.generateWriteQuery()
         logger.info { "WRITE SQL: $sql" }
         this.stmt = conn.prepareStatement(sql)
-        this.fields = table.allColumns()
+        this.fields = table.allColumnObjects()
     }
 
     override fun hookOnSubscribe(subscription: Subscription?) {
@@ -42,7 +42,6 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
 
     override fun hookOnNext(record: Record) {
         fields.map { record.find(it) }.forEachIndexed { index, field -> writeToStatement(index, field) }
-
         stmt.addBatch()
         batchIndex++
         progressBar.step()
@@ -54,12 +53,18 @@ class TableWriter(dbConfig: DbConfig, private val table: Table, private val prog
 
     private fun writeToStatement(index: Int, field: Field<Any>) {
         val columnIndex = index + 1
-        val newValue = field.newValue
-        when (newValue) {
+
+        val value = if (field.isKey) {
+            field.oldValue
+        } else {
+            field.newValue
+        }
+
+        when (value) {
             is NullValue -> stmt.setNull(columnIndex, Types.NULL)
-            is LocalDate -> stmt.setDate(columnIndex, Date.valueOf(newValue))
-            is LocalDateTime -> stmt.setTimestamp(columnIndex, Timestamp.valueOf(newValue))
-            else -> stmt.setObject(columnIndex, newValue)
+            is LocalDate -> stmt.setDate(columnIndex, Date.valueOf(value))
+            is LocalDateTime -> stmt.setTimestamp(columnIndex, Timestamp.valueOf(value))
+            else -> stmt.setObject(columnIndex, value)
         }
     }
 
