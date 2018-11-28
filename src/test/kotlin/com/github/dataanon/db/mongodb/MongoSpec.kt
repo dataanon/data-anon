@@ -13,13 +13,14 @@ import reactor.test.StepVerifier
 import java.net.ServerSocket
 import java.time.Duration
 import de.flapdoodle.embed.mongo.MongodProcess
+import de.flapdoodle.embed.process.runtime.Network
 
 abstract class MongoSpec : FunSpec() {
     internal val localPort = ServerSocket(0).localPort
     private val mongodExecutable: MongodExecutable = MongodStarter.getDefaultInstance()
             .prepare(MongodConfigBuilder()
-                    .version(Version.V3_6_5)
-                    .net(Net(localPort, false))
+                    .version(Version.Main.PRODUCTION)
+                    .net(Net(Network.getLocalHost().hostAddress, localPort, false))
                     .build())
     private var mongod: MongodProcess? = null
 
