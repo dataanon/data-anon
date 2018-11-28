@@ -47,7 +47,7 @@ class MongoTableReaderTest : MongoSpec() {
     }
 
     private fun prepareDataWith5Movies(): Pair<MongoDbConfig, MoviesCollection> {
-        val dbConfig = MongoDbConfig("mongodb://localhost:$localPort/" + UUID.randomUUID())
+        val dbConfig = MongoDbConfig("mongodb://$hostAddress:$localPort/" + UUID.randomUUID())
         val moviesCollection = MoviesCollection(dbConfig)
                 .insert(1, "Movie 1", "Drama", Instant.ofEpochSecond(925603200))
                 .insert(2, "Movie 2", "Action", Instant.ofEpochSecond(1114992000))

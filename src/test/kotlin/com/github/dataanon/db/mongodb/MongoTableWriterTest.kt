@@ -51,7 +51,7 @@ class MongoTableWriterTest : MongoSpec() {
     }
 
     private fun getEmptyMoviesCollection(): Pair<MongoDbConfig, MoviesCollection> {
-        val dbConfig = MongoDbConfig("mongodb://localhost:$localPort/" + UUID.randomUUID())
+        val dbConfig = MongoDbConfig("mongodb://$hostAddress:$localPort/" + UUID.randomUUID())
         val moviesCollection = MoviesCollection(dbConfig)
 
         return Pair(dbConfig, moviesCollection)

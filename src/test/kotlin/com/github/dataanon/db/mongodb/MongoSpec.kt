@@ -16,11 +16,13 @@ import de.flapdoodle.embed.mongo.MongodProcess
 import de.flapdoodle.embed.process.runtime.Network
 
 abstract class MongoSpec : FunSpec() {
+    internal val hostAddress = Network.getLocalHost().hostAddress
     internal val localPort = ServerSocket(0).localPort
+
     private val mongodExecutable: MongodExecutable = MongodStarter.getDefaultInstance()
             .prepare(MongodConfigBuilder()
                     .version(Version.Main.PRODUCTION)
-                    .net(Net(Network.getLocalHost().hostAddress, localPort, false))
+                    .net(Net(hostAddress, localPort, false))
                     .build())
     private var mongod: MongodProcess? = null
 
