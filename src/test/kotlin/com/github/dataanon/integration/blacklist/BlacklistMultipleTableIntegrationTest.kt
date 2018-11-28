@@ -1,8 +1,8 @@
 package com.github.dataanon.integration.blacklist
 
 import com.github.dataanon.Matchers
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import com.github.dataanon.dsl.Blacklist
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.datetime.DateTimeRandomDelta
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.strategy.string.FixedString
@@ -67,8 +67,8 @@ class BlacklistMultipleTableIntegrationTest : FunSpec(), Matchers {
         ratingsTable.close()
     }
 
-    private fun prepareData(): Triple<DbConfig, MoviesTable, RatingsTable> {
-        val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+    private fun prepareData(): Triple<JdbcDbConfig, MoviesTable, RatingsTable> {
+        val dbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
         val moviesTable = MoviesTable(dbConfig).insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
         val ratingsTable = RatingsTable(dbConfig)
                             .insert(1, 1, 4, LocalDateTime.ofEpochSecond(1509701304,0, ZoneOffset.UTC))

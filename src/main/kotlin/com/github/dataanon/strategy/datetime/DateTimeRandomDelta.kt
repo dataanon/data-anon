@@ -12,9 +12,10 @@ class DateTimeRandomDelta(private val duration: Duration) : AnonymizationStrateg
     override fun anonymize(field: Field<LocalDateTime>, record: Record): LocalDateTime {
         val durationInSeconds = duration.seconds
         val randomSeconds = rand(durationInSeconds)
+
         return when (Random().nextBoolean()) {
             true -> field.oldValue.plusSeconds(randomSeconds)
-            false -> field.oldValue.minusSeconds(randomSeconds);
+            false -> field.oldValue.minusSeconds(randomSeconds)
         }
     }
 

@@ -1,11 +1,11 @@
 package com.github.dataanon.support
 
-import com.github.dataanon.model.DbConfig
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import java.sql.Connection
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
-class DenormalizedRatingsTable(dbConfig: DbConfig) {
+class DenormalizedRatingsTable(dbConfig: JdbcDbConfig) {
     private var conn: Connection = dbConfig.connection()
 
     init {

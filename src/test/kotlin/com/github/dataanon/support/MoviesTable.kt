@@ -1,11 +1,11 @@
 package com.github.dataanon.support
 
-import com.github.dataanon.model.DbConfig
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import java.sql.Connection
 import java.sql.Date
 import java.time.LocalDate
 
-class MoviesTable(dbConfig: DbConfig) {
+class MoviesTable(dbConfig: JdbcDbConfig) {
     private val conn: Connection = dbConfig.connection()
 
     init {

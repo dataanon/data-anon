@@ -1,5 +1,6 @@
 package com.github.dataanon.integration.whitelist
 
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import com.github.dataanon.dsl.Whitelist
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
@@ -16,7 +17,7 @@ class WhitelistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
     init {
         test("should do whitelist anonymization for multiple record with simple primaryKey"){
             val (sourceDbConfig, sourceTable) = prepareData()
-            val destDbConfig      = DbConfig("jdbc:h2:mem:movies_dest", "", "")
+            val destDbConfig      = JdbcDbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable         = MoviesTable(destDbConfig)
 
 
@@ -52,8 +53,8 @@ class WhitelistMoviesSimplePrimaryKeyIntegrationTest : FunSpec() {
         destTable.close()
     }
 
-    private fun prepareData(): Pair<DbConfig, MoviesTable> {
-        val sourceDbConfig = DbConfig("jdbc:h2:mem:movies_source", "", "")
+    private fun prepareData(): Pair<JdbcDbConfig, MoviesTable> {
+        val sourceDbConfig = JdbcDbConfig("jdbc:h2:mem:movies_source", "", "")
         val sourceTable = MoviesTable(sourceDbConfig)
                 .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
                 .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))

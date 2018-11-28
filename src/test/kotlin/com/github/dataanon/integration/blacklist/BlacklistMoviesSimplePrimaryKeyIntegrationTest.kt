@@ -1,8 +1,8 @@
 package com.github.dataanon.integration.blacklist
 
 import com.github.dataanon.Matchers
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import com.github.dataanon.dsl.Blacklist
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.datetime.DateRandomDelta
 import com.github.dataanon.strategy.list.PickFromDatabase
 import com.github.dataanon.strategy.string.FixedString
@@ -12,7 +12,6 @@ import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.time.LocalDate
-
 
 class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec(), Matchers {
 
@@ -66,16 +65,16 @@ class BlacklistMoviesSimplePrimaryKeyIntegrationTest : FunSpec(), Matchers {
         }
     }
 
-    private fun prepareDataWith2Movies(): Pair<DbConfig, MoviesTable> {
-        val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+    private fun prepareDataWith2Movies(): Pair<JdbcDbConfig, MoviesTable> {
+        val dbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
         val moviesTable = MoviesTable(dbConfig)
                 .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
                 .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
         return Pair(dbConfig, moviesTable)
     }
 
-    private fun prepareDataWithSingleMovie(): Pair<DbConfig, MoviesTable> {
-        val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+    private fun prepareDataWithSingleMovie(): Pair<JdbcDbConfig, MoviesTable> {
+        val dbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
         val moviesTable = MoviesTable(dbConfig)
                 .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
         return Pair(dbConfig, moviesTable)

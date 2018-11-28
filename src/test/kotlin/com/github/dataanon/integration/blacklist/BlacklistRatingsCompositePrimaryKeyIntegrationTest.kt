@@ -1,7 +1,7 @@
 package com.github.dataanon.integration.blacklist
 
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import com.github.dataanon.dsl.Blacklist
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.number.FixedInt
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.DenormalizedRatingsTable
@@ -15,7 +15,7 @@ class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
 
     init {
         test("should do blacklist anonymization for multiple record with composite primaryKey") {
-            val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val dbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             val ratingsTable = RatingsTable(dbConfig)
                 .insert(1, 1, 4, LocalDateTime.ofEpochSecond(1509701304, 0, ZoneOffset.UTC))
                 .insert(1, 2, 5, LocalDateTime.ofEpochSecond(1509701310, 0, ZoneOffset.UTC))
@@ -42,7 +42,7 @@ class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
         }
 
         test("should do blacklist anonymization for multiple record with composite primaryKey including anonymized column") {
-            val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val dbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             val denormalizedRatingsTable = DenormalizedRatingsTable(dbConfig)
                 .insert("Movie 1", "User 1", 3, LocalDateTime.ofEpochSecond(1509701304, 0, ZoneOffset.UTC))
                 .insert("Movie 2", "User 2", 4, LocalDateTime.ofEpochSecond(1509701310, 0, ZoneOffset.UTC))

@@ -1,20 +1,19 @@
-package com.github.dataanon.jdbc
+package com.github.dataanon.db.jdbc
 
 import com.github.dataanon.model.BlacklistTable
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.support.MoviesTable
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.time.LocalDate
 
-class TableReaderIntegrationTest : FunSpec() {
+class JdbcTableReaderIntegrationTest : FunSpec() {
 
     init {
         test("should return the number of records specified by limit") {
             val (dbConfig, moviesTable) = prepareDataWith5Movies()
             val blacklistTable  = BlacklistTable("MOVIES", listOf("MOVIE_ID")).limit(2)
 
-            val tableReader = TableReader(dbConfig, blacklistTable)
+            val tableReader = JdbcTableReader(dbConfig, blacklistTable)
 
             tableReader.hasNext() shouldBe true
             tableReader.hasNext() shouldBe true
@@ -27,7 +26,7 @@ class TableReaderIntegrationTest : FunSpec() {
             val (dbConfig, moviesTable) = prepareDataWith5Movies()
             val blacklistTable  = BlacklistTable("MOVIES", listOf("MOVIE_ID"))
 
-            val tableReader = TableReader(dbConfig, blacklistTable)
+            val tableReader = JdbcTableReader(dbConfig, blacklistTable)
 
             tableReader.hasNext() shouldBe true
             tableReader.hasNext() shouldBe true
@@ -39,8 +38,8 @@ class TableReaderIntegrationTest : FunSpec() {
         }
     }
 
-    private fun prepareDataWith5Movies(): Pair<DbConfig, MoviesTable> {
-        val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+    private fun prepareDataWith5Movies(): Pair<JdbcDbConfig, MoviesTable> {
+        val dbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
         val moviesTable = MoviesTable(dbConfig)
                 .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
                 .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))

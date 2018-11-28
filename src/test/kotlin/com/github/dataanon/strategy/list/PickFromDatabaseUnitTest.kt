@@ -1,7 +1,7 @@
 package com.github.dataanon.strategy.list
 
 import com.github.dataanon.Matchers
-import com.github.dataanon.model.DbConfig
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import com.github.dataanon.model.Field
 import com.github.dataanon.model.Record
 import com.github.dataanon.support.MoviesTable
@@ -16,7 +16,7 @@ class PickFromDatabaseUnitTest : FunSpec(), Matchers {
 
     init {
         test("should return a random value from list") {
-            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val sourceDbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
                     .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
                     .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
@@ -34,7 +34,7 @@ class PickFromDatabaseUnitTest : FunSpec(), Matchers {
         }
 
         test("should throw IllegalArgumentException given empty list") {
-            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val sourceDbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             MoviesTable(sourceDbConfig)
             shouldThrow<IllegalArgumentException> {
                 PickFromDatabase<String>(sourceDbConfig,"SELECT DISTINCT GENRE FROM MOVIES")

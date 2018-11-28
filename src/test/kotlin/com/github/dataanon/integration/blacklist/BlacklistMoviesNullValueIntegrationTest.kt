@@ -1,7 +1,7 @@
 package com.github.dataanon.integration.blacklist
 
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import com.github.dataanon.dsl.Blacklist
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.strategy.string.RandomAlphabetic
 import com.github.dataanon.support.MoviesTable
@@ -67,8 +67,8 @@ class BlacklistMoviesNullValueIntegrationTest : FunSpec() {
         }
     }
 
-    private fun prepareDataWith2Movies(): Pair<DbConfig, MoviesTable> {
-        val dbConfig    = DbConfig("jdbc:h2:mem:movies", "", "")
+    private fun prepareDataWith2Movies(): Pair<JdbcDbConfig, MoviesTable> {
+        val dbConfig    = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
         val moviesTable = MoviesTable(dbConfig)
                 .insert(1, "Movie 1", null, LocalDate.of(1999, 5, 2))
                 .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))

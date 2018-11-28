@@ -1,8 +1,8 @@
 package com.github.dataanon.integration
 
+import com.github.dataanon.db.jdbc.JdbcDbConfig
 import com.github.dataanon.dsl.Blacklist
 import com.github.dataanon.dsl.Whitelist
-import com.github.dataanon.model.DbConfig
 import com.github.dataanon.strategy.string.FixedString
 import com.github.dataanon.support.MoviesTable
 import com.github.dataanon.support.MoviesTableHavingGenreSize10
@@ -20,12 +20,12 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
 
     init {
         test("support to select specific records from table using where clause") {
-            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val sourceDbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
                     .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
                     .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
 
-            val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
+            val destDbConfig = JdbcDbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable = MoviesTable(destDbConfig)
 
             Whitelist(sourceDbConfig, destDbConfig)
@@ -51,7 +51,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
         }
 
         test("testing progress bar") {
-            val dbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val dbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             val moviesTable = MoviesTable(dbConfig)
                     .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
 
@@ -75,12 +75,12 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
         }
 
         test("limit records for testing") {
-            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val sourceDbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
                     .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
                     .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
 
-            val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
+            val destDbConfig = JdbcDbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable = MoviesTable(destDbConfig)
 
             Whitelist(sourceDbConfig, destDbConfig)
@@ -108,12 +108,12 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
         test("error handling in case of destination table doesn't exists") {
             DataAnonTestLogHandler.records.clear()
 
-            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val sourceDbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
                     .insert(1, "Movie 1", "Drama", LocalDate.of(1999, 5, 2))
                     .insert(2, "Movie 2", "Action", LocalDate.of(2005, 5, 2))
 
-            val destDbConfig = DbConfig("jdbc:h2:mem:movies_new", "", "")
+            val destDbConfig = JdbcDbConfig("jdbc:h2:mem:movies_new", "", "")
 
             Whitelist(sourceDbConfig, destDbConfig)
                     .table("MOVIES") {
@@ -133,9 +133,9 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
         test("error handling in case of source table doesn't exists") {
             DataAnonTestLogHandler.records.clear()
 
-            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies_source", "", "")
+            val sourceDbConfig = JdbcDbConfig("jdbc:h2:mem:movies_source", "", "")
 
-            val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
+            val destDbConfig = JdbcDbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable = MoviesTable(destDbConfig)
 
             Whitelist(sourceDbConfig, destDbConfig)
@@ -158,7 +158,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
         test("error handling in case of INSERT statement error exceeds allowed errors") {
             DataAnonTestLogHandler.records.clear()
 
-            val sourceDbConfig = DbConfig("jdbc:h2:mem:movies", "", "")
+            val sourceDbConfig = JdbcDbConfig("jdbc:h2:mem:movies", "", "")
             val sourceTable = MoviesTable(sourceDbConfig)
                     .insert(1, "Movie 1", "Really Long Genre To be fail 1", LocalDate.of(1999, 5, 2))
                     .insert(2, "Movie 2", "Really Long Genre To be fail 2", LocalDate.of(2005, 5, 2))
@@ -167,7 +167,7 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
                     .insert(5, "Movie 5", "Really Long Genre To be fail 4", LocalDate.of(2005, 5, 2))
                     .insert(6, "Movie 6", "Action", LocalDate.of(2005, 5, 2))
 
-            val destDbConfig = DbConfig("jdbc:h2:mem:movies_dest", "", "")
+            val destDbConfig = JdbcDbConfig("jdbc:h2:mem:movies_dest", "", "")
             val destTable    = MoviesTableHavingGenreSize10(destDbConfig)
 
             Whitelist(sourceDbConfig, destDbConfig)

@@ -1,13 +1,16 @@
-package com.github.dataanon.jdbc
+package com.github.dataanon.db.jdbc
 
+import com.github.dataanon.db.TableReader
 import com.github.dataanon.model.*
+import org.reactivestreams.Subscriber
+import reactor.core.publisher.Flux
 import java.sql.Date
 import java.sql.ResultSet
 import java.sql.Timestamp
 import java.util.logging.Logger
 
-class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Record> {
-    private val logger = Logger.getLogger(TableReader::class.java.name)
+class JdbcTableReader(dbConfig: JdbcDbConfig, private val table: Table) : TableReader, Iterator<Record> {
+    private val logger = Logger.getLogger(JdbcTableReader::class.java.name)
 
     private val conn = dbConfig.connection()
     private var rs: ResultSet
@@ -22,13 +25,18 @@ class TableReader(dbConfig: DbConfig, private val table: Table) : Iterator<Recor
         rs       = stmt.executeQuery(sql)
     }
 
-    fun totalNoOfRecords(): Int     = if (table.limit >= 1 && getTotalRecords() > table.limit) table.limit else getTotalRecords()
+    // TODO: two db calls when table limit >= 1 and getTotalRecords() <= table.limit ?
+    override fun totalNoOfRecords(): Int     = if (table.limit >= 1 && getTotalRecords() > table.limit) table.limit else getTotalRecords()
 
     override fun hasNext(): Boolean  = if (rs.next()) true else closeConnection()
 
     override fun next(): Record {
         index++
         return Record(table.allColumns().map { toField(it) }, index)
+    }
+
+    override fun subscribe(s: Subscriber<in Record>) {
+        Flux.fromIterable(Iterable { this }).subscribe(s)
     }
 
     private fun toField(columnName: String)     = Field(columnName, columnValue(columnName))

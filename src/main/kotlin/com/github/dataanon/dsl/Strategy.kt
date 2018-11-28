@@ -1,12 +1,20 @@
 package com.github.dataanon.dsl
 
-import com.github.dataanon.jdbc.TableReader
-import com.github.dataanon.jdbc.TableWriter
+import com.github.dataanon.db.TableReader
+import com.github.dataanon.db.TableWriter
+import com.github.dataanon.db.jdbc.JdbcDbConfig
+import com.github.dataanon.db.jdbc.JdbcTableReader
+import com.github.dataanon.db.jdbc.JdbcTableWriter
+import com.github.dataanon.db.mongodb.MongoDbConfig
+import com.github.dataanon.db.mongodb.MongoTableReader
+import com.github.dataanon.db.mongodb.MongoTableWriter
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.model.Table
 import com.github.dataanon.utils.ProgressBarGenerator
 import reactor.core.publisher.Flux
+import reactor.core.publisher.toFlux
 import reactor.core.scheduler.Schedulers
+import java.lang.UnsupportedOperationException
 import java.util.concurrent.CountDownLatch
 import java.util.logging.Level
 import java.util.logging.LogManager
@@ -17,13 +25,16 @@ abstract class Strategy {
     private val logger = Logger.getLogger(Strategy::class.java.name)
     protected val tables = mutableListOf<Table>()
 
+    abstract protected fun sourceDbConfig(): DbConfig
+    abstract protected fun destDbConfig(): DbConfig
+
     @JvmOverloads
     fun execute(progressBarEnabled: Boolean = true) {
         val inputStream = Strategy::class.java.classLoader.getResourceAsStream("logging.properties")
         LogManager.getLogManager().readConfiguration(inputStream)
         val latch = CountDownLatch(tables.size)
 
-        Flux.fromIterable(tables)
+        tables.toFlux()
                 .parallel(tables.size)
                 .runOn(Schedulers.parallel())
                 .subscribe { table -> executeOnTable(table, progressBarEnabled, latch) }
@@ -33,18 +44,30 @@ abstract class Strategy {
 
     private fun executeOnTable(table: Table, progressBarEnabled: Boolean, latch: CountDownLatch) {
         try {
-            val reader = TableReader(sourceDbConfig(), table)
+            val reader = getTableReader(sourceDbConfig(), table)
             val progressBar = ProgressBarGenerator(progressBarEnabled, table.name, { reader.totalNoOfRecords() })
-            val writer = TableWriter(destDbConfig(), table, progressBar)
+            val writer = getTableWriter(sourceDbConfig(), table, progressBar)
 
-            Flux.fromIterable(Iterable { reader }).map { table.execute(it) }.subscribe(writer)
+            reader.toFlux().map { table.execute(it) }.subscribe(writer)
         } catch (t: Throwable) {
             logger.log(Level.SEVERE,"Error processing table '${table.name}': ${t.message}",t)
-        } finally {
-            latch.countDown()
+        }
+        // TODO: removed latch.countDown() since it exists immediately
+    }
+
+    private fun getTableReader(dbConfig: DbConfig, table: Table) : TableReader {
+        return when {
+            dbConfig.uri.startsWith("jdbc") -> JdbcTableReader(dbConfig as JdbcDbConfig, table)
+            dbConfig.uri.startsWith("mongodb") -> MongoTableReader(dbConfig as MongoDbConfig, table)
+            else -> throw UnsupportedOperationException()
         }
     }
 
-    abstract protected fun sourceDbConfig(): DbConfig
-    abstract protected fun destDbConfig():   DbConfig
+    private fun getTableWriter(dbConfig: DbConfig, table: Table, progressBar: ProgressBarGenerator) : TableWriter {
+        return when {
+            dbConfig.uri.startsWith("jdbc") -> JdbcTableWriter(destDbConfig() as JdbcDbConfig, table, progressBar)
+            dbConfig.uri.startsWith("mongodb") -> MongoTableWriter(destDbConfig() as MongoDbConfig, table, progressBar)
+            else -> throw UnsupportedOperationException()
+        }
+    }
 }
