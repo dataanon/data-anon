@@ -129,7 +129,6 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
             sourceTable.close()
         }
 
-
         test("error handling in case of source table doesn't exists") {
             DataAnonTestLogHandler.records.clear()
 

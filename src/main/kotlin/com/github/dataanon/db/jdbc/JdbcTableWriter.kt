@@ -11,7 +11,13 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 
-class JdbcTableWriter(dbConfig: JdbcDbConfig, table: Table, progressBar: ProgressBarGenerator) : TableWriter(table, progressBar) {
+class JdbcTableWriter(
+        dbConfig: JdbcDbConfig,
+        table: Table,
+        progressBar: ProgressBarGenerator,
+        onFinally: (() -> Unit)? = null)
+    : TableWriter(table, progressBar, onFinally) {
+
     private val logger = Logger.getLogger(JdbcTableWriter::class.java.name)
 
     private val conn = dbConfig.connection()
@@ -93,6 +99,8 @@ class JdbcTableWriter(dbConfig: JdbcDbConfig, table: Table, progressBar: Progres
     }
 
     override fun hookFinally(type: SignalType) {
+        super.hookFinally(type)
+
         progressBar?.stop()
         stmt?.close()
         conn?.close()

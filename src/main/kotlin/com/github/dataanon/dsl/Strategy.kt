@@ -11,7 +11,6 @@ import com.github.dataanon.db.mongodb.MongoTableWriter
 import com.github.dataanon.model.DbConfig
 import com.github.dataanon.model.Table
 import com.github.dataanon.utils.ProgressBarGenerator
-import reactor.core.publisher.Flux
 import reactor.core.publisher.toFlux
 import reactor.core.scheduler.Schedulers
 import java.lang.UnsupportedOperationException
@@ -19,7 +18,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.logging.Level
 import java.util.logging.LogManager
 import java.util.logging.Logger
-
 
 abstract class Strategy {
     private val logger = Logger.getLogger(Strategy::class.java.name)
@@ -46,13 +44,18 @@ abstract class Strategy {
         try {
             val reader = getTableReader(sourceDbConfig(), table)
             val progressBar = ProgressBarGenerator(progressBarEnabled, table.name, { reader.totalNoOfRecords() })
-            val writer = getTableWriter(sourceDbConfig(), table, progressBar)
+
+            // TODO: Writer might be a {@link org.reactivestreams.Processor} instead of passing progressBar and onFinally callback
+            val writer = getTableWriter(sourceDbConfig(), table, progressBar) {
+                latch.countDown()
+            }
 
             reader.toFlux().map { table.execute(it) }.subscribe(writer)
+
         } catch (t: Throwable) {
             logger.log(Level.SEVERE,"Error processing table '${table.name}': ${t.message}",t)
+            latch.countDown()
         }
-        // TODO: removed latch.countDown() since it exists immediately
     }
 
     private fun getTableReader(dbConfig: DbConfig, table: Table) : TableReader {
@@ -63,10 +66,10 @@ abstract class Strategy {
         }
     }
 
-    private fun getTableWriter(dbConfig: DbConfig, table: Table, progressBar: ProgressBarGenerator) : TableWriter {
+    private fun getTableWriter(dbConfig: DbConfig, table: Table, progressBar: ProgressBarGenerator, onFinally: (() -> Unit)? = null) : TableWriter {
         return when {
-            dbConfig.uri.startsWith("jdbc") -> JdbcTableWriter(destDbConfig() as JdbcDbConfig, table, progressBar)
-            dbConfig.uri.startsWith("mongodb") -> MongoTableWriter(destDbConfig() as MongoDbConfig, table, progressBar)
+            dbConfig.uri.startsWith("jdbc") -> JdbcTableWriter(destDbConfig() as JdbcDbConfig, table, progressBar, onFinally)
+            dbConfig.uri.startsWith("mongodb") -> MongoTableWriter(destDbConfig() as MongoDbConfig, table, progressBar, onFinally)
             else -> throw UnsupportedOperationException()
         }
     }

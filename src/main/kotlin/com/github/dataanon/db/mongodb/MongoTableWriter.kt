@@ -12,7 +12,13 @@ import reactor.core.publisher.SignalType
 import reactor.core.publisher.toMono
 import java.util.logging.Logger
 
-class MongoTableWriter(dbConfig: MongoDbConfig, table: Table, progressBar: ProgressBarGenerator) : TableWriter(table, progressBar) {
+class MongoTableWriter(
+        dbConfig: MongoDbConfig,
+        table: Table,
+        progressBar: ProgressBarGenerator,
+        onFinally: (() -> Unit)? = null)
+    : TableWriter(table, progressBar, onFinally) {
+
     private val logger = Logger.getLogger(MongoTableWriter::class.java.name)
 
     private val conn: MongoClient = MongoClients.create(dbConfig.connectionString)
@@ -49,6 +55,7 @@ class MongoTableWriter(dbConfig: MongoDbConfig, table: Table, progressBar: Progr
     }
 
     override fun hookFinally(type: SignalType) {
+        super.hookFinally(type)
         progressBar.stop()
         conn.close()
     }
