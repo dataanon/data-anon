@@ -1,9 +1,16 @@
 language: java
+
 script: mvn test
+
 jdk:
   - oraclejdk8
   - oraclejdk9
   - openjdk10
   - openjdk11
+
 after_success:
   - mvn jacoco:report
+
+addons:
+  hosts:
+    - test-host
