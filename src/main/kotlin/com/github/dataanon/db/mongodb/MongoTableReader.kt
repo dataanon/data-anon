@@ -10,9 +10,9 @@ import com.mongodb.reactivestreams.client.MongoClients
 import com.mongodb.reactivestreams.client.MongoCollection
 import com.mongodb.reactivestreams.client.MongoDatabase
 import org.bson.Document
+import org.bson.conversions.Bson
 import org.reactivestreams.Subscriber
 import reactor.core.publisher.toFlux
-import reactor.core.publisher.toMono
 import java.lang.ClassCastException
 import java.time.ZoneId
 import java.util.*
@@ -29,7 +29,12 @@ class MongoTableReader(dbConfig: MongoDbConfig, private val table: Table) : Tabl
     private val index: AtomicInteger = AtomicInteger(1)
 
     override fun subscribe(s: Subscriber<in Record>) {
-        var flux = collection.find().toFlux().map { doc -> toRecord(doc) }
+        val findPublisher = when (table.whereCondition is Bson) {
+            true -> collection.find(table.whereCondition as Bson)
+            false -> collection.find()
+        }
+
+        var flux = findPublisher.toFlux().map { doc -> toRecord(doc) }
 
         if (table.limit > 0) {
             flux = flux.take(table.limit.toLong())

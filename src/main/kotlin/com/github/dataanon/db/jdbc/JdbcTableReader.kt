@@ -17,7 +17,7 @@ class JdbcTableReader(dbConfig: JdbcDbConfig, private val table: Table) : TableR
     private var index = 0
 
     init {
-        val sql  = table.generateSelectQuery()
+        val sql  = generateSelectQuery()
         val stmt = conn.createStatement()
         if (table.limit >= 1 ) stmt.maxRows = table.limit
 
@@ -52,7 +52,7 @@ class JdbcTableReader(dbConfig: JdbcDbConfig, private val table: Table) : TableR
     }
 
     private fun getTotalRecords(): Int {
-        val rs = conn.createStatement().executeQuery(table.generateCountQuery())
+        val rs = conn.createStatement().executeQuery(generateCountQuery())
         rs.next()
         val count = rs.getInt(1)
         rs.close()
@@ -63,5 +63,21 @@ class JdbcTableReader(dbConfig: JdbcDbConfig, private val table: Table) : TableR
         rs.close()
         conn.close()
         return false
+    }
+
+    private fun getWhereClause(): String {
+        if (table.whereCondition is String && (table.whereCondition as String).isNotBlank()) {
+            return " WHERE ${table.whereCondition} "
+        }
+
+        return ""
+    }
+
+    internal fun generateSelectQuery(): String {
+        return "SELECT ${table.allColumns().joinToString(",")} FROM ${table.name} ${getWhereClause()}".trim()
+    }
+
+    internal fun generateCountQuery(): String {
+        return "SELECT COUNT(1) FROM ${table.name} ${getWhereClause()}".trim()
     }
 }

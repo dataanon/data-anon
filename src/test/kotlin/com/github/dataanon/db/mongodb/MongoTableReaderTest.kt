@@ -2,7 +2,9 @@ package com.github.dataanon.db.mongodb
 
 import com.github.dataanon.model.BlacklistTable
 import com.github.dataanon.support.mongodb.MoviesCollection
+import com.mongodb.client.model.Filters.gt
 import io.kotlintest.*
+import org.bson.conversions.Bson
 import reactor.test.StepVerifier
 import java.time.Instant
 import java.util.*
@@ -41,6 +43,25 @@ class MongoTableReaderTest : MongoSpec() {
                         shouldThrow<NoSuchElementException> { it.find("release_date") }
                     }
                     .expectNextCount(4)
+                    .expectComplete()
+                    .verify()
+        }
+
+        test("should return filtered records") {
+            val (dbConfig, moviesCollection) = prepareDataWith5Movies()
+            val blacklistTable = BlacklistTable("movies", listOf("_id", "movie_id", "title"))
+                    .where(gt("movie_id", 2))
+            val tableReader = MongoTableReader(dbConfig, blacklistTable)
+
+            StepVerifier.create(tableReader)
+                    .assertNext {
+                        it.find("_id") shouldNotBe null
+                        it.find("movie_id") shouldNotBe null
+                        it.find("title") shouldNotBe null
+                        shouldThrow<NoSuchElementException> { it.find("genre") }
+                        shouldThrow<NoSuchElementException> { it.find("release_date") }
+                    }
+                    .expectNextCount(2)
                     .expectComplete()
                     .verify()
         }

@@ -99,11 +99,11 @@ class JdbcTableWriter(
     }
 
     override fun hookFinally(type: SignalType) {
-        super.hookFinally(type)
-
         progressBar?.stop()
         stmt?.close()
         conn?.close()
+
+        super.hookFinally(type)
     }
 
 }

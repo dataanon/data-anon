@@ -37,7 +37,6 @@ class MongoTableWriter(
         collection.insertOne(document).toMono().block()
 
         progressBar.step()
-        logger.info(record.toString())
 
         request(1)
     }
@@ -55,9 +54,9 @@ class MongoTableWriter(
     }
 
     override fun hookFinally(type: SignalType) {
-        super.hookFinally(type)
         progressBar.stop()
         conn.close()
+        super.hookFinally(type)
     }
 
 }

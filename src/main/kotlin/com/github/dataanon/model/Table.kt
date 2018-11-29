@@ -6,7 +6,7 @@ import com.github.dataanon.utils.DefaultAnonymizationStrategies
 
 abstract class Table(val name: String) {
     private val columnStrategyContainer = mutableMapOf<String, ColumnStrategy>()
-    internal var whereCondition = ""
+    internal var whereCondition: Any? = null
     internal var limit = -1
     internal var allowedErrors = 1000
     internal var batchSize = 1000
@@ -17,8 +17,8 @@ abstract class Table(val name: String) {
         return columnStrategy
     }
 
-    fun where(condition: String): Table {
-        this.whereCondition = " WHERE $condition "
+    fun where(condition: Any): Table {
+        this.whereCondition = condition
         return this
     }
 
@@ -46,12 +46,6 @@ abstract class Table(val name: String) {
         }
         return record
     }
-
-    internal fun generateSelectQuery(): String =
-        "SELECT ${allColumns().joinToString(",")} FROM $name $whereCondition".trim()
-
-    internal fun generateCountQuery(): String =
-        "SELECT COUNT(1) FROM $name $whereCondition".trim()
 
     abstract internal fun generateWriteQuery(): String
 
