@@ -35,7 +35,8 @@ class MongoTableReader(dbConfig: MongoDbConfig, private val table: Table) : Tabl
             table.properties["indexes"] = collection.listIndexes().toFlux()
                     .map { toIndexModel(it) }
                     .filter {
-                        if (it.options.isUnique && !table.allColumns().containsAll((it.keys as Document).keys)) {
+                        val keys: Set<String> = (it.keys as Document).keys.map { it -> it.plus(".").split(".")[0] }.toSet()
+                        if (it.options.isUnique && !table.allColumns().containsAll(keys)) {
                             return@filter false
                         }
 
