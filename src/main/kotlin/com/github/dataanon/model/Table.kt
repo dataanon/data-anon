@@ -6,6 +6,7 @@ import com.github.dataanon.utils.DefaultAnonymizationStrategies
 
 abstract class Table(val name: String) {
     private val columnStrategyContainer = mutableMapOf<String, ColumnStrategy>()
+    internal val properties = mutableMapOf<String, Any>()
     internal var whereCondition: Any? = null
     internal var limit = -1
     internal var allowedErrors = 1000

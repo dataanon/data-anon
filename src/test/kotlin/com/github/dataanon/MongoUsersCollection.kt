@@ -13,7 +13,7 @@ import java.time.Duration
 fun main(args: Array<String>) {
     // Download sample data and import to test
     // wget https://raw.githubusercontent.com/sunitparekh/data-anonymization/master/sample-data/mongo/users.json
-    // mongoimport --host=127.0.0.1 -d testdb-source --drop -c users --jsonArray ./users.json
+    // mongoimport -d testdb-source --drop -c users --jsonArray ./users.json
 
     val source = MongoDbConfig("mongodb://localhost:27017/testdb-source")
     val dest = MongoDbConfig("mongodb://localhost:27017/testdb-dest")

@@ -6,8 +6,11 @@ import com.github.dataanon.model.NullValue
 import com.github.dataanon.model.Record
 import com.github.dataanon.model.Table
 import com.github.dataanon.utils.ProgressBarGenerator
+import com.mongodb.client.model.IndexModel
 import com.mongodb.reactivestreams.client.*
 import org.bson.Document
+import org.reactivestreams.Subscription
+import reactor.core.publisher.Mono
 import reactor.core.publisher.SignalType
 import reactor.core.publisher.toMono
 import java.util.logging.Logger
@@ -27,6 +30,21 @@ class MongoTableWriter(
 
     init {
         progressBar.start()
+    }
+
+    override fun hookOnSubscribe(subscription: Subscription) {
+        if (table.properties["indexes"] != null) {
+            val mono = table.properties["indexes"] as Mono<List<IndexModel>>
+
+            mono.doOnNext {
+                collection.createIndexes(it).toMono()
+                        .then(Mono.fromCallable {
+                            super.hookOnSubscribe(subscription)
+                        }).subscribe()
+            }.subscribe()
+        } else {
+            super.hookOnSubscribe(subscription)
+        }
     }
 
     override fun hookOnNext(record: Record) {

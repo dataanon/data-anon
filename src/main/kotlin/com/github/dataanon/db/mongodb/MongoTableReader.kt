@@ -5,6 +5,8 @@ import com.github.dataanon.model.Field
 import com.github.dataanon.model.NullValue
 import com.github.dataanon.model.Record
 import com.github.dataanon.model.Table
+import com.mongodb.client.model.IndexModel
+import com.mongodb.client.model.IndexOptions
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoClients
 import com.mongodb.reactivestreams.client.MongoCollection
@@ -28,6 +30,21 @@ class MongoTableReader(dbConfig: MongoDbConfig, private val table: Table) : Tabl
 
     private val index: AtomicInteger = AtomicInteger(1)
 
+    init {
+        if (table.properties["indexes"] == null) {
+            table.properties["indexes"] = collection.listIndexes().toFlux()
+                    .map { toIndexModel(it) }
+                    .filter {
+                        if (it.options.isUnique && !table.allColumns().containsAll((it.keys as Document).keys)) {
+                            return@filter false
+                        }
+
+                        return@filter true
+                    }
+                    .collectList()
+        }
+    }
+
     override fun subscribe(s: Subscriber<in Record>) {
         val findPublisher = when (table.whereCondition is Bson) {
             true -> collection.find(table.whereCondition as Bson)
@@ -47,6 +64,26 @@ class MongoTableReader(dbConfig: MongoDbConfig, private val table: Table) : Tabl
         // return (collection.countDocuments().toMono().block() ?: 0).toInt()
         // TODO: use non-blocking version
         return 3
+    }
+
+    private fun toIndexModel(document: Document): IndexModel {
+        document["version"] = document.remove("v")
+
+        val indexOptions = IndexOptions()
+        IndexOptions::class.java.declaredFields.forEach {
+            val name = it.name
+            val type = it.type
+
+            val value = document.get(name, when (type.name == "boolean") {
+                true -> java.lang.Boolean::class.java
+                false -> type
+            })
+            if (value != null) {
+                indexOptions.javaClass.getDeclaredMethod(name, type).invoke(indexOptions, value)
+            }
+        }
+
+        return IndexModel(document.get("key", Document::class.java), indexOptions)
     }
 
     private fun toRecord(document: Document): Record {
