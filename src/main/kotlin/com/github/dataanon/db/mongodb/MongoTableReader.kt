@@ -14,11 +14,13 @@ import com.mongodb.reactivestreams.client.MongoDatabase
 import org.bson.Document
 import org.bson.conversions.Bson
 import org.reactivestreams.Subscriber
+import reactor.core.publisher.Flux
 import reactor.core.publisher.toFlux
 import java.lang.ClassCastException
 import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.logging.Level
 import java.util.logging.Logger
 
 class MongoTableReader(dbConfig: MongoDbConfig, private val table: Table) : TableReader {
@@ -34,6 +36,11 @@ class MongoTableReader(dbConfig: MongoDbConfig, private val table: Table) : Tabl
         if (table.properties["indexes"] == null) {
             table.properties["indexes"] = collection.listIndexes().toFlux()
                     .map { toIndexModel(it) }
+                    .onErrorResume {
+                        logger.log(Level.WARNING, "Cannot map index", it)
+
+                        return@onErrorResume Flux.empty<IndexModel>()
+                    }
                     .filter {
                         val keys: Set<String> = (it.keys as Document).keys.map { it -> it.plus(".").split(".")[0] }.toSet()
                         if (it.options.isUnique && !table.allColumns().containsAll(keys)) {
