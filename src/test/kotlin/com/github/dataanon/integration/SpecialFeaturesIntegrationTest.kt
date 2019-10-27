@@ -183,10 +183,10 @@ class SpecialFeaturesIntegrationTest : FunSpec() {
 
             val errors = DataAnonTestLogHandler.records.filter { it.level.intValue() > Level.INFO.intValue() }
             errors.size shouldBe 6
-            errors[0].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
-            errors[1].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
-            errors[2].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
-            errors[3].message should haveSubstring("Value too long for column \"GENRE VARCHAR2(10)\"")
+            errors[0].message should haveSubstring("'Really Long Genre To be fail 1' (30)")
+            errors[1].message should haveSubstring("'Really Long Genre To be fail 2' (30)")
+            errors[2].message should haveSubstring("'Really Long Genre To be fail 3' (30)")
+            errors[3].message should haveSubstring("'Really Long Genre To be fail 4' (30)")
             errors[4].message should haveSubstring("Total number of errors occurred is 4 for table MOVIES exceeds allowed 3")
             errors[5].message should haveSubstring("Too many errors while processing table MOVIES. Exceeds 3 errors hence terminating table processing.")
 
