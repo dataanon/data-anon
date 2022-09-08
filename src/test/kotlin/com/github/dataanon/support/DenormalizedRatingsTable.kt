@@ -12,15 +12,15 @@ class DenormalizedRatingsTable(dbConfig: DbConfig) {
         conn.createStatement().executeUpdate("DROP TABLE IF EXISTS DENORMALIZEDRATINGS")
         val createDenormalizedRatingsTable = "CREATE TABLE DENORMALISEDRATINGS( " +
             "MOVIE VARCHAR2(255), " +
-            "USER VARCHAR2(255), " +
+            "USERNAME VARCHAR2(255), " +
             "RATING INT, " +
             "CREATED_AT TIMESTAMP, " +
-            "PRIMARY KEY(MOVIE, USER) )"
+            "PRIMARY KEY(MOVIE, USERNAME) )"
         conn.createStatement().executeUpdate(createDenormalizedRatingsTable)
     }
 
     fun insert(movie: String, user: String, rating: Int, createdAt: LocalDateTime): DenormalizedRatingsTable {
-        val stmt = conn.prepareStatement("INSERT INTO DENORMALISEDRATINGS(MOVIE,USER,RATING,CREATED_AT) VALUES(?,?,?,?)")
+        val stmt = conn.prepareStatement("INSERT INTO DENORMALISEDRATINGS(MOVIE,USERNAME,RATING,CREATED_AT) VALUES(?,?,?,?)")
         stmt.setString(1, movie)
         stmt.setString(2, user)
         stmt.setInt(3, rating)
@@ -36,7 +36,7 @@ class DenormalizedRatingsTable(dbConfig: DbConfig) {
         while (rs.next()) {
             val record = hashMapOf<String, Any>()
             record["MOVIE"] = rs.getString("MOVIE")
-            record["USER"] = rs.getString("USER")
+            record["USERNAME"] = rs.getString("USERNAME")
             record["RATING"] = rs.getInt("RATING")
             record["CREATED_AT"] = rs.getTimestamp("CREATED_AT").toLocalDateTime()
             records.add(record)

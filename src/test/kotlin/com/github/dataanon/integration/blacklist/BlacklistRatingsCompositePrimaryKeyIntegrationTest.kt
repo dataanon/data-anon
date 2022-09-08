@@ -48,20 +48,20 @@ class BlacklistRatingsCompositePrimaryKeyIntegrationTest : FunSpec() {
                 .insert("Movie 2", "User 2", 4, LocalDateTime.ofEpochSecond(1509701310, 0, ZoneOffset.UTC))
 
             Blacklist(dbConfig)
-                .table("DENORMALISEDRATINGS", primaryKey = listOf("MOVIE", "USER")) {
-                    anonymize("USER").using(FixedString("Anonymous"))
+                .table("DENORMALISEDRATINGS", primaryKey = listOf("MOVIE", "USERNAME")) {
+                    anonymize("USERNAME").using(FixedString("Anonymous"))
                 }.execute(progressBarEnabled = false)
 
             val records = denormalizedRatingsTable.findAll()
 
             records.size shouldBe 2
             records[0]["MOVIE"] shouldBe "Movie 1"
-            records[0]["USER"] shouldBe "Anonymous"
+            records[0]["USERNAME"] shouldBe "Anonymous"
             records[0]["RATING"] shouldBe 3
             records[0]["CREATED_AT"] shouldBe LocalDateTime.ofEpochSecond(1509701304, 0, ZoneOffset.UTC)
 
             records[1]["MOVIE"] shouldBe "Movie 2"
-            records[1]["USER"] shouldBe "Anonymous"
+            records[1]["USERNAME"] shouldBe "Anonymous"
             records[1]["RATING"] shouldBe 4
             records[1]["CREATED_AT"] shouldBe LocalDateTime.ofEpochSecond(1509701310, 0, ZoneOffset.UTC)
 
