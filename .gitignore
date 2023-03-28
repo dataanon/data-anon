@@ -6,3 +6,4 @@ dataanon.log
 data/
 .gradle
 .kotlintest
+.vscode

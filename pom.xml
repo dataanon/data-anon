@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.dataanon</groupId>
     <artifactId>data-anon</artifactId>
-    <version>0.9.9</version>
+    <version>0.9.10</version>
     <packaging>jar</packaging>
 
     <name>data-anon</name>
@@ -18,7 +18,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.7.0</kotlin.version>
+        <kotlin.version>1.8.0</kotlin.version>
         <version.jacoco>0.8.8</version.jacoco>
     </properties>
 
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>3.4.22</version>
+            <version>3.5.4</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.1</version>
+            <version>42.6.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
